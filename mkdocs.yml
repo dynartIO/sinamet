@@ -1,0 +1,43 @@
+site_name: Bibliothèque Sinamet
+
+nav:
+  - Accueil: index.md
+  - Installation: installation.md
+  - Première prise en main:
+    - Conceptualisation: quickstart/conceptualisation.md
+    - Premier modèle: quickstart/firstmodel.md
+    - Importer via modules: quickstart/moduleimport.md
+    - Requêter les données: quickstart/requesting.md
+  - Description des types d'objets: documentation/mtobjecttypes.md
+  - API reference:
+    - Sidb: documentation/sidb.md
+    - Mapper: documentation/mapper.md
+    - MTObject: documentation/mtobject.md
+    - Property: documentation/property.md
+    - Outils: documentation/tools.md
+  - Foire aux questions: faq.md
+
+
+plugins:
+  - mkdocstrings:
+      handlers:
+        python:
+          paths: [src/sinamet]
+          options:
+            docstring_section_style: list
+            separate_signature: true
+            show_source: false
+
+theme:
+  name: material
+  features:
+    - content.code.copy
+
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences

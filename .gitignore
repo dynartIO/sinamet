@@ -1,0 +1,15 @@
+dist/*
+site/*
+__pycache__
+
+# Data files
+*.xls
+*.xlsx
+*.csv
+
+# Shapefiles
+*.shp
+*.dbf
+*.shx
+*.cpg
+*.prj

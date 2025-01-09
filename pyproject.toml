@@ -1,0 +1,59 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "sinamet"
+description = "Structuring data to analyze territorial flows."
+readme = "README.md"
+authors = [
+	{name = "Benoit Ribon", email = "b.ribon@dynartio.com"},
+	{email = "libadmin@sinamet.tech"},
+]
+license = {file = "LICENSE"}
+classifiers = [
+	"License :: OSI Approved :: MIT License",
+	"Programming Language :: Python",
+	"Programming Language :: Python :: 3.11",
+	"Programming Language :: Python :: 3.12",
+	"Programming Language :: Python :: 3.13",
+]
+requires-python = ">=3.11"
+dependencies = [
+	"anytree>=2.12.1",
+	"GeoAlchemy2>=0.16.0",
+	"numpy>=2.2.1",
+	"pandas>=2.2.3",
+	"psycopg2-binary>=2.9.10",
+	"shapely>=2.0.6",
+	"SQLAlchemy>=2.0.36",
+	"Unidecode>=1.3.8",
+]
+dynamic = ["version"]
+
+[project.urls]
+Documentation = "https://docs.sinamet.tech"
+"Source Code" = "https://github.com/dynartIO/sinamet"
+
+[project.optional-dependencies]
+demo = [
+	"geopandas>=1.0.1",
+	"xlrd>=2.0.1",
+	"openpyxl>=3.1.5",
+]
+
+mkdocs = [
+	"mkdocs",
+	"mkdocstrings[python]",
+	"mkdocs-material",
+	"black",
+]
+
+[tool.hatch.version]
+path = "src/sinamet/__init__.py"
+
+[tool.hatch.build.targets.sdist]
+exclude = [
+	"docs/",
+	"mkdocs.yml",
+]
