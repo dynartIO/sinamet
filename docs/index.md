@@ -43,9 +43,9 @@ et diffusée en Open Source grâce au soutien de la
 <a href="https://www.nouvelle-aquitaine.fr/" target="_blank">Région Nouvelle-Aquitaine</a>.
 
 <img src="https://docs.sinamet.tech/static/images/logo-dynartio.svg" width="26%" />
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;
 <img src="https://docs.sinamet.tech/static/images/logo-na.svg" width="12%" />
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;
 <img src="https://docs.sinamet.tech/static/images/logo-ademe.svg" width="26%" />
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;
 <img src="https://docs.sinamet.tech/static/images/logo-live.png" width="26%" />

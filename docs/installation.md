@@ -81,8 +81,3 @@ COREDB_PATH = 'postgresql://projetsinamet1_user:projetsinamet1_pass@localhost:54
 COREDB_PATH = 'postgresql://projetsinamet2_user:projetsinamet2_pass@localhost:5432/projetsinamet2_db'
 ```
 
-## Pip
-
-(Pas encore disponible - en projet)
-
-    $ pip install sinamet
