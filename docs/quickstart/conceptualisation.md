@@ -36,7 +36,7 @@ quantité (en kg, en euros, en unité, ...) d'un produit associé à un territoi
 Par exemple la donnée de consommation éléctrique d'un territoire est un Gateflow car on ne connaît pas l'origine 
 de la production. Mais le déplacement d'un individu d'un endroit A vers un endroit B est un Pathflow.
 
-Vous trouverez [à cette page](../documentation/mtobjecttypes) une description plus détaillée des différents types d'objets.
+Vous trouverez [à cette page](../documentation/mtobjecttypes.md) une description plus détaillée des différents types d'objets.
 
 Dans la suite du tutoriel, nous expliquons comment importer les données, puis comment les requêter.
 
@@ -47,9 +47,9 @@ Un des intérêts de Sinamet est d'offrir un paradigme de programmation orienté
 territorialisés, plutôt que de devoir recourir à des requêtes SQL, qui peuvent être rapidemment complexe
 à élaborer. Cela apporte une plus grande intuitivité dans l'élaboration des traitements.
 
-Les différents types d'objets sont présentés précédemment. Les liens entre la base de données PostgreSQL/Postgis
-(voir [Installation](installation.md)) et les objets Python sont assurés gâce à un Mapping objet-relationnel
-(utilisant <a href="https://www.sqlalchemy.org/" target="_blank">SQLAlchemy</a> et son extension spatiale
+Les différents types d'objets sont présentés précédemment. Les liens entre la base de données PostgreSQL/Postgis 
+et les objets Python sont assurés gâce à un Mapping objet-relationnel
+(qui repose sur la librairie <a href="https://www.sqlalchemy.org/" target="_blank">SQLAlchemy</a> et son extension spatiale
 <a href="https://geoalchemy-2.readthedocs.io/en/stable/" target="_blank">GeoAlchemy 2</a>).
 
 In fine, l'utilisateur peut donc manipuler des objets de données (des territoires, des acteurs, des flux, ...) 
