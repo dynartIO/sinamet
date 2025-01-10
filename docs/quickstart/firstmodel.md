@@ -47,7 +47,7 @@ préciser une échelle, ici "Departement". Toutes les interaction avec la base d
 défini par `with Sidb.connect() as sidb`.
 
 ```python
-from sinamet import Sidb, Mepper
+from sinamet import Sidb, Mapper
 with Sidb.connect() as sidb:
     mapper = Mapper("Territory", sourceref="firstmodel")
     mapper.add("Code", "67")

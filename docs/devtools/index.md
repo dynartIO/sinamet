@@ -1,3 +1,17 @@
+### Installer les dépendances Python
+
+Si vous souhaitez installer Sinamet depuis le code source, ajouté au Python
+Sinamet nécessite l'installation préalable des librairies suivantes:
+
+    anytree>=2.12.1
+    GeoAlchemy2>=0.16.0
+    numpy>=2.2.1
+    pandas>=2.2.3
+    psycopg2-binary>=2.9.10
+    shapely>=2.0.6
+    SQLAlchemy>=2.0.36
+    Unidecode>=1.3.8
+
 # Outils de développement
 
 Ce fichier contient des éléments destinés aux développeurs.

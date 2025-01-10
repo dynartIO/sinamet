@@ -1,8 +1,8 @@
 # Importation en lot des données de prise en main
 
 Afin de simplifier la prise en main, un package de données et de modules d'importation
-est disponible pour la suite du tutoriel. Télécharger et extraire les données et modules 
-dans un dossier spécifique (que nous appellerons `dossier_modules`).
+est disponible pour la suite du tutoriel. Télécharger et extraire les données et modules suivants
+dans un dossier spécifique (que nous appellerons `dossier_modules`) : https://docs.sinamet.tech/static/demo_sinamet.zip
 
 Ce package permet l'injection des données suivantes :
 

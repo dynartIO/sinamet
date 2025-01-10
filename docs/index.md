@@ -42,10 +42,10 @@ et le soutien du <a href="https://live.unistra.fr/" target="_blank">Laboratoire 
 et diffusée en Open Source grâce au soutien de la 
 <a href="https://www.nouvelle-aquitaine.fr/" target="_blank">Région Nouvelle-Aquitaine</a>.
 
-<img src="https://docs.sinamet.tech/content-images/logo-dynartio.svg" width="160" />
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<img src="https://docs.sinamet.tech/content-images/logo-na.svg" width="90" />
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<img src="https://docs.sinamet.tech/content-images/logo-ademe.svg" width="220" />
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<img src="https://docs.sinamet.tech/content-images/logo-live.png" width="220" />
+<img src="https://docs.sinamet.tech/static/images/logo-dynartio.svg" width="26%" />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<img src="https://docs.sinamet.tech/static/images/logo-na.svg" width="12%" />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<img src="https://docs.sinamet.tech/static/images/logo-ademe.svg" width="26%" />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<img src="https://docs.sinamet.tech/static/images/logo-live.png" width="26%" />

@@ -1,27 +1,15 @@
 # Installation
 
-## Installer les dépendances Python
+## Installer la librarie
 
-Sinamet nécessite l'installation préalable des librairies suivantes:
+Sinamet peut être simplement installée avec Pip :
 
-    anytree>=2.12.1
-    GeoAlchemy2>=0.16.0
-    numpy>=2.2.1
-    pandas>=2.2.3
-    psycopg2-binary>=2.9.10
-    shapely>=2.0.6
-    SQLAlchemy>=2.0.36
-    Unidecode>=1.3.8
-
-Ces libraries sont listées dans le fichier requirements.txt,
-et peuvent être installée avec la commande suivante:
-
-    $ pip install -r sinamet/requirements.txt
+    pip install sinamet
 
 ### Dépendances complémentaires
 
-Nous conseillons également d'installer ces librairies, elles seront
-nécessaires pour l'exécution des fichiers de démo.
+Nous conseillons également d'installer ces librairies, qui ne sont pas strictement nécessaires pour faire
+fonctionner Sinamet, mais qui sont nécessaires pour l'exécution des fichiers de démo.
 
     geopandas>=1.0.1
     xlrd>=2.0.1
