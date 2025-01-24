@@ -4,7 +4,7 @@ Une fois que les [données de démo sont chargées](../quickstart/moduleimport.m
 les requêter facilement (c'est tout l'objet de la librairie).
 
 
-## Requete sur des territoires
+## Requête sur des territoires
 
 Il convient tout d'abord de récupérer ces territoires en tant qu'objet depuis la base de données.
 Notez que toutes les opérations d'extraction et d'analyse doivent prendre place dans un bloc uni

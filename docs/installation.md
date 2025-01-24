@@ -1,5 +1,7 @@
 # Installation
 
+Sinamet nécessite `Python >= 3.11`.
+
 ## Installer la librarie
 
 Sinamet peut être simplement installée avec Pip :
@@ -24,7 +26,7 @@ Nous recommandons de se référer à la documentation officielle pour l'installa
 Eventuellement, vous pouvez également vous aider de
 [ce tutoriel (non officiel)](https://data.sigea.educagri.fr/download/sigea/supports/PostGIS/distance/initiation/PostGIS_Installation/co/PostGIS_Installation_3.html).
 
-Une fois PostgreSQL/PostGIS installés, il s'agit de créer une base de données. A titre d'exemple, nous créons une
+Une fois PostgreSQL/PostGIS installés, il s'agit de créer une base de données. À titre d'exemple, nous créons une
 base de données avec les identifiants d’accès à la base de données suivants :
 
     NAME = projetsinamet1_db
@@ -47,7 +49,7 @@ la librairie Sinamet peut être étendue avec un fichier de configuration TOML.
 Vous devez ainsi créer un fichier `sinamet_config.toml` dans le dossier d'éxecution des scripts ou un
 de ses parents.
 
-Ce fichier reprend la configuration de la base de donnée, voici un simple exemple:
+Ce fichier reprend la configuration de la base de donnée, voici un simple exemple :
 ```toml
 COREDB_USER = 'projetsinamet1_user'
 COREDB_PASS = 'projetsinamet1_pass'
@@ -56,11 +58,11 @@ COREDB_HOST = 'localhost'
 COREDB_PORT = '5432'
 ```
 Il est également possible de renseigner directement le chemin complet de la base
-de donnée sous la forme:
+de donnée sous la forme :
 ```
 postgresql://{username}:{password}@{host}:{port}/{db}
 ```
-Ce qui nous donne:
+Ce qui nous donne :
 ```toml
 COREDB_PATH = 'postgresql://projetsinamet1_user:projetsinamet1_pass@localhost:5432/projetsinamet1_db'
 ```
@@ -68,9 +70,9 @@ COREDB_PATH = 'postgresql://projetsinamet1_user:projetsinamet1_pass@localhost:54
 ### Configuration avancée pour une utilisation multi-environements
 
 Pour utiliser plusieurs bases de données/environements et ne pas avoir à réécrire
-un fichier toml pour chacunes, vous pouvez séparer leurs identifiants respectifs
+un fichier toml pour chacune, vous pouvez séparer leurs identifiants respectifs
 dans des sections, puis indiquer l'environement à utiliser avec une variable
-`current_env`. Exemple:
+`current_env`. Exemple :
 ```toml
 current_env = 'projetsinamet1'
 
@@ -81,3 +83,4 @@ COREDB_PATH = 'postgresql://projetsinamet1_user:projetsinamet1_pass@localhost:54
 COREDB_PATH = 'postgresql://projetsinamet2_user:projetsinamet2_pass@localhost:5432/projetsinamet2_db'
 ```
 
+Ainsi, il suffit de changer cette variable `current_env` pour passer d'un environnement à l'autre.

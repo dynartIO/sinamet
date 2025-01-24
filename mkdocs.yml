@@ -6,8 +6,9 @@ nav:
   - Première prise en main:
     - Conceptualisation: quickstart/conceptualisation.md
     - Premier modèle: quickstart/firstmodel.md
-    - Importer via modules: quickstart/moduleimport.md
+    - Importer des lots de données: quickstart/moduleimport.md
     - Requêter les données: quickstart/requesting.md
+    - Fonctionnalités avancées: quickstart/indepth.md
   - Description des types d'objets: documentation/mtobjecttypes.md
   - API reference:
     - Sidb: documentation/sidb.md

@@ -1,10 +1,11 @@
 # Accueil
 
-## A propos de Sinamet
+<img src="https://docs.sinamet.tech/static/images/logo-sinamet.png" width="60%" />
+
 
 Sinamet est une librairie Python spécialisée pour l'analyse des flux et stocks territorialisés*. 
 Sinamet prend en charge la gestion d'une base de données à travers un modèle de données spécifique.
-A travers ce modèle, il est possible de structurer des données sur différentes 
+À travers ce modèle, il est possible de structurer des données sur différentes 
 thématiques, tant qu'elles décrivent des flux territorialisés, par exemple :
 
 
@@ -42,10 +43,10 @@ et le soutien du <a href="https://live.unistra.fr/" target="_blank">Laboratoire 
 et diffusée en Open Source grâce au soutien de la 
 <a href="https://www.nouvelle-aquitaine.fr/" target="_blank">Région Nouvelle-Aquitaine</a>.
 
-<img src="https://docs.sinamet.tech/static/images/logo-dynartio.svg" width="26%" />
+<img src="https://docs.sinamet.tech/static/images/logo-dynartio.svg" width="25%" />
 &nbsp;&nbsp;&nbsp;&nbsp;
 <img src="https://docs.sinamet.tech/static/images/logo-na.svg" width="12%" />
 &nbsp;&nbsp;&nbsp;&nbsp;
-<img src="https://docs.sinamet.tech/static/images/logo-ademe.svg" width="26%" />
+<img src="https://docs.sinamet.tech/static/images/logo-ademe.svg" width="25%" />
 &nbsp;&nbsp;&nbsp;&nbsp;
-<img src="https://docs.sinamet.tech/static/images/logo-live.png" width="26%" />
+<img src="https://docs.sinamet.tech/static/images/logo-live.png" width="25%" />

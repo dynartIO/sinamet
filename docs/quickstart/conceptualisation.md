@@ -5,20 +5,15 @@ toutes sortes (Energie, Matière, Mobilités, Monétaire, ...), c'est à l'utili
 produits qu'il souhaite étudier.
 
 Afin de comprendre le fonctionnement de Sinamet, il faut détailler quelques éléments conceptuels : 
-la séquentialité des traitements (importation puis exportation), les types d'objets manipulés,
-et la base de données en lien avec un ORM,
+la séquentialité des traitements (importation puis requêtage), les types d'objets manipulés,
+et la base de données en lien avec un ORM.
 
 
 ## Séquentialité des traitements
 La librairie Sinamet s’utilise en 2 temps :
 
 * D'abord l’importation de données externes dans la base de données centralisée gérée par Sinamet. 
-* Ensuite l’extraction et l’analyse des données pour produire les analyses et visualisations.
-
-Afin de séparer les différentes fonctionnalités, l'importation et l'extraction font l'objet de scripts python
-séparés appelés modules.
-Habituellement chaque module vise à l'importation d'une source de données spécifiques, 
-ou l'exportation dans un format déterminé.
+* Ensuite le requêtage et la manipulation des données pour produire les analyses et visualisations.
 
 
 ## Types d'objets et propriétés
@@ -36,7 +31,11 @@ quantité (en kg, en euros, en unité, ...) d'un produit associé à un territoi
 Par exemple la donnée de consommation éléctrique d'un territoire est un Gateflow car on ne connaît pas l'origine 
 de la production. Mais le déplacement d'un individu d'un endroit A vers un endroit B est un Pathflow.
 
-Vous trouverez [à cette page](../documentation/mtobjecttypes.md) une description plus détaillée des différents types d'objets.
+En résumé, Sinamet offre la possibilité de manipuler 6 classes d'objets : 
+`Territoiry`, `Actor`, `Product`, `Gateflow`, `Pathflow`, `Stock`. 
+Ces objets héritent tous d'une classe mère `MTObject`, et les flux et stocks héritent également de `MTQuantifiable`.
+Vous trouverez [à cette page](../documentation/mtobjecttypes.md) 
+une description plus détaillée des différents types d'objets.
 
 Dans la suite du tutoriel, nous expliquons comment importer les données, puis comment les requêter.
 
@@ -44,7 +43,7 @@ Dans la suite du tutoriel, nous expliquons comment importer les données, puis c
 ## Base de données et Programmation Orientée Objet
 
 Un des intérêts de Sinamet est d'offrir un paradigme de programmation orientée objet pour l'analyse des flux 
-territorialisés, plutôt que de devoir recourir à des requêtes SQL, qui peuvent être rapidemment complexe
+territorialisés, plutôt que de devoir recourir à des requêtes SQL, qui peuvent être rapidement complexes
 à élaborer. Cela apporte une plus grande intuitivité dans l'élaboration des traitements.
 
 Les différents types d'objets sont présentés précédemment. Les liens entre la base de données PostgreSQL/Postgis 

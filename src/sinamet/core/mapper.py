@@ -39,7 +39,9 @@ class Mapper():
         self.all_srcref = None
 
         if sourceref is None:
-            warnings.warn("Mapper require sourceref at object constructor. Please precise it")
+            warnings.warn("It is advised to indicate a source reference (source_ref). Consider using the name "
+                          "of your dataset or '_'.")
+            self.all_srcref = "_"
         else:
             self.all_srcref = sourceref
 
@@ -183,8 +185,7 @@ class Mapper():
             date_end: str | date | None = None,
             year: str | int | None = None,
             month: str | int | None = None,
-            sourceref: str | None = None,
-            fk: bool = False,
+            source_ref: str | None = None,
             foreignkey: bool = False,
             primarykey: bool = False,
             unique: bool = False,
@@ -199,7 +200,7 @@ class Mapper():
             date_end: La date de fin de la propriété.
             year: L'année de la propriété.
             month: Le mois de la propriété.
-            sourceref: La source de référence de la propriété.
+            source_ref: La source de référence de la propriété.
             fk: Clé étrangère. (Deprecated)
             foreignkey: Clé étrangère.
             primarykey: Clé primaire.
@@ -211,8 +212,7 @@ class Mapper():
                 raise ValueError("primarykey can only be associated with Code or Name")
         # To depreciate
         if key == "SourceRef":
-            self.all_srcref = value
-            return
+            raise ValueError("SourceRef is not an available key at the moment.")
 
         if key.startswith("Primary:") or primarykey:
             if key.startswith("Primary:"):
@@ -222,12 +222,7 @@ class Mapper():
             self.primary_key = len(self)
             key = key.replace("Primary:", "")
 
-        if fk:
-            warnings.warn(
-                "Deprecated use 'fk=' in Mapper args. Use attribute 'foreignkey=' instead")
-            self.foreignkeys.append(True)
-        else:
-            self.foreignkeys.append(foreignkey)
+        self.foreignkeys.append(foreignkey)
 
         date_point = to_date(date_point)
         start_n, end_n = get_start_end_dates(start=date_start, end=date_end,
@@ -243,7 +238,7 @@ class Mapper():
         self.date_start.append(start_n)
         self.date_end.append(end_n)
         self.date_point.append(date_point)
-        self.sourcerefs.append(sourceref)
+        self.sourcerefs.append(source_ref)
         self.unique.append(unique)
         self.primarykeys.append(primarykey)
 

@@ -176,7 +176,7 @@ class SidbGateflow:
             verbose:
         """
         if flowtype is not None:
-            mapper.add("FlowType", flowtype, sourceref=mapper.all_srcref)
+            mapper.add("FlowType", flowtype, source_ref=mapper.all_srcref)
 
         obj = Gateflow()
         self.session.add(obj)

@@ -1,8 +1,11 @@
-# Importation en lot des données de prise en main
+# Importation en lot les données de prise en main
 
-Afin de simplifier la prise en main, un package de données et de modules d'importation
-est disponible pour la suite du tutoriel. Télécharger et extraire les données et modules suivants
-dans un dossier spécifique (que nous appellerons `dossier_modules`) : https://docs.sinamet.tech/static/demo_sinamet.zip
+Afin de simplifier la prise en main, un package de données et de fichiers d'importations
+est disponible pour la [suite du tutoriel](requesting.md]).
+
+Télécharger et extraire les données et modules suivants
+dans un dossier spécifique (que nous appellerons `dossier_modules`) : 
+[https://docs.sinamet.tech/static/demo_sinamet.zip](https://docs.sinamet.tech/static/demo_sinamet.zip)
 
 Ce package permet l'injection des données suivantes :
 
@@ -24,13 +27,13 @@ Ce package permet l'injection des données suivantes :
     * Reprend les lignes de code de la page [Requêter les données](requesting.md)
 
 Avant de charger les données, il est nécessaire de réinitialiser la base de données.
-Pour cela, il suffit d'éxecuter les lignes suivantes :
+Pour cela, il suffit d'exécuter les lignes suivantes :
 
     from sinamet import Sidb
     with Sidb.connect() as sidb:
         sidb.reset()
 
-Ensuite, pour charger les données, il suffit d'éxecuter les scripts suivants dans l'ordre :
+Ensuite, pour charger les données, il suffit d'exécuter les scripts suivants dans l'ordre :
     
     demo_territory_france/cmd_imp_0_pays.py
     demo_territory_france/cmd_imp_1_regions.py
@@ -42,7 +45,17 @@ Ensuite, pour charger les données, il suffit d'éxecuter les scripts suivants d
     demo_immatriculation_vehicules/cmd_imp_nomenclature_voitures.py
     demo_immatriculation_vehicules/cmd_imp_voitures.py
 
-\* Ce fichier peut être particulièrement long à executer selon performances de l'ordinateur : ~ 30 min
+
+\* *Ce fichier peut être particulièrement long à exécuter selon performances de l'ordinateur : ~ 30 min*
+
+L'objectif de Sinamet est de permettre la mise en cohérence de différents jeux de données de provenances multiples.
+Certains jeux de données peuvent être dépendants d'autres, par exemple les départements nécessitent 
+que les régions soient importées et les flux nécessitent que les départements et la nomenclature soient importés. 
+D'où l'importance d'exécuter ces modules dans l'ordre.
+
+Ensuite, les imports sont décomposés pour avoir un fichier par source de données. Ça n'a rien d'obligatoire, mais ça 
+permet de rendre modulaire l'information. On peut ainsi réutiliser des briques d'un projet à l'autre. 
+
 
 ## Quelques explications
 
@@ -93,7 +106,7 @@ Pour chaque ligne du fichier de données, nous créons un mapper de type "Territ
 à jour un territoire), puis nous ajoutons les différentes
 propriétés : des codes (isoa2 pour ISO 3166-1 alpha-2, isoa3 pour ISO 3166-1 alpha-3), les noms (en français, en anglais,
 en Allemand), l'échelle (Scale = 'Country'), les limites géographiques (Geoshape). Notons en particulier la prorpriété
-*IsInTerritoryCode* qui désigne le territoire parent par son code (nous pourrions aussi utiliser *IsInTerritoryName*).
+`IsInTerritoryCode` qui désigne le territoire parent par son code (nous pourrions aussi utiliser *IsInTerritoryName*).
 Cette propriété est spécifique car elle permet d'organiser la hiérarchie des territoires, que nous pourrons ainsi
 interroger par la suite.
 
@@ -121,7 +134,7 @@ qui permet d'organiser la hiérarchie des produits dans la nomenclature. `sidb.p
 la progression du chargement des données.
 
 Une fois les départements et les produits de la nomenclature NST2007 importés, il devient possible de charger
-les données sitram. Ces données décrivent des flux entre différents départements :
+les données Sitram. Ces données décrivent des flux entre différents départements :
 
 ```python
   mapper = Mapper("Pathflow", sourceref=mysrcref)
@@ -142,7 +155,7 @@ Ici, nous indiquons pour chaque flux l'origine (EmitterTerritory) et la destinat
 concernée (Year), le produit (ProductCode + ProductNomenclature), le moyen de transport (TransportMean) et la quantité
 dans différentes unités (t, t.km, nbobs - nombre d'observations).
 
-Pour les fichiers suivants (immatriculation des véhicules), la logique est la même : on import la nomenclature adaptée
+Pour les fichiers suivants (immatriculation des véhicules), la logique est la même : on importe la nomenclature adaptée
 avec `cmd_imp_nomenclature_voitures.py`, puis les statistiques associées avec `cmd_imp_voitures.py`.
 
 Dans la section suivante sur les [requêtes de données](../quickstart/requesting.md), nous allons voir

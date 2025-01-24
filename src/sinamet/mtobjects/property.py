@@ -1,8 +1,8 @@
 from __future__ import annotations
-
 import typing
 from typing import Optional
 
+import warnings
 from datetime import datetime, date
 
 import numpy
@@ -125,6 +125,9 @@ class Property(DBObjectClassBase):
             self.value_geo = from_shape(value)
         else:
             raise TypeError(f"Invalid Property type {type(value)=}")
+
+        if not sourceref:
+            sourceref = '_'
 
         self.sourceref = sourceref
         self.date_start = to_date(date_start)

@@ -1,9 +1,24 @@
 # Description des types d'objets de Sinamet
 
+## Généralités et propriétés complémentaires
+
+Les types d'objets présentés dans la suite héritent d'une classe mère `MTObject`.
+Chaque MTObject est associée à une liste de propriétés. Certains noms de propriétés sont réservés à des fonctionnalités
+spécifiques, par exemple `Code`, `Name`, `Scale`. La liste des propriétés réservées est indiquée pour chaque objet.
+
+En plus de ces propriétés réservées qui ont un sens fonctionnel pour Sinamet,
+il est possible d'ajouter d'autres propriétés au nom arbitraire aux objets à travers le mapper.
+Par convention, nous conseillons 
+d'utiliser des noms de propriétés sans espace, ni caractère spécial ou accentué, par exemple :
+
+    mapper.add("NomDePropriete", "ValeurPropriété")
+
+Les symboles `@` et `#` renvoient à une syntaxe spécifique, permettant de compléter les noms des propriétés.
+
 ## Territory
 
-Un "Territoire" (`Territory`) désigne de façon général une aire géographique (une partie de la surface terrestre) 
-généralement désignée par différents acteurs par un nom et ou un code. Si des limites géographiques peuvent être 
+Un "Territoire" (`Territory`) désigne de façon générale une aire géographique (une partie de la surface terrestre) 
+généralement désignée par différents acteurs par un nom et/ou un code. Si des limites géographiques peuvent être 
 spécifiées, cela n’est pas indispensable tant que l’on ne cherche pas à spatialiser l’information (et on ne cherche 
 pas systématiquement à le faire). Il est ainsi possible de conceptualiser des territoires arbitraires,
 même si le plus fréquemment il s’agira de faire référence à des territoires largement reconnus, 
@@ -24,7 +39,7 @@ Par exemple, le code 44 correspond à la fois à la région Grand Est et au dép
 Pour éviter les ambiguïtés, nous faisons habituellement précéder les codes régions par R (RX pour les régions d'avant 2016),
 par exemple 'R44' ou 'RX42'.
 
-En plus du code, les territoire ont un voire plusieurs noms (différentes langues, abbréviation, ...). A noter que 
+En plus du code, les territoire ont un voire plusieurs noms (différentes langues, abbréviation, ...). À noter que 
 l’usage d’un nom pour identifier un territoire est moins robuste que l’usage du code, en raison des homonymes.
 
 Les territoires ont enfin une longue liste d’attributs possibles, par exemple : coordonnées géographiques 
@@ -205,12 +220,3 @@ Exemple du mapper pour la production de céréales en Charente en 2024
     mapper.add("Quantity@keuro", 15.6)
     mapper.add("Year", 2024)
 
-## Généralités et propriétés complémentaires
-
-Chacun des types d'objets mentionnés précédemment hérite d'une classe mère `MTObject`.
-Chaque MTObject est associée à une liste de propriétés. En plus des propriétés réservées
-(Name, Code, IsInTerritory, Scale ...) mentionnées précédemment, et qui ont un sens fonctionnel pour Sinamet,
-il est possible d'ajouter d'autres propriétés aux objets à travers le mapper. Par convention, nous conseillons 
-d'utiliser des noms de propriétés sans espace, ni caractère spéciaux ou accentué, par exemple :
-
-    mapper.add("NomDePropriete", "ValeurPropriété")
