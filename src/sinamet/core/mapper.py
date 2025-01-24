@@ -201,7 +201,6 @@ class Mapper():
             year: L'année de la propriété.
             month: Le mois de la propriété.
             source_ref: La source de référence de la propriété.
-            fk: Clé étrangère. (Deprecated)
             foreignkey: Clé étrangère.
             primarykey: Clé primaire.
             unique: La propriété doit être unique.

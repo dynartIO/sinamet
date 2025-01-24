@@ -189,57 +189,26 @@ Une fois le modèle Territoires-Acteurs-Produits importé, il est possible d'imp
 
 ### Production
 
-Commençons par la production. Les mappers de production sont :
+Commençons par charger les données de production. Pour cela, on définit et on charge les 
+[`Mapper`](../documentation/mapper.md) adaptés :
 
 ```python
+data = [{"code":"67", "name":"Choux", "quantity":35000},
+        {"code":"68", "name":"Choux", "quantity":28000},
+        {"code":"88", "name":"Choux", "quantity":1700},
+        {"code":"67", "name":"Carottes", "quantity":2300},
+        {"code":"68", "name":"Carottes", "quantity":5700},
+        {"code":"88", "name":"Carottes", "quantity":6800}]
+
 with Sidb.connect() as sidb:
-    mapper = Mapper("Production")
-    mapper.add("TerritoryCode", "67")  
-    mapper.add("ProductName", "Choux")  
-    mapper.add("ProductNomenclature", "Aliments")
-    mapper.add("Quantity@t", 35000)
-    mapper.add("Year", 2023)
-    sidb.load(mapper)  
-
-    mapper = Mapper("Production")
-    mapper.add("TerritoryCode", "68")  
-    mapper.add("ProductName", "Choux")  
-    mapper.add("ProductNomenclature", "Aliments")
-    mapper.add("Quantity@t", 28000)
-    mapper.add("Year", 2023)
-    sidb.load(mapper)  
-
-    mapper = Mapper("Production")
-    mapper.add("TerritoryCode", "88")  
-    mapper.add("ProductName", "Choux")  
-    mapper.add("ProductNomenclature", "Aliments")
-    mapper.add("Quantity@t", 1700)
-    mapper.add("Year", 2023)
-    sidb.load(mapper)  
-
-    mapper = Mapper("Production")
-    mapper.add("TerritoryCode", "67")  
-    mapper.add("ProductName", "Carottes")  
-    mapper.add("ProductNomenclature", "Aliments")
-    mapper.add("Quantity@t", 2300)
-    mapper.add("Year", 2023)
-    sidb.load(mapper)  
-
-    mapper = Mapper("Production")
-    mapper.add("TerritoryCode", "68")  
-    mapper.add("ProductName", "Carottes")  
-    mapper.add("ProductNomenclature", "Aliments")
-    mapper.add("Quantity@t", 5700)
-    mapper.add("Year", 2023)
-    sidb.load(mapper)  
-
-    mapper = Mapper("Production")
-    mapper.add("TerritoryCode", "88")  
-    mapper.add("ProductName", "Carottes")  
-    mapper.add("ProductNomenclature", "Aliments")
-    mapper.add("Quantity@t", 6800)
-    mapper.add("Year", 2023)
-    sidb.load(mapper)  
+    for datarow in data:
+        mapper = Mapper("Production")
+        mapper.add("TerritoryCode", datarow["code"])
+        mapper.add("ProductName", datarow["name"])
+        mapper.add("ProductNomenclature", "Aliments")
+        mapper.add("Quantity@t",  datarow["quantity"]) # Quantité en tonnes (t)
+        mapper.add("Year", 2023)
+        sidb.load(mapper)
 ```
 
 Notons les mots clés réservés : `TerritoryCode`, `ProductName`, `ProductNomenclature`, `Quantity`, `Year`. L'unité de
@@ -288,67 +257,31 @@ affichera:
 
 ### Flux entre départements
 
-Les flux dont on connaît l'origine et la destination sont appelés `Pathflow` dans le modèle de données Sinamet.
-Pour ajouter les données présentées précédemment, on définit les mappers adaptés :
+Les flux dont on connaît l'origine et la destination sont appelés `Pathflow` dans le modèle de données de Sinamet.
+Pour ajouter les données présentées précédemment, on définit et on charge les
+[`Mapper`](../documentation/mapper.md) adaptés :
 
 ```python
+data = [{"emitter":"67", "receiver":"68", "name":"Choux", "quantity":1300},
+        {"emitter":"67", "receiver":"88", "name":"Choux", "quantity":2800},
+        {"emitter":"88", "receiver":"68", "name":"Carottes", "quantity":750},
+        {"emitter":"88", "receiver":"67", "name":"Carottes", "quantity":1200},
+        {"emitter":"67", "receiver":"68", "name":"Carottes", "quantity":1700},
+        {"emitter":"68", "receiver":"88", "name":"Choux", "quantity":2400}]
+
 with Sidb.connect() as sidb:
-     mapper = Mapper("Pathflow")
-    mapper.add("EmitterTerritoryCode", "67")
-    mapper.add("ReceiverTerritoryCode", "68")
-    mapper.add("ProductName", "Choux")
-    mapper.add("ProductNomenclature", "Aliments")
-    mapper.add("Quantity@t", 1300)
-    mapper.add("Year", 2023)
-    sidb.load(mapper)  
-
-    mapper = Mapper("Pathflow")
-    mapper.add("EmitterTerritoryCode", "67")
-    mapper.add("ReceiverTerritoryCode", "88")
-    mapper.add("ProductName", "Choux")
-    mapper.add("ProductNomenclature", "Aliments")
-    mapper.add("Quantity@t", 2800)
-    mapper.add("Year", 2023)
-    sidb.load(mapper)  
-
-    mapper = Mapper("Pathflow")
-    mapper.add("EmitterTerritoryCode", "88")
-    mapper.add("ReceiverTerritoryCode", "68")
-    mapper.add("ProductName", "Carottes")
-    mapper.add("ProductNomenclature", "Aliments")
-    mapper.add("Quantity@t", 750)
-    mapper.add("Year", 2023)
-    sidb.load(mapper)  
-
-    mapper = Mapper("Pathflow")
-    mapper.add("EmitterTerritoryCode", "88")
-    mapper.add("ReceiverTerritoryCode", "67")
-    mapper.add("ProductName", "Carottes")
-    mapper.add("ProductNomenclature", "Aliments")
-    mapper.add("Quantity@t", 1200)
-    mapper.add("Year", 2023)
-    sidb.load(mapper)  
-
-    mapper = Mapper("Pathflow")
-    mapper.add("EmitterTerritoryCode", "67")
-    mapper.add("ReceiverTerritoryCode", "68")
-    mapper.add("ProductName", "Carottes")
-    mapper.add("ProductNomenclature", "Aliments")
-    mapper.add("Quantity@t", 1700)
-    mapper.add("Year", 2023)
-    sidb.load(mapper)  
-
-    mapper = Mapper("Pathflow")
-    mapper.add("EmitterTerritoryCode", "68")
-    mapper.add("ReceiverTerritoryCode", "88")
-    mapper.add("ProductName", "Choux")
-    mapper.add("ProductNomenclature", "Aliments")
-    mapper.add("Quantity@t", 2400)
-    mapper.add("Year", 2023)
-    sidb.load(mapper)  
+    for datarow in data:
+        mapper = Mapper("Pathflow")
+        mapper.add("EmitterTerritoryCode", datarow["emitter"])
+        mapper.add("ReceiverTerritoryCode", datarow["receiver"])
+        mapper.add("ProductName", datarow["name"])
+        mapper.add("ProductNomenclature", "Aliments")
+        mapper.add("Quantity@t", datarow["quantity"])
+        mapper.add("Year", 2023)
+        sidb.load(mapper) 
 ```
 
-Les pathflows sont requêtés par les fonction get_exports(), get_imports() et get_internals(). Le modèle territorial
+Les pathflows sont requêtés par les fonctions get_exports(), get_imports() et get_internals(). Le modèle territorial
 permet de travailler à des échelles supérieures.
 
 Exemple :
@@ -376,7 +309,12 @@ with Sidb.connect() as sidb:
     print(f"soit {quantite} tonnes")
 ```
 
+affichera:
 
+    2 flux de Choux exportés par Bas-Rhin ont été requêtés.
+    soit 4100.0 tonnes
+    2 flux de Légumes importés par Alsace ont été requêtés.
+    soit 5200.0 tonnes
 
 
 

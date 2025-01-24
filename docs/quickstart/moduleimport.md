@@ -1,7 +1,7 @@
 # Importation en lot les données de prise en main
 
 Afin de simplifier la prise en main, un package de données et de fichiers d'importations
-est disponible pour la [suite du tutoriel](requesting.md]).
+est disponible pour la [suite du tutoriel](requesting.md).
 
 Télécharger et extraire les données et modules suivants
 dans un dossier spécifique (que nous appellerons `dossier_modules`) : 
@@ -158,5 +158,5 @@ dans différentes unités (t, t.km, nbobs - nombre d'observations).
 Pour les fichiers suivants (immatriculation des véhicules), la logique est la même : on importe la nomenclature adaptée
 avec `cmd_imp_nomenclature_voitures.py`, puis les statistiques associées avec `cmd_imp_voitures.py`.
 
-Dans la section suivante sur les [requêtes de données](../quickstart/requesting.md), nous allons voir
+Dans la section suivante sur les [requêtes de données](requesting.md), nous allons voir
 comment requêter les données chargées.
