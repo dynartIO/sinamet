@@ -18,6 +18,9 @@ from .product import Product
 
 
 class MTQuantifiable(MTObject):
+    """
+    Classe mère des objets quantifiables du modèle de Sinamet : `Gateflow`, `Pathflow`, `Stock`
+    """
     __tablename__ = 'mtquantifiable'
     __mapper_args__ = {
         'polymorphic_identity': __tablename__

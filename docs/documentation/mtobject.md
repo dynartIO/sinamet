@@ -1,3 +1,10 @@
+# Méthodes des MTObject
+
+Tous les objets du modèle (sauf les propriétés) héritent de la classe MTObject, 
+et les objets quantifiables héritent de MTQuantifiables. 
+Les fonctions ci-dessous sont donc accessibles pour tous les objets.
+
+
 ::: mtobjects.mtobject.MTObject
     options:
         show_root_heading: true

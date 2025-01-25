@@ -113,7 +113,8 @@ class Sidb(SidbMTObject,
 
     def load(self, mapper: Mapper, raise_error: bool = True,
              verbose: bool = False) -> None:
-        """Charge un objet dans la base de donnée.
+        """Charge un Mapper vers dans la base de donnée (créé ou met à jour le MTObject
+        correspondant).
 
         Parameters:
             mapper: L'objet `Mapper` contenant les informations de l'objet à charger.
@@ -399,15 +400,17 @@ class Sidb(SidbMTObject,
 
     def progress(self, steps_commit: int = 1000,
                  steps_print: int = 20, commit: bool = True) -> None:
-        """Acte des changements.
-
+        """
         Cette fonction permet de suivre l'importation de données, en affichant
-        la progression dans le shell, et en commitant les transactions.
+        la progression dans le shell (affichage de `+`),
+        et en commitant régulièrement les transactions (tous les `steps_commit`
+        appel).
+        La fonction permet d'éviter de saturer la mémoire sur de grand imports.
 
         Parameters:
             steps_commit: Le nombre d'appel entre chaque commit.
             steps_print: Le nombre d'appel entre chaque affichage dans le shell.
-            commit: Commit ou non.
+            commit: Activer la fonction de commit (défault True)
         """
         if not hasattr(self, "progress_counter"):
             self.progress_counter = 0

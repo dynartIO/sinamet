@@ -33,7 +33,22 @@ if typing.TYPE_CHECKING:
 
 
 class Property(DBObjectClassBase):
-    """Objet Property"""
+    """Objet Property
+
+     Parameters:
+            name: Nome complet de la propriété.
+            value: Valeur de la propriété.
+            item: L'objet lié à la propriété.
+            sourceref: La source de référence de la propriété.
+            date_point: La date ponctuelle de la propriété (si existante).
+            date_start: La date de début de la propriété (si existante).
+            date_end: La date de fin de la propriété (si existante).
+            value_mtobject: La valeur de la propriété si c'est une relation avec un autre MTObject.
+            value_literal: La valeur si c'est un nombre ou du texte.
+            value_geo: La valeur si c'est une forme géographique.
+            context: Dictionnaire complémentaire pour contextualiser la propriété (Optionnel)
+            timestamp: Date d'insertion de la propriété dans la base de données.
+    """
     dictoftypes: dict[str, int] = {key: i for i, key in enumerate([
         'none', 'mtobject', 'string', 'float', 'int', 'point', 'multipoint',
         'polygon', 'multipolygon', 'line', 'multiline'])}
@@ -91,12 +106,11 @@ class Property(DBObjectClassBase):
         Parameters:
             name: Nome complet de la propriété.
             value: Valeur de la propriété.
-            mtobject: L'objet lié à la propriété.
             sourceref: La source de référence de la propriété.
             date_point: La date ponctuelle de la propriété.
             date_start: La date de début de la propriété.
             date_end: La date de fin de la propriété.
-            context: ???
+            context: Dictionnaire complémentaire pour contextualiser la propriété (Optionnel)
 
         Raises:
             ValueError: Quand la valeur est vide.
@@ -148,7 +162,9 @@ class Property(DBObjectClassBase):
 
     def get_value(self) -> (str | int | float | MTObject | Polygon | MultiPolygon |
                             LineString | MultiLineString | Point | MultiPoint):
-        """Renvoie la valeur de la propriété."""
+        """Renvoie la valeur de la propriété.
+        Peut être un litéral (texte, nombre), un MTObject ou une forme géographique
+        """
         value_type = list(Property.dictoftypes.keys())[self.type]
 
         if value_type == "mtobject":

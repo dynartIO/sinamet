@@ -186,8 +186,8 @@ class Mapper():
             year: str | int | None = None,
             month: str | int | None = None,
             source_ref: str | None = None,
-            foreignkey: bool = False,
             primarykey: bool = False,
+            foreignkey: bool = False,
             unique: bool = False,
             ) -> None:
         """Ajoute une propriété au Mapper.
@@ -201,9 +201,9 @@ class Mapper():
             year: L'année de la propriété.
             month: Le mois de la propriété.
             source_ref: La source de référence de la propriété.
-            foreignkey: Clé étrangère.
-            primarykey: Clé primaire.
-            unique: La propriété doit être unique.
+            primarykey: Indique si la propriété est une [clé primaire](../quickstart/indepth.md#cles-primaires-et-etrangeres) (uniquement pour les `Code` ou `Name`)
+            foreignkey: Indique si la propriété est une [clé étrangère](../quickstart/indepth.md#cles-primaires-et-etrangeres) (uniquement pour les `Code` ou `Name`)
+            unique: Vérifie l'unicité de la propriété avant de l'associer au MTObject (En développement).
         """
 
         if primarykey:

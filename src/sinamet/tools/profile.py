@@ -8,6 +8,13 @@ from sinamet.tools.listmtq import (list_flows_to_dataframe,
 
 
 class Profile():
+    """
+    Série de valeurs datées.
+
+    Parameters:
+        times: liste des repères temporels (dates).
+        values: liste des valeurs associées à chaque repère temporel.
+    """
     def __init__(self, times=[], values=[], properties=None):
         if type(times) is not list:
             raise TypeError("Excepted list for 'times' attribute")
@@ -58,8 +65,16 @@ class Profile():
         return Profile(times=tb, values=vb)
 
     @staticmethod
-    def build(lst_qt, unit, freq=None, per_day=True, step_profile=True,
-              defdates=["01/01/1900", "31/12/2100"]):
+    def build(lst_qt, unit, freq=None, per_day=True):
+        """
+        Construire un Profile avec une liste de flux et une unité spécifiée.
+
+        Parameters:
+            lst_qt: List de quantifiables (flux)
+            unit: Unité souhaitée
+            freq:
+            per_day: valeur quotidienne
+        """
         if len(lst_qt) == 0:
             return Profile([], [])
             # return Profile([to_date(d) for d in defdates], [0]*len(defdates))
@@ -72,32 +87,6 @@ class Profile():
         t = eval(lst[1].strip())
         v = eval(lst[2].replace(">>", "").strip())
         return Profile(t, v)
-
-    @staticmethod
-    def to_steppy_values(values):
-        _temp = []
-        for t in values:
-            _temp += [t, t]
-        return _temp[:-1]
-
-    def steppy_values(self):
-        _temp = []
-        for t in self.values:
-            _temp += [t, t]
-        return _temp[:-1]
-
-    @staticmethod
-    def to_steppy_times(times):
-        _temp = []
-        for t in times:
-            _temp += [t, t]
-        return _temp[1:]
-
-    def steppy_times(self):
-        _temp = []
-        for t in self.times:
-            _temp += [t, t]
-        return _temp[1:]
 
     @staticmethod
     def homogeneize(*lst_profiles):
@@ -154,7 +143,17 @@ class Profile():
     @staticmethod
     def get_value(list_flows, unit, start=None, end=None, year=None, month=None):
         """
-        Return (time, val) profile for a liste of quantifiable
+        Renvoie la valeur d'une liste de flux sur la période indiquée.
+        La période est renseignée soit par une date de début et/ou de fin,
+        soit par une année, soit par une année et un mois (de 1 à 12)
+
+        Parameters:
+            list_flows: Liste des flux
+            unit: Unité pour exprimer les flux
+            start: Date de début
+            end: Date de fin
+            year: Année
+            month: Mois
         """
         # CONVERSION LIST FLOW INTO DATAFRAME
         if type(list_flows) is list:
