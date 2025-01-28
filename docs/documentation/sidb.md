@@ -8,10 +8,8 @@ Les objets ne sont pas persistants d'un contexte à l'autre.
 
 ```python
 with Sidb.connect() as sidb:
-    sidb.reset()
+    mon_territoire = sidb.get_territory( ... )
 ```
-
-
 
 ## Récupérer un objet
 
