@@ -1,24 +1,17 @@
-## Se connecter à la base de donnée
+# Sidb
 
-::: sidb.Sidb.connect
-    options:
-        show_root_heading: true
-        show_root_full_path: false
-        heading_level: 3
+Sidb est l'accronyme de Sinamet Database. Il sert d'interface pour les requêtes sur la base de données, 
+notamment pour y récupérer les différents objets à manipuler (Territoires, Acteurs, Flux...).
 
-## Charger des données
+L'utilisation de l'interface Sidb doit se faire à travers un contexte `with` pour la connexion (voir code ci-dessous).
+Les objets ne sont pas persistants d'un contexte à l'autre.
 
-::: sidb.Sidb.load
-    options:
-        show_root_heading: true
-        show_root_full_path: false
-        heading_level: 3
+```python
+with Sidb.connect() as sidb:
+    sidb.reset()
+```
 
-::: sidb.Sidb.progress
-    options:
-        show_root_heading: true
-        show_root_full_path: false
-        heading_level: 3
+
 
 ## Récupérer un objet
 
@@ -237,6 +230,29 @@
         heading_level: 3
 
 ::: sidb.Sidb.reset
+    options:
+        show_root_heading: true
+        show_root_full_path: false
+        heading_level: 3
+
+
+## Charger des données
+
+::: sidb.Sidb.load
+    options:
+        show_root_heading: true
+        show_root_full_path: false
+        heading_level: 3
+
+::: sidb.Sidb.progress
+    options:
+        show_root_heading: true
+        show_root_full_path: false
+        heading_level: 3
+
+## Générateur de contexte
+
+::: sidb.Sidb.connect
     options:
         show_root_heading: true
         show_root_full_path: false
