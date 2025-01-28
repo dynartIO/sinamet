@@ -18,7 +18,7 @@ Ce package permet l'injection des données suivantes :
     * Nomenclature pour les Statistiques de transport
 * **Package `demo_sitram`**
     * Les statistiques sur le transport de marchandises entre départements entre 
-2009 et 2018
+2015 et 2018
 * **Package `demo_immatriculation_vehicules`**
     * Une nomenclature des véhicules particuliers
     * Les immatriculations des voitures particulières neuves par département entre
@@ -29,9 +29,11 @@ Ce package permet l'injection des données suivantes :
 Avant de charger les données, il est nécessaire de réinitialiser la base de données.
 Pour cela, il suffit d'exécuter les lignes suivantes :
 
-    from sinamet import Sidb
-    with Sidb.connect() as sidb:
-        sidb.reset()
+```python
+from sinamet import Sidb
+with Sidb.connect() as sidb:
+    sidb.reset()
+```
 
 Ensuite, pour charger les données, il suffit d'exécuter les scripts suivants dans l'ordre :
     
@@ -46,7 +48,7 @@ Ensuite, pour charger les données, il suffit d'exécuter les scripts suivants d
     demo_immatriculation_vehicules/cmd_imp_voitures.py
 
 
-\* *Ce fichier peut être particulièrement long à exécuter selon performances de l'ordinateur : ~ 30 min*
+\* *Ce fichier peut être particulièrement long à exécuter selon performances de l'ordinateur : ~ 10 min*
 
 L'objectif de Sinamet est de permettre la mise en cohérence de différents jeux de données de provenances multiples.
 Certains jeux de données peuvent être dépendants d'autres, par exemple les départements nécessitent 

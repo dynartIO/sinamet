@@ -32,6 +32,10 @@ if typing.TYPE_CHECKING:
 class MTObject(DBObjectClassBase):
     """
     Classe mère des objets du modèle de Sinamet : `Territory`, `Actor`, `Product`, `Gateflow`, `Pathflow`, `Stock`
+
+    Parameters:
+        properties: Liste des propriétés de l'objet
+        type: type d'objet (parmis `territory`, `actor`, `product`, `gateflow`, `pathflow`, `stock`)
     """
     __tablename__ = 'mtobject'
 

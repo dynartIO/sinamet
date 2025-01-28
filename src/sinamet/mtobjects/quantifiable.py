@@ -20,6 +20,15 @@ from .product import Product
 class MTQuantifiable(MTObject):
     """
     Classe mère des objets quantifiables du modèle de Sinamet : `Gateflow`, `Pathflow`, `Stock`
+
+    Parameters:
+        properties: Liste des propriétés de l'objet
+        type: type d'objet (parmis `gateflow`, `pathflow`, `stock`)
+        product: Produit associé à l'élément quantifiable
+        quantity: Dictionnaire de la quantité dans différentes unités
+        date_start : Repère temporel (Début) de l'élément quantifiable
+        date_end: Repère temporel (Fin) de l'élément quantifiable
+        date_point: Repère temporel (Date ponctuelle) de l'élément quantifiable
     """
     __tablename__ = 'mtquantifiable'
     __mapper_args__ = {
