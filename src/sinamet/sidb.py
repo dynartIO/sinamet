@@ -478,7 +478,6 @@ class Sidb:
                                      'warn_first',
                                      ] = 'warn_list',
                       verbose: bool = False,
-                      deep_verbose: bool = False,
                       **kwargs
                       ) -> Territory | int | Select | None:
         """Trouve un territoire.
@@ -509,7 +508,6 @@ class Sidb:
                  * `list`: Renvoie la liste des éléments correspondants.
                  * `first`: Renvoie le premier élément correspondant.
             verbose: Si True, est bavard.
-            deep_verbose: Si True, est plus bavard.
 
         Returns:
             (Territory): L'object trouvé.
@@ -531,7 +529,6 @@ class Sidb:
                                      raise_none=raise_none,
                                      multi=multi,
                                      verbose=verbose,
-                                     deep_verbose=deep_verbose,
                                      **kwargs)
 
     def get_territories(self,
@@ -550,7 +547,6 @@ class Sidb:
                                              ] = 'list',
                         cache_properties: list[str] = [],
                         verbose: bool = False,
-                        deep_verbose: bool = False
                         ) -> list[Territory] | list[int] | int | Select:
         """ Trouve plusieurs territoires.
 
@@ -569,7 +565,6 @@ class Sidb:
                 * `count`: Nombre d'éléments correspondants.
             cache_properties: Liste de propriétés à mettre en cache.
             verbose: Si True, est bavard.
-            deep_verbose: Si True, est plus bavard.
 
         Returns:
             (list[Territory]): Liste des territoires recherchés.
@@ -591,8 +586,7 @@ class Sidb:
                                       map_id=map_id,
                                       return_type=return_type,
                                       cache_properties=cache_properties,
-                                      verbose=verbose,
-                                      deep_verbose=deep_verbose)
+                                      verbose=verbose)
 
     def get_territories_in(self,
                            territory: Territory,
@@ -814,7 +808,6 @@ class Sidb:
                                  'warn_first',
                                  ] = 'warn_list',
                   verbose: bool = False,
-                  deep_verbose: bool = False,
                   **kwargs
                   ) -> Actor | int | Select | None:
         """Trouve un acteur.
@@ -845,7 +838,6 @@ class Sidb:
                  * `list`: Renvoie la liste des éléments correspondants.
                  * `first`: Renvoie le premier élément correspondant.
             verbose: Si True, est bavard.
-            deep_verbose: Si True, est plus bavard.
 
         Returns:
             (Actor): L'object trouvé.
@@ -866,7 +858,6 @@ class Sidb:
                                      raise_none=raise_none,
                                      multi=multi,
                                      verbose=verbose,
-                                     deep_verbose=deep_verbose,
                                      **kwargs)
 
     def get_actors(self,
@@ -885,7 +876,6 @@ class Sidb:
                                         ] = 'list',
                    cache_properties: list[str] = [],
                    verbose: bool = False,
-                   deep_verbose: bool = False
                    ) -> list[Actor] | list[int] | int | Select:
         """Trouve plusieurs acteurs.
 
@@ -908,7 +898,6 @@ class Sidb:
                 * `count`: Nombre d'éléments correspondants.
             cache_properties: Liste de propriétés à mettre en cache.
             verbose: Si True, est bavard.
-            deep_verbose: Si True, est plus bavard.
 
         Returns:
             (list[Actor]): Liste des acteurs recherchés.
@@ -927,8 +916,7 @@ class Sidb:
                                       map_id=map_id,
                                       return_type=return_type,
                                       cache_properties=cache_properties,
-                                      verbose=verbose,
-                                      deep_verbose=deep_verbose)
+                                      verbose=verbose)
 
     def get_actors_in(self,
                       mtobject: Actor | Territory,
@@ -1194,7 +1182,6 @@ class Sidb:
                                    'warn_first',
                                    ] = 'warn_list',
                     verbose: bool = False,
-                    deep_verbose: bool = False,
                     **kwargs
                     ) -> Product | int | Select | None:
         """Trouve un produit.
@@ -1222,7 +1209,6 @@ class Sidb:
                  * `list`: Renvoie la liste des éléments correspondants.
                  * `first`: Renvoie le premier élément correspondant.
             verbose: Si True, décrit le déroulement de la fonction dans le shell.
-            deep_verbose: Si True, décrit le déroulement des fonctions appelées dans le shell.
 
         Returns:
             (Product): L'object trouvé (ou une liste si multi=list)
@@ -1247,7 +1233,6 @@ class Sidb:
                                      raise_none=raise_none,
                                      multi=multi,
                                      verbose=verbose,
-                                     deep_verbose=deep_verbose,
                                      **kwargs)
 
     def get_products(self,
@@ -1267,7 +1252,6 @@ class Sidb:
                      cache_properties: list[str] = [],
                      nomenclature: str | None = None,
                      verbose: bool = False,
-                     deep_verbose: bool = False
                      ) -> list[Product] | list[int] | int | Select:
         """Trouve plusieurs produits.
 
@@ -1288,7 +1272,6 @@ class Sidb:
                 en plus des noms et des codes.
             nomenclature: Nom de la nomenclature des produits recherchés.
             verbose: Si True, est bavard.
-            deep_verbose: Si True, est plus bavard.
 
         Returns:
             (list[Product]): Liste des produits recherchés.
@@ -1308,8 +1291,7 @@ class Sidb:
                                       return_type=return_type,
                                       cache_properties=cache_properties,
                                       nomenclature=nomenclature,
-                                      verbose=verbose,
-                                      deep_verbose=deep_verbose)
+                                      verbose=verbose)
 
     def get_products_by_ids(self,
                             ids: list[int] | int,
@@ -1441,7 +1423,6 @@ class Sidb:
                                               'count',
                                               ] = "list",
                          verbose: bool = False,
-                         deep_verbose: bool = False
                          ) -> list[Product] | list[int] | int | Select:
         """Trouve des produits par nomenclature.
 
@@ -1457,7 +1438,6 @@ class Sidb:
                 * `queryid` ou `qid`: La requète des identifiants des objects.
                 * `count`: Nombre d'éléments correspondants.
             verbose: Si True, décrit le déroulement de la fonction dans le shell.
-            deep_verbose: Si True, décrit le déroulement des fonctions appelées dans le shell.
 
         Returns:
             (list[Product]): Liste des produits recherchés.
@@ -1468,10 +1448,10 @@ class Sidb:
         return self.get_mtobjects_tap(Product,
                                       "Nomenclature",
                                       nomenclature,
+                                      return_type=return_type,
                                       cache_properties=cache_properties,
                                       nomenclature=nomenclature,
-                                      verbose=verbose,
-                                      deep_verbose=deep_verbose)
+                                      verbose=verbose)
 
     def get_products_in_conversion(self,
                                    product: Product | Iterable[Product],
@@ -2181,7 +2161,6 @@ class Sidb:
                                         'list'] = "warn_list",
                          nomenclature: str | None = None,
                          verbose: bool = False,
-                         deep_verbose: bool = False,
                          **kwargs
                          ) -> Territory | Actor | Product | int | Select | None:
 
@@ -2292,7 +2271,6 @@ class Sidb:
                           cache_properties: list[str] = [],
                           nomenclature: str | None = None,
                           verbose: bool = False,
-                          deep_verbose: bool = False
                           ) -> (list[Territory] | list[Actor] | list[Product] |
                                 list[int] | Select | int):
         if mtobject_class not in [Actor, Territory, Product]:
