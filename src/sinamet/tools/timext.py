@@ -1,5 +1,6 @@
+from datetime import datetime, date, timedelta
+
 import pandas
-import datetime
 
 
 def full_date_range(start, end, freq):
@@ -52,31 +53,31 @@ def common_nb_days(start1, end1, start2, end2):
     return _return
 
 
-def to_date(date: str | datetime.datetime | datetime.date) -> datetime.date | None:
-    if date is None:
+def to_date(d: str | datetime | date | None) -> date | None:
+    if d is None:
         return None
 
-    if isinstance(date, str):
+    if isinstance(d, str):
         try:
-            return datetime.datetime.strptime(date, "%d/%m/%Y").date()
+            return datetime.strptime(d, "%d/%m/%Y").date()
         except ValueError:
             try:
-                return datetime.datetime.strptime(date, "%Y-%m-%d").date()
+                return datetime.strptime(d, "%Y-%m-%d").date()
             except ValueError:
                 raise ValueError(f"Invalid date format: '{date}'")
-    elif isinstance(date, datetime.datetime):
-        return date.date()
-    elif isinstance(date, datetime.date):
-        return date
+    elif isinstance(d, datetime):
+        return d.date()
+    elif isinstance(d, date):
+        return d
     else:
         raise TypeError(f"Unknown date type: '{type(date)=}'")
 
 
-def get_start_end_dates(start: str | datetime.datetime | datetime.date = None,
-                        end: str | datetime.datetime | datetime.date = None,
-                        year: int | str = None,
-                        month: int | str = None
-                        ) -> tuple[datetime.date, datetime.date]:
+def get_start_end_dates(start: str | datetime | date | None = None,
+                        end: str | datetime | date | None = None,
+                        year: int | str | None = None,
+                        month: int | str | None = None
+                        ) -> tuple[date, date]:
     """
         - start => start -- date.max
         - end => date.min -- end
@@ -95,24 +96,24 @@ def get_start_end_dates(start: str | datetime.datetime | datetime.date = None,
                              " or an end.")
         if isinstance(year, str):
             year = int(year)
-        start = datetime.date(year, 1, 1)
-        end = datetime.date(year, 12, 31)
+        start = date(year, 1, 1)
+        end = date(year, 12, 31)
         if month is not None:
             if isinstance(month, str):
                 month = int(month)
             start = start.replace(month=month)
-            end = (datetime.date(year + (month == 12), month % 12 + 1, 1)
-                   - datetime.timedelta(days=1))
+            end = (date(year + (month == 12), month % 12 + 1, 1)
+                   - timedelta(days=1))
     if not start:
-        start = datetime.date.min
+        start = date.min
     if not end:
-        end = datetime.date.max
+        end = date.max
     return start, end
 
 
 def timedelta_coefficient(start1, end1, start2, end2):
-    timedelta1 = (end1 - start1 + datetime.timedelta(days=1)).days
-    timedelta2 = (end2 - start2 + datetime.timedelta(days=1)).days
+    timedelta1 = (end1 - start1 + timedelta(days=1)).days
+    timedelta2 = (end2 - start2 + timedelta(days=1)).days
     return (float(timedelta2) / float(timedelta1))
 
 
@@ -128,11 +129,13 @@ def get_month_name(num, lang='fr'):
     return get_month_list(lang=lang)[num-1]
 
 
-def to_jstimestamp(mydatetime):
+def to_jstimestamp(mydatetime: str | datetime | date | None) -> float | None:
     mydatetime = to_date(mydatetime)
-    timestamp_start = (datetime.datetime.combine(to_date(mydatetime), datetime.datetime.min.time())
-                       - datetime.datetime(1970, 1, 1)) / datetime.timedelta(seconds=1)
+    if not mydatetime:
+        return None
+
+    timestamp_start = (datetime.combine(mydatetime, datetime.min.time())
+                       - datetime(1970, 1, 1)) / timedelta(seconds=1)
     return int(timestamp_start) * 1e3  # Multiply by 1e3 as JS timestamp is in milliseconds
 
 # MS = mois ; AS = an ; W = semaine ; D = jour
-
