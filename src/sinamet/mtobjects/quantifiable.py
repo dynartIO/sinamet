@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from typing import Optional
 from typing import Literal
 
 from datetime import date
@@ -38,10 +37,10 @@ class MTQuantifiable(MTObject):
     id: Mapped[int] = mapped_column(ForeignKey('mtobject.id', ondelete='CASCADE'),
                                     primary_key=True)
 
-    product_id: Mapped[Optional[int]] = mapped_column(ForeignKey('product.id'))
-    product: Mapped[Optional[Product]] = relationship(foreign_keys=product_id)
+    product_id: Mapped[int | None] = mapped_column(ForeignKey('product.id'))
+    product: Mapped[Product | None] = relationship(foreign_keys=product_id)
 
-    date_point: Mapped[Optional[date]]
+    date_point: Mapped[date | None]
 
     quantity: Mapped[PickleType] = mapped_column(PickleType)
 

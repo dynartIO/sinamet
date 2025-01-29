@@ -1,5 +1,3 @@
-from typing import Optional
-
 from sqlalchemy import ForeignKey
 from sqlalchemy import String
 from sqlalchemy.orm import Mapped
@@ -17,11 +15,11 @@ class Gateflow(MTQuantifiable):
     id: Mapped[int] = mapped_column(ForeignKey('mtquantifiable.id', ondelete='CASCADE'),
                                     primary_key=True)
 
-    actor_id: Mapped[Optional[int]] = mapped_column(ForeignKey('actor.id'))
-    actor: Mapped[Optional[Actor]] = relationship(foreign_keys=actor_id)
+    actor_id: Mapped[int | None] = mapped_column(ForeignKey('actor.id'))
+    actor: Mapped[Actor | None] = relationship(foreign_keys=actor_id)
 
-    territory_id: Mapped[Optional[int]] = mapped_column(ForeignKey('territory.id'))
-    territory: Mapped[Optional[Territory]] = relationship(foreign_keys=territory_id)
+    territory_id: Mapped[int | None] = mapped_column(ForeignKey('territory.id'))
+    territory: Mapped[Territory | None] = relationship(foreign_keys=territory_id)
 
     flowtype: Mapped[str] = mapped_column(String(50))
 

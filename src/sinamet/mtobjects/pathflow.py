@@ -1,5 +1,3 @@
-from typing import Optional
-
 from sqlalchemy.schema import ForeignKey
 from sqlalchemy.orm import Mapped
 from sqlalchemy.orm import mapped_column
@@ -17,17 +15,17 @@ class Pathflow(MTQuantifiable):
     id: Mapped[int] = mapped_column(ForeignKey('mtquantifiable.id', ondelete='CASCADE'),
                                     primary_key=True)
 
-    emitter_actor_id: Mapped[Optional[int]] = mapped_column(ForeignKey('actor.id'))
-    emitter_actor: Mapped[Optional[Actor]] = relationship(foreign_keys=emitter_actor_id)
+    emitter_actor_id: Mapped[int | None] = mapped_column(ForeignKey('actor.id'))
+    emitter_actor: Mapped[Actor | None] = relationship(foreign_keys=emitter_actor_id)
 
-    emitter_territory_id: Mapped[Optional[int]] = mapped_column(ForeignKey('territory.id'))
-    emitter_territory: Mapped[Optional[Territory]] = relationship(foreign_keys=emitter_territory_id)
+    emitter_territory_id: Mapped[int | None] = mapped_column(ForeignKey('territory.id'))
+    emitter_territory: Mapped[Territory | None] = relationship(foreign_keys=emitter_territory_id)
 
-    receiver_actor_id: Mapped[Optional[int]] = mapped_column(ForeignKey('actor.id'))
-    receiver_actor: Mapped[Optional[Actor]] = relationship(foreign_keys=receiver_actor_id)
+    receiver_actor_id: Mapped[int | None] = mapped_column(ForeignKey('actor.id'))
+    receiver_actor: Mapped[Actor | None] = relationship(foreign_keys=receiver_actor_id)
 
-    receiver_territory_id: Mapped[Optional[int]] = mapped_column(ForeignKey('territory.id'))
-    receiver_territory: Mapped[Optional[Territory]] = relationship(foreign_keys=receiver_territory_id)
+    receiver_territory_id: Mapped[int | None] = mapped_column(ForeignKey('territory.id'))
+    receiver_territory: Mapped[Territory | None] = relationship(foreign_keys=receiver_territory_id)
 
     __mapper_args__ = {
         'polymorphic_identity': 'pathflow',

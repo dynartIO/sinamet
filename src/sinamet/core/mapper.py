@@ -8,7 +8,7 @@ import warnings
 from sinamet.tools.timext import get_start_end_dates, to_date
 
 if typing.TYPE_CHECKING:
-    from datetime import date
+    from datetime import date, datetime
     from shapely import Geometry
     from sinamet.mtobjects.mtobject import MTObject
 
@@ -16,12 +16,12 @@ if typing.TYPE_CHECKING:
 class Mapper():
     def __init__(self,
                  type: str,
-                 sourceref: str | None = None):
+                 source_ref: str | None = None):
         """Constructeur du Mapper.
 
         Parameters:
             type: Le type d'objet lié au Mapper (Territory, Actor, ...)
-            sourceref: La source de référence de l'objet.
+            source_ref: La source de référence de l'objet.
         """
         self.type = type.lower()
 
@@ -30,25 +30,18 @@ class Mapper():
         self.date_start = []
         self.date_end = []
         self.date_point = []
-        self.sourcerefs = []
-        self.foreignkeys = []
+        self.source_refs = []
+        self.foreign_keys = []
+        self.primary_keys = []
         self.unique = []
-        self.primarykeys = []
 
         self.primary_key = -1
-        self.all_srcref = None
-
-        if sourceref is None:
-            warnings.warn("It is advised to indicate a source reference (source_ref). Consider using the name "
-                          "of your dataset or '_'.")
-            self.all_srcref = "_"
-        else:
-            self.all_srcref = sourceref
+        self.all_srcref = source_ref
 
     def __str__(self) -> str:
         st = "MAPPER : Type " + self.type + " ------------\n"
         for key, val, ds, de, dp, src in zip(self.keys, self.values, self.date_start, self.date_end,
-                                             self.date_point, self.sourcerefs):
+                                             self.date_point, self.source_refs):
             st += key + " --> " + str(val)
 
             if ds is not None or de is not None:
@@ -106,7 +99,7 @@ class Mapper():
                 - `date_end`: Date de fin de la propriété.
                 - `date_point`: Date de la propriété.
                 - `unique`: Si la propriété, doit être unique pour l'objet.
-                - `sourceref`: La source de référence de la propriété.
+                - `source_ref`: La source de référence de la propriété.
         """
         dic = {}
         dic["key"] = self.keys[index]
@@ -116,12 +109,12 @@ class Mapper():
         dic["date_end"] = self.date_end[index]
         dic["date_point"] = self.date_point[index]
         dic["unique"] = self.unique[index]
-        if self.sourcerefs[index] is not None:
-            dic["sourceref"] = self.sourcerefs[index]
+        if self.source_refs[index] is not None:
+            dic["source_ref"] = self.source_refs[index]
         elif self.all_srcref is not None:
-            dic["sourceref"] = self.all_srcref
+            dic["source_ref"] = self.all_srcref
         else:
-            dic["sourceref"] = None
+            dic["source_ref"] = None
         return dic
 
     def get(self,
@@ -180,14 +173,14 @@ class Mapper():
 
     def add(self, key: str,
             value: str | MTObject | Geometry,
-            date_point: str | date | None = None,
-            date_start: str | date | None = None,
-            date_end: str | date | None = None,
+            date_point: str | date | datetime | None = None,
+            date_start: str | date | datetime | None = None,
+            date_end: str | date | datetime | None = None,
             year: str | int | None = None,
             month: str | int | None = None,
             source_ref: str | None = None,
-            primarykey: bool = False,
-            foreignkey: bool = False,
+            primary_key: bool = False,
+            foreign_key: bool = False,
             unique: bool = False,
             ) -> None:
         """Ajoute une propriété au Mapper.
@@ -201,27 +194,24 @@ class Mapper():
             year: L'année de la propriété.
             month: Le mois de la propriété.
             source_ref: La source de référence de la propriété.
-            primarykey: Indique si la propriété est une [clé primaire](../quickstart/indepth.md#cles-primaires-et-etrangeres) (uniquement pour les `Code` ou `Name`)
-            foreignkey: Indique si la propriété est une [clé étrangère](../quickstart/indepth.md#cles-primaires-et-etrangeres) (uniquement pour les `Code` ou `Name`)
+            primary_key: Indique si la propriété est une [clé primaire](../quickstart/indepth.md#cles-primaires-et-etrangeres) (uniquement pour les `Code` ou `Name`)
+            foreign_key: Indique si la propriété est une [clé étrangère](../quickstart/indepth.md#cles-primaires-et-etrangeres) (uniquement pour les `Code` ou `Name`)
             unique: Vérifie l'unicité de la propriété avant de l'associer au MTObject (En développement).
         """
-
-        if primarykey:
-            if not (key.startswith("Code") or key.startswith("Name")):
-                raise ValueError("primarykey can only be associated with Code or Name")
         # To depreciate
         if key == "SourceRef":
             raise ValueError("SourceRef is not an available key at the moment.")
 
-        if key.startswith("Primary:") or primarykey:
-            if key.startswith("Primary:"):
-                warnings.warn("Deprecated use of 'Primary:' in direct Mapper args name."
-                              " Use attribute 'primarykey=' instead")
-            primarykey = True
-            self.primary_key = len(self)
-            key = key.replace("Primary:", "")
+        if primary_key and not key.startswith(('Code', 'Name')):
+            raise ValueError("`primary_key` can only be associated with Code or Name")
 
-        self.foreignkeys.append(foreignkey)
+        if key.startswith("Primary:") or primary_key:
+            if key.startswith("Primary:"):
+                key = key.replace("Primary:", "", 1)
+                warnings.warn("Deprecated use of 'Primary:' in direct Mapper args name."
+                              " Use attribute 'primary_key=' instead")
+                primary_key = True
+            self.primary_key = len(self)
 
         date_point = to_date(date_point)
         start_n, end_n = get_start_end_dates(start=date_start, end=date_end,
@@ -237,13 +227,14 @@ class Mapper():
         self.date_start.append(start_n)
         self.date_end.append(end_n)
         self.date_point.append(date_point)
-        self.sourcerefs.append(source_ref)
+        self.source_refs.append(source_ref)
         self.unique.append(unique)
-        self.primarykeys.append(primarykey)
+        self.primary_keys.append(primary_key)
+        self.foreign_keys.append(foreign_key)
 
     def is_foreign_key(self, keyindex: int) -> bool:
         """Détermine si la propriété à un certain index est une clé étrangére."""
-        return self.foreignkeys[keyindex]
+        return self.foreign_keys[keyindex]
 
     def is_primary_key(self, keyindex: int) -> bool:
         """Détermine si la propriété à un certain index est une clé primaire."""

@@ -1,8 +1,6 @@
 from __future__ import annotations
 import typing
-from typing import Optional
 
-import warnings
 from datetime import datetime, date
 
 import numpy
@@ -35,11 +33,9 @@ if typing.TYPE_CHECKING:
 class Property(DBObjectClassBase):
     """Objet Property
 
-     Parameters:
-            name: Nome complet de la propriété.
-            value: Valeur de la propriété.
+     Attributes:
             item: L'objet lié à la propriété.
-            sourceref: La source de référence de la propriété.
+            source_ref: La source de référence de la propriété.
             date_point: La date ponctuelle de la propriété (si existante).
             date_start: La date de début de la propriété (si existante).
             date_end: La date de fin de la propriété (si existante).
@@ -56,33 +52,33 @@ class Property(DBObjectClassBase):
     __tablename__ = 'property'
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    type: Mapped[Optional[int]]
+    type: Mapped[int | None]
     name_a: Mapped[str] = mapped_column(index=True)
-    name_b: Mapped[Optional[str]] = mapped_column(index=True)
+    name_b: Mapped[str | None] = mapped_column(index=True)
 
     item_id: Mapped[int] = mapped_column(ForeignKey('mtobject.id', ondelete="CASCADE"),
                                          index=True)
     item: Mapped[MTObject] = relationship(back_populates="properties",
                                           foreign_keys=item_id)
 
-    value_mtobject_id: Mapped[Optional[int]] = mapped_column(
+    value_mtobject_id: Mapped[int | None] = mapped_column(
             ForeignKey('mtobject.id', ondelete="CASCADE"),
             index=True
             )
-    value_mtobject: Mapped[Optional[MTObject]] = relationship(back_populates="property_values",
-                                                              foreign_keys=value_mtobject_id)
+    value_mtobject: Mapped[MTObject | None] = relationship(back_populates="property_values",
+                                                           foreign_keys=value_mtobject_id)
 
-    value_literal: Mapped[Optional[str]] = mapped_column(index=True)
-    value_geo: Mapped[Optional[Geometry]] = mapped_column(Geometry)
+    value_literal: Mapped[str | None] = mapped_column(index=True)
+    value_geo: Mapped[Geometry | None] = mapped_column(Geometry)
 
-    sourceref: Mapped[str] = mapped_column(index=True)
+    source_ref: Mapped[str | None] = mapped_column(index=True)
 
     # datalinker_id = Column(Integer, ForeignKey('datalinker.id'))
     # datalinker = relationship("DataLinker", back_populates="attributes")
 
-    date_start: Mapped[Optional[date]]
-    date_end: Mapped[Optional[date]]
-    date_point: Mapped[Optional[date]]
+    date_start: Mapped[date | None]
+    date_end: Mapped[date | None]
+    date_point: Mapped[date | None]
 
     # overwrite_id = Column(Integer, ForeignKey('property.id'))
     # overwrite = relationship("Property", remote_side=[id])
@@ -96,7 +92,7 @@ class Property(DBObjectClassBase):
                  value: (str | int | float | MTObject | Polygon | MultiPolygon |
                          LineString | MultiLineString | Point | MultiPoint |
                          numpy.number),
-                 sourceref: str,
+                 source_ref: str | None = None,
                  date_point: str | date | None = None,
                  date_start: str | date | None = None,
                  date_end: str | date | None = None,
@@ -106,7 +102,7 @@ class Property(DBObjectClassBase):
         Parameters:
             name: Nome complet de la propriété.
             value: Valeur de la propriété.
-            sourceref: La source de référence de la propriété.
+            source_ref: La source de référence de la propriété.
             date_point: La date ponctuelle de la propriété.
             date_start: La date de début de la propriété.
             date_end: La date de fin de la propriété.
@@ -128,22 +124,19 @@ class Property(DBObjectClassBase):
         self.type = Property.dictoftypes[value_type]
         # modification de la variable adaptée
         if value_type == "mtobject":
-            self.value_mtobject_id = value.id
+            self.value_mtobject_id = value.id  # pyright: ignore
         elif value_type == "string":
-            self.value_literal = value
+            self.value_literal = value  # pyright: ignore
         elif value_type == "float" or value_type == "int":
             self.value_literal = str(value)
         elif value_type == 'point' or value_type == 'multipoint' or \
                 value_type == 'polygon' or value_type == 'multipolygon' or \
                 value_type == 'line' or value_type == 'multiline':
-            self.value_geo = from_shape(value)
+            self.value_geo = from_shape(value)  # pyright: ignore
         else:
             raise TypeError(f"Invalid Property type {type(value)=}")
 
-        if not sourceref:
-            sourceref = '_'
-
-        self.sourceref = sourceref
+        self.source_ref = source_ref
         self.date_start = to_date(date_start)
         self.date_end = to_date(date_end)
         self.date_point = to_date(date_point)
@@ -218,13 +211,13 @@ class Property(DBObjectClassBase):
                           "->" + str(self.date_end) + "]"
         return _return_str
 
-    def get_sourceref_str(self) -> str:
+    def get_source_ref_str(self) -> str | None:
         """Renvoie la source de référence de la propriété."""
-        return self.sourceref
+        return self.source_ref
 
     def __str__(self) -> str:
         return (f'{self.get_name()} ({self.get_type()}) - {self.get_value_str()}'
-                f' - {self.get_datetime_str()} - {self.get_sourceref_str()}')
+                f' - {self.get_datetime_str()} - {self.get_source_ref_str()}')
 
     def __repr__(self) -> str:
         return f"<Property:{self.name_a}>"

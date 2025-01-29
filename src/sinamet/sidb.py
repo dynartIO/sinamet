@@ -1,36 +1,33 @@
 from __future__ import annotations
 
-import warnings
-
-from typing import Literal, Any, TypeVar
-
-from datetime import date
-
 from collections.abc import Iterable, Iterator
 
 from contextlib import contextmanager
 
+from datetime import date
+
+from typing import Any, Literal, TypeVar
+
+import warnings
+
 from sqlalchemy import create_engine
 from sqlalchemy.orm import aliased
-from sqlalchemy.orm.session import sessionmaker, Session, object_session
 from sqlalchemy.orm.exc import UnmappedInstanceError
-from sqlalchemy.sql import select, or_, and_, delete, func, Select
-
-from sinamet.errors import SidbMultiFoundError, SidbNotFoundError
+from sqlalchemy.orm.session import Session, object_session, sessionmaker
+from sqlalchemy.sql import Select, and_, delete, func, or_, select
 
 from sinamet.core.config import config
 from sinamet.core.mapper import Mapper, MapperError
-
-from sinamet.mtobjects.dbobject import DBObjectClassBase
-from sinamet.mtobjects.mtobject import MTObject
-from sinamet.mtobjects.property import Property
-from sinamet.mtobjects.territory import Territory
+from sinamet.errors import SidbMultiFoundError, SidbNotFoundError
 from sinamet.mtobjects.actor import Actor
-from sinamet.mtobjects.product import Product
-from sinamet.mtobjects.pathflow import Pathflow
+from sinamet.mtobjects.dbobject import DBObjectClassBase
 from sinamet.mtobjects.gateflow import Gateflow
+from sinamet.mtobjects.mtobject import MTObject
+from sinamet.mtobjects.pathflow import Pathflow
+from sinamet.mtobjects.product import Product
+from sinamet.mtobjects.property import Property
 from sinamet.mtobjects.stock import Stock
-
+from sinamet.mtobjects.territory import Territory
 from sinamet.tools.timext import get_start_end_dates, to_date
 
 
@@ -155,18 +152,18 @@ class Sidb:
 
         self.session.delete(obj)
 
-    def delete_sourceref(self,
-                         sourceref: str,
-                         exclude: str | list[str] = [],
-                         recursive: bool = False) -> None:
+    def delete_source_ref(self,
+                          source_ref: str,
+                          exclude: str | Iterable[str] = [],
+                          recursive: bool = False) -> None:
         """Supprime une source de référence.
 
         Supprime une source de référence en supprimant les propriétés qui lui sont liées.
 
         Parameters:
-            sourceref: La source de référence à supprimer.
+            source_ref: La source de référence à supprimer.
             exclude: Liste de noms de propriétés à ne pas supprimer.
-            recursive: Si `True`, supprime également les sources enfants de `sourceref`.
+            recursive: Si `True`, supprime également les sources enfants de `source_ref`.
         """
         if isinstance(exclude, str):
             exclude = (exclude,)
@@ -174,12 +171,12 @@ class Sidb:
         delete_stmt = delete(Property).where(Property.name_a.not_in(exclude))
         if recursive:
             delete_stmt = delete_stmt.where(
-                    (Property.sourceref.startswith(f'{sourceref}:'))
-                    | (Property.sourceref == sourceref)
+                    (Property.source_ref.startswith(f'{source_ref}:'))
+                    | (Property.source_ref == source_ref)
             )
         else:
             delete_stmt = delete_stmt.where(
-                    Property.sourceref == sourceref
+                    Property.source_ref == source_ref
             )
         self.session.execute(delete_stmt)
 
@@ -189,7 +186,7 @@ class Sidb:
                 .where(~MTObject.properties.any())
         )
 
-    def get_sourcerefs(self, subinclude: bool = True) -> list[str]:
+    def get_source_refs(self, subinclude: bool = True) -> list[str]:
         """Renvoie toutes les sources des propriétés enregistrées.
 
         Parameters:
@@ -200,7 +197,7 @@ class Sidb:
             La liste des sources des propriétés.
         """
         src_lst = self.session.scalars(
-                select(Property.sourceref).distinct()
+                select(Property.source_ref).distinct()
                 ).all()
         if not subinclude:
             return sorted(src_lst)
@@ -245,20 +242,20 @@ class Sidb:
                            & (Property.value_literal == sc)))
             stats["nb-scale-" + sc.lower()] = self.session.scalar(stmt)
 
-        stats["sourcerefs"] = self.get_sourcerefs(False)
-        stats["propertyname"] = [f"{a}{'' if b is None else f'@{b}'}"
-                                 for a, b in self.session.execute(
-                                     select(Property.name_a, Property.name_b)
-                                     .distinct()
-                                     ).all()
-                                 ]
-        stats["sourcerefname"] = self.session.scalars(
-                select(Property.sourceref).distinct()
+        stats["source_refs"] = self.get_source_refs(False)
+        stats["property_name"] = [f"{a}{'' if b is None else f'@{b}'}"
+                                  for a, b in self.session.execute(
+                                      select(Property.name_a, Property.name_b)
+                                      .distinct()
+                                      ).all()
+                                  ]
+        stats["source_ref_name"] = self.session.scalars(
+                select(Property.source_ref).distinct()
                 ).all()
         return stats
 
     def get_properties(self, properties: Iterable[str] | str,
-                       map_id: Select | list[int] = None,
+                       map_id: Select | list[int] | None = None,
                        startlike: bool = False,
                        return_type: str = 'list') -> list[Property]:
         """Charge et renvoie les propriétés correspondantes.
@@ -370,29 +367,29 @@ class Sidb:
         )
         return result.all()
 
-    def is_loaded(self, sourceref: str) -> bool:
+    def is_loaded(self, source_ref: str) -> bool:
         """Détermine si une source est chargée.
 
         Parameters:
-            sourceref: Le nom de la source à vérifier.
+            source_ref: Le nom de la source à vérifier.
 
         Returns:
             `True` si la source est déjà chargée dans la base de donnée,
                 `False` sinon.
         """
-        return sourceref in self.get_sourcerefs(False)
+        return source_ref in self.get_source_refs(False)
 
-    def is_not_loaded(self, sourceref: str) -> bool:
+    def is_not_loaded(self, source_ref: str) -> bool:
         """Détermine si une source n'est pas chargée.
 
         Parameters:
-            sourceref: Le nom de la source à vérifier.
+            source_ref: Le nom de la source à vérifier.
 
         Returns:
             `True` si la source n'est pas chargée dans la base de donnée,
                 `False` sinon.
         """
-        return sourceref not in self.get_sourcerefs(False)
+        return source_ref not in self.get_source_refs(False)
 
     def progress(self, steps_commit: int = 1000,
                  steps_print: int = 20, commit: bool = True) -> None:
@@ -584,7 +581,7 @@ class Sidb:
             ValueError: Paramètres invalides.
 
         FutureDev:
-            Ajouter l'option "sourceref" pour selectionner les sourceref
+            Ajouter l'option "source_ref" pour selectionner les source_ref
         """
         return self.get_mtobjects_tap(Territory,
                                       *args,
@@ -754,8 +751,8 @@ class Sidb:
         """
         territory = None
         if mapper.primary_key != -1:
-            iprimarykeys = [i for i, pk in enumerate(mapper.primarykeys) if pk]
-            for ipk in iprimarykeys:
+            i_primary_keys = [i for i, pk in enumerate(mapper.primary_keys) if pk]
+            for ipk in i_primary_keys:
                 mapper_ipk = mapper.get_dict_i(ipk)
                 territory = self.get_territory(mapper_ipk["key"], mapper_ipk["value"], raise_none=False)
                 if territory is not None:
@@ -1132,8 +1129,8 @@ class Sidb:
         """
         actor = None
         if mapper.primary_key != -1:
-            iprimarykeys = [i for i, pk in enumerate(mapper.primarykeys) if pk]
-            for ipk in iprimarykeys:
+            i_primary_keys = [i for i, pk in enumerate(mapper.primary_keys) if pk]
+            for ipk in i_primary_keys:
                 mapper_ipk = mapper.get_dict_i(ipk)
                 actor = self.get_actor(mapper_ipk["key"], mapper_ipk["value"], raise_none=False)
                 if actor is not None:
@@ -1570,8 +1567,8 @@ class Sidb:
         """
         product = None
         if mapper.primary_key != -1:
-            iprimarykeys = [i for i, pk in enumerate(mapper.primarykeys) if pk]
-            for ipk in iprimarykeys:
+            i_primary_keys = [i for i, pk in enumerate(mapper.primary_keys) if pk]
+            for ipk in i_primary_keys:
                 mapper_ipk = mapper.get_dict_i(ipk)
                 product = self.get_product(mapper_ipk["key"], mapper_ipk["value"],
                                            nomenclature=mapper.get("Nomenclature"),
@@ -1624,7 +1621,7 @@ class Sidb:
                    date_end: str | date | None = None,
                    year: str | int | None = None,
                    month: str | int | None = None,
-                   sourceref: str | None = None,
+                   source_ref: str | None = None,
                    filter_by: list[tuple[str, str]] = [],
                    use_or: bool = True,
                    map_id: Iterable[int] | int | Select = [],
@@ -1649,7 +1646,7 @@ class Sidb:
             date_end: La date de fin des stocks.
             year: L'année des stocks.
             month: Le mois des stocks.
-            sourceref: La source de référence des stocks.
+            source_ref: La source de référence des stocks.
             filter_by: Liste de propriétés supplémentaires pour le filtrage des
                 stocks (ex. [("Label", "Bio")]).
             use_or: Si `True`, compare les `target` en utilisant un ou binaire,
@@ -1678,7 +1675,7 @@ class Sidb:
                                      product_asc=product_asc,
                                      product_desc=product_desc, date_point=date_point,
                                      date_start=date_start, date_end=date_end,
-                                     year=year, month=month, sourceref=sourceref,
+                                     year=year, month=month, source_ref=source_ref,
                                      filter_by=filter_by, use_or=use_or,
                                      map_id=map_id,
                                      cache_properties=cache_properties,
@@ -1736,7 +1733,7 @@ class Sidb:
                       date_end: str | date | None = None,
                       year: str | int | None = None,
                       month: str | int | None = None,
-                      sourceref: str | None = None,
+                      source_ref: str | None = None,
                       filter_by: list[tuple[str, str]] = [],
                       use_or: bool = True,
                       map_id: Iterable[int] | int | Select = [],
@@ -1763,7 +1760,7 @@ class Sidb:
             date_end: La date de fin des flux.
             year: L'année des flux.
             month: Le mois des flux.
-            sourceref: La source de référence des flux.
+            source_ref: La source de référence des flux.
             filter_by: Liste de propriétés supplémentaires pour le filtrage des
                 flux (ex. [("Label", "Bio")]).
             use_or: Si `True`, compare les `target` en utilisant un ou binaire,
@@ -1792,7 +1789,7 @@ class Sidb:
                                      product=product, product_asc=product_asc,
                                      product_desc=product_desc, date_point=date_point,
                                      date_start=date_start, date_end=date_end,
-                                     year=year, month=month, sourceref=sourceref,
+                                     year=year, month=month, source_ref=source_ref,
                                      filter_by=filter_by, use_or=use_or,
                                      map_id=map_id,
                                      cache_properties=cache_properties,
@@ -1925,7 +1922,7 @@ class Sidb:
                       date_end: date | str | None = None,
                       year: str | int | None = None,
                       month: str | int | None = None,
-                      sourceref: str | None = None,
+                      source_ref: str | None = None,
                       filter_by: list[tuple[str, str]] = [],
                       map_id: Iterable[int] | int | Select = [],
                       return_type: Literal['list', 'object',
@@ -1952,7 +1949,7 @@ class Sidb:
             date_end: La date de fin des flux.
             year: L'année des flux.
             month: Le mois des flux.
-            sourceref: La source de référence des flux.
+            source_ref: La source de référence des flux.
             filter_by: Liste de propriétés supplémentaires pour le filtrage des
                 flux (ex. [("Label", "Bio")]).
             map_id: Filtre d'identifiants des objets.
@@ -1991,8 +1988,8 @@ class Sidb:
         q = {}
         for nq, targetq in zip(["id", "object"], [Pathflow.id, Pathflow]):
             q[nq] = select(targetq)
-            if sourceref is not None:
-                q[nq] = q[nq].join(Pathflow.properties).where(Property.sourceref == sourceref)
+            if source_ref is not None:
+                q[nq] = q[nq].join(Pathflow.properties).where(Property.source_ref == source_ref)
             if date_point:
                 q[nq] = q[nq].where(or_(Pathflow.date_point == date_point,
                                         and_(Pathflow.date_start <= date_point,
@@ -2406,11 +2403,11 @@ class Sidb:
                              returnmtobjecttype: (Literal['territory',
                                                           'actor',
                                                           'product']
-                                                  | type[Territory,
-                                                         Actor,
+                                                  | type[Territory |
+                                                         Actor |
                                                          Product]),
                              scale: str | None = None,
-                             sourceref: str | None = None,
+                             source_ref: str | None = None,
                              self_include: bool = False,
                              cache_properties: list[str] = [],
                              return_type: Literal['list', 'object',
@@ -2422,14 +2419,14 @@ class Sidb:
         if verbose:
             print(f"-------- GET MTOBJECT IN | {type(mtobject)=}")
 
-        if type(returnmtobjecttype) is str:
+        if isinstance(returnmtobjecttype, str):
             returnmtobjecttype = Sidb.get_mtobjecttype_from_classname(returnmtobjecttype)
 
         if returnmtobjecttype not in [Actor, Territory, Product]:
             raise TypeError("'%s' is unsupported type" % returnmtobjecttype)
 
-        if sourceref is not None:
-            raise ValueError("'sourceref' argument is not defined yet. #Todo")
+        if source_ref is not None:
+            raise ValueError("'source_ref' argument is not defined yet. #Todo")
 
         if isinstance(mtobject, (Territory, Actor, Product)):
             id_start = mtobject.id
@@ -2545,7 +2542,7 @@ class Sidb:
         return result
 
     def get_mtobjects_gs(self,
-                         object_class: type[Gateflow, Stock],
+                         object_class: type[Gateflow | Stock],
                          target: list[Territory | Actor] = [],
                          flowtype: str | None = None,
                          product: Product | Iterable[Product] | None = None,
@@ -2556,7 +2553,7 @@ class Sidb:
                          date_end: str | date | None = None,
                          year: str | int | None = None,
                          month: str | int | None = None,
-                         sourceref: str | None = None,
+                         source_ref: str | None = None,
                          filter_by: list[tuple[str, str]] = [],
                          use_or: bool = True,
                          map_id: Iterable[int] | int | Select = [],
@@ -2582,9 +2579,9 @@ class Sidb:
         q = {}
         for nq, targetq in zip(["id", "object"], [object_class.id, object_class]):
             q[nq] = select(targetq)
-            if sourceref is not None:
+            if source_ref is not None:
                 q[nq] = (q[nq].join(object_class.properties)
-                         .where(Property.sourceref == sourceref)
+                         .where(Property.source_ref == source_ref)
                          )
             if date_point:
                 q[nq] = q[nq].where(or_(object_class.date_point == date_point,

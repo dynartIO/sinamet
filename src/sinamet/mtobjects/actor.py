@@ -1,5 +1,3 @@
-from typing import Optional
-
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import Mapped
 from sqlalchemy.orm import mapped_column
@@ -16,8 +14,8 @@ class Actor(MTObject):
     id: Mapped[int] = mapped_column(ForeignKey('mtobject.id', ondelete='CASCADE'),
                                     primary_key=True)
 
-    territory_id: Mapped[Optional[int]] = mapped_column(ForeignKey('territory.id'))
-    territory: Mapped[Optional[Territory]] = relationship(foreign_keys=territory_id)
+    territory_id: Mapped[int | None] = mapped_column(ForeignKey('territory.id'))
+    territory: Mapped[Territory | None] = relationship(foreign_keys=territory_id)
 
     __mapper_args__ = {
         'polymorphic_identity': __tablename__,

@@ -3,7 +3,6 @@ from __future__ import annotations
 import warnings
 
 import typing
-from typing import Optional
 from typing import Literal
 
 from datetime import date
@@ -50,8 +49,8 @@ class MTObject(DBObjectClassBase):
                                                            primaryjoin=Property.value_mtobject_id == id,
                                                            cascade="all, delete-orphan")
 
-    date_start: Mapped[Optional[date]]
-    date_end: Mapped[Optional[date]]
+    date_start: Mapped[date | None]
+    date_end: Mapped[date | None]
 
     __mapper_args__ = {'polymorphic_identity': __tablename__,
                        'polymorphic_on': type}
@@ -538,7 +537,7 @@ class MTObject(DBObjectClassBase):
         """Reset le dictionnaire des propriétés mises en cache."""
         self.cached_properties = {}
 
-    def get_sourceref(self, *, force_cache: bool = False) -> str:
+    def get_source_ref(self, *, force_cache: bool = False) -> str:
         """Renvoie les sources des propriétés de l'object.
 
         Parameters:
@@ -553,11 +552,11 @@ class MTObject(DBObjectClassBase):
         if not force_cache:
             Sidb.get_sidb_from_object(self).cache_mtobject_properties(self)
 
-        sourcerefs = set()
+        source_refs = set()
         for prop_list in self.cached_properties.values():
             for p in prop_list:
-                sourcerefs.add(p.sourceref)
-        return ",".join(sourcerefs)
+                source_refs.add(p.source_ref)
+        return ",".join(source_refs)
 
     def get_children(self, depth: int = 1) -> list[MTObject]:
         """Renvoie les enfants de l'object.
@@ -568,13 +567,13 @@ class MTObject(DBObjectClassBase):
         Returns:
             La liste des enfants de l'object.
         """
-        from sinamet.sidb.static import SidbStatic
+        from sinamet.sidb import Sidb
 
         if depth == 1:
-            return SidbStatic.get_mtobject_children(self)
+            return Sidb.get_mtobject_children(self)
         else:
             temp = []
-            for child in SidbStatic.get_mtobject_children(self):
+            for child in Sidb.get_mtobject_children(self):
                 temp += child.get_children(depth=depth-1)
             return temp
 
@@ -653,7 +652,7 @@ class MTObject(DBObjectClassBase):
 
     def create_property(self, name: str,
                         value: str | MTObject | Geometry,
-                        sourceref: str = "__default_func_value__",
+                        source_ref: str | None = None,
                         date_start: str | date | None = None,
                         date_end: str | date | None = None,
                         date_point: str | date | None = None) -> Property:
@@ -662,7 +661,7 @@ class MTObject(DBObjectClassBase):
         Parameters:
             name: Nom de la propriété.
             value: Valeur de la propriété.
-            sourceref: La source de référence de la propriété.
+            source_ref: La source de référence de la propriété.
             date_start: Date de départ.
             date_end: Date de fin.
             date_point: Date tout court.
@@ -670,7 +669,7 @@ class MTObject(DBObjectClassBase):
         Returns:
             La propriété créée.
         """
-        prop = Property(name, value, sourceref, date_start=date_start,
+        prop = Property(name, value, source_ref, date_start=date_start,
                         date_end=date_end, date_point=date_point)
         self.properties.append(prop)
         return prop
@@ -712,7 +711,7 @@ class MTObject(DBObjectClassBase):
                     else:
                         continue
             self.create_property(dic["key"], dic["value"],
-                                 dic["sourceref"],
+                                 dic["source_ref"],
                                  date_start=dic["date_start"],
                                  date_end=dic["date_end"],
                                  date_point=dic["date_point"])
@@ -740,7 +739,7 @@ class MTObject(DBObjectClassBase):
                         return "CONFLICTING_DATA", "Name", dic["value"]
                     else:
                         continue
-            self.create_property(dic["key"], dic["value"], dic["sourceref"])
+            self.create_property(dic["key"], dic["value"], dic["source_ref"])
         return "OK", None, None
 
     def set_code(self, mapper: Mapper) -> tuple[str, str | None, str | None]:
@@ -776,7 +775,7 @@ class MTObject(DBObjectClassBase):
             # Continue if not exists
             if (dic["key"], dic["value"]) in [(p.get_name(), p.get_value()) for p in self.properties]:
                 continue
-            self.create_property(dic["key"], dic["value"], dic["sourceref"])
+            self.create_property(dic["key"], dic["value"], dic["source_ref"])
         return "OK", None, None
 
     def set_scale(self, mapper: Mapper) -> tuple[str, str | None, str | None]:
@@ -815,7 +814,7 @@ class MTObject(DBObjectClassBase):
                                               return_type="property",
                                               raise_none=False)
         if existing_property is None or not dic_nom["unique"]:
-            self.create_property("Nomenclature", dic_nom["value"], dic_nom["sourceref"])
+            self.create_property("Nomenclature", dic_nom["value"], dic_nom["source_ref"])
             return "OK", None, None
         elif (type(existing_property) is list) and dic_nom["unique"]:
             return "DATA_UNCOHERENCE", "Nomenclature", str(existing_property)
@@ -850,7 +849,7 @@ class MTObject(DBObjectClassBase):
                                 .get_territory(one_map["key"], one_map["value"], raise_none=False))
             if return_territory is None:
                 return "WRONG_DATA", "IsInTerritory", f"{one_map['key']}='{one_map['value']}'"
-            self.create_property("IsInTerritory", return_territory, one_map["sourceref"])
+            self.create_property("IsInTerritory", return_territory, one_map["source_ref"])
         return "OK", None, None
 
     def set_isin_actor(self, mapper: Mapper) -> tuple[str, str | None,
@@ -879,7 +878,7 @@ class MTObject(DBObjectClassBase):
             if return_actor is None:
                 return "WRONG_DATA", "IsInActor", str(one_map)
             else:
-                self.create_property("IsInActor", return_actor, one_map["sourceref"])
+                self.create_property("IsInActor", return_actor, one_map["source_ref"])
         return "OK", None, None
 
     def set_isin_product(self, mapper: Mapper) -> tuple[str, str | None,
@@ -910,7 +909,7 @@ class MTObject(DBObjectClassBase):
                                            raise_none=False))
             if return_product is None:
                 return "WRONG_DATA", "IsInProduct", f"{one_map['key']}='{one_map['value']}'"
-            self.create_property("IsInProduct", return_product, one_map["sourceref"])
+            self.create_property("IsInProduct", return_product, one_map["source_ref"])
         return "OK", None, None
 
     def set_territory(self, mapper: Mapper) -> tuple[str, str | None, str | None]:
@@ -949,7 +948,7 @@ class MTObject(DBObjectClassBase):
             return "NO_DATA", "Territory", None
 
         if self.territory is None:
-            self.create_property("Territory", object_t, dici["sourceref"])
+            self.create_property("Territory", object_t, dici["source_ref"])
         self.territory = object_t
         return "OK", None, None
 
@@ -1051,7 +1050,7 @@ class MTObject(DBObjectClassBase):
         object_t = None
         if dic_object is not None:
             object_t = dic_object["value"]
-            srcref_t = dic_object["sourceref"]
+            srcref_t = dic_object["source_ref"]
         else:
             # Pas de clef direct, recherche sur les noms / codes
             search_cases = ["Code", "Name"]
@@ -1070,7 +1069,7 @@ class MTObject(DBObjectClassBase):
                     object_t = (Sidb.get_sidb_from_object(self)
                                 .get_actor(naming_case, dici["value"],
                                            raise_none=False))
-                    srcref_t = dici["sourceref"]
+                    srcref_t = dici["source_ref"]
                     if object_t is None:
                         return "WRONG_DATA_INFO", dici["key"], dici["value"]
 
@@ -1095,7 +1094,7 @@ class MTObject(DBObjectClassBase):
         flow_type = mapper.get_dict_key("FlowType")
         if flow_type is not None:
             self.flowtype = flow_type["value"].lower()
-            self.create_property("FlowType", self.flowtype, flow_type["sourceref"])
+            self.create_property("FlowType", self.flowtype, flow_type["source_ref"])
         return "OK", None, None
 
     def set_product(self, mapper: Mapper) -> tuple[str, str | None, str | None]:
@@ -1115,7 +1114,7 @@ class MTObject(DBObjectClassBase):
         dic_object = mapper.get_dict_key("Product")
         if dic_object is not None:
             object_t = dic_object["value"]
-            srcref_t = dic_object["sourceref"]
+            srcref_t = dic_object["source_ref"]
         else:
             # Pas de clef direct, recherche sur les noms / codes
             search_cases = ["Code", "Name"]
@@ -1134,7 +1133,7 @@ class MTObject(DBObjectClassBase):
                                              raise_none=False))
                     if object_t is None:
                         return "WRONG_DATA_INFO", dici["key"], dici["value"]
-                    srcref_t = dici["sourceref"]
+                    srcref_t = dici["source_ref"]
 
         if object_t is None:
             return "NO_DATA", "Product", None
@@ -1223,7 +1222,7 @@ class MTObject(DBObjectClassBase):
             except TypeError:
                 raise AttributeError("Unknown error for self.quantity = %s with "
                                      "unit = '%s' or value = '%s'" % (self.quantity, unit, float_val))
-            src_ref = dici["sourceref"]
+            src_ref = dici["source_ref"]
             if src_ref is None:
                 src_ref = mapper.get("SourceRef")
 
