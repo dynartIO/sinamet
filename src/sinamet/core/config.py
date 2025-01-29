@@ -10,10 +10,10 @@ from typing import Any
 class SinametConfig:
     def __init__(self):
         self.current_environref: str = "_"
-        self.configs: dict[str, dict[str, str]] = {}
+        self.configs: dict[str, dict[str, str | None]] = {}
         self.config_file: dict[str, Any] = self.init_config_file()
 
-    def __getitem__(self, key: str) -> str:
+    def __getitem__(self, key: str) -> str | None:
         try:
             return self.configs[self.current_environref][key]
         except KeyError:
@@ -47,7 +47,7 @@ class SinametConfig:
     def init_db(self,
                 environref: str | None = None,
                 verbose: bool = False,
-                **kwargs) -> None:
+                **kwargs) -> str:
         if not environref:
             environref = self.current_environref
         if environref not in self.configs:
