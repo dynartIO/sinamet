@@ -8,7 +8,7 @@ from typing import Any
 
 
 class SinametConfig:
-    def __init__(self):
+    def __init__(self) -> None:
         self.current_environref: str = "_"
         self.configs: dict[str, dict[str, str | None]] = {}
         self.config_file: dict[str, Any] = self.init_config_file()
@@ -19,12 +19,12 @@ class SinametConfig:
         except KeyError:
             return self.configs["_"][key]
 
-    def __setitem__(self, key: str, value: str):
+    def __setitem__(self, key: str, value: str) -> None:
         if self.current_environref not in self.configs:
             self.configs[self.current_environref] = {}
         self.configs[self.current_environref][key] = value
 
-    def __contains__(self, item: str):
+    def __contains__(self, item: str) -> bool:
         if self.current_environref not in self.configs:
             return False
         return item in self.configs[self.current_environref]
@@ -47,7 +47,8 @@ class SinametConfig:
     def init_db(self,
                 environref: str | None = None,
                 verbose: bool = False,
-                **kwargs) -> str:
+                **kwargs: str
+                ) -> str:
         if not environref:
             environref = self.current_environref
         if environref not in self.configs:
@@ -89,7 +90,7 @@ class SinametConfig:
     def find_key(self,
                  key: str,
                  environref: str,
-                 kwargs: dict = {},
+                 kwargs: dict[str, str] = {},
                  verbose: bool = False
                  ) -> str | None:
         """
@@ -131,6 +132,7 @@ class SinametConfig:
             return value
         if verbose:
             print(f"Key '{key}' not found.")
+        return None
 
     @staticmethod
     def init_config_file() -> dict[str, Any]:
