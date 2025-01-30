@@ -1603,7 +1603,7 @@ class Sidb:
                    month: str | int | None = None,
                    source_ref: str | None = None,
                    filter_by: list[tuple[str, str]] = [],
-                   use_or: bool = True,
+                   target_join_or: bool = True,
                    map_id: Iterable[int] | int | Select = [],
                    return_type: Literal['list', 'object',
                                         'id', 'query',
@@ -1629,7 +1629,7 @@ class Sidb:
             source_ref: La source de référence des stocks.
             filter_by: Liste de propriétés supplémentaires pour le filtrage des
                 stocks (ex. [("Label", "Bio")]).
-            use_or: Si `True`, compare les `target` en utilisant un ou binaire,
+            target_join_or: Si `True`, compare les `target` en utilisant un ou binaire,
                 sinon compare en utilisant un et binaire.
             map_id: Filtre d'identifiants des objets.
             cache_properties: Liste des propriétés à mettre en cache.
@@ -1656,7 +1656,8 @@ class Sidb:
                                      product_desc=product_desc, date_point=date_point,
                                      date_start=date_start, date_end=date_end,
                                      year=year, month=month, source_ref=source_ref,
-                                     filter_by=filter_by, use_or=use_or,
+                                     filter_by=filter_by,
+                                     target_join_or=target_join_or,
                                      map_id=map_id,
                                      cache_properties=cache_properties,
                                      return_type=return_type, verbose=verbose)
@@ -1715,7 +1716,7 @@ class Sidb:
                       month: str | int | None = None,
                       source_ref: str | None = None,
                       filter_by: list[tuple[str, str]] = [],
-                      use_or: bool = True,
+                      target_join_or: bool = True,
                       map_id: Iterable[int] | int | Select = [],
                       return_type: Literal['list', 'object',
                                            'id', 'query',
@@ -1743,7 +1744,7 @@ class Sidb:
             source_ref: La source de référence des flux.
             filter_by: Liste de propriétés supplémentaires pour le filtrage des
                 flux (ex. [("Label", "Bio")]).
-            use_or: Si `True`, compare les `target` en utilisant un ou binaire,
+            target_join_or: Si `True`, compare les `target` en utilisant un ou binaire,
                 sinon compare en utilisant un et binaire.
             map_id: Filtre d'identifiants des objets.
             cache_properties: Liste des propriétés à mettre en cache.
@@ -1770,7 +1771,8 @@ class Sidb:
                                      product_desc=product_desc, date_point=date_point,
                                      date_start=date_start, date_end=date_end,
                                      year=year, month=month, source_ref=source_ref,
-                                     filter_by=filter_by, use_or=use_or,
+                                     filter_by=filter_by,
+                                     target_join_or=target_join_or,
                                      map_id=map_id,
                                      cache_properties=cache_properties,
                                      return_type=return_type, verbose=verbose)
@@ -2533,7 +2535,7 @@ class Sidb:
                          month: str | int | None = None,
                          source_ref: str | None = None,
                          filter_by: list[tuple[str, str]] = [],
-                         use_or: bool = True,
+                         target_join_or: bool = True,
                          map_id: Iterable[int] | int | Select = [],
                          cache_properties: list[str] = [],
                          return_type: Literal['list', 'object',
@@ -2604,7 +2606,7 @@ class Sidb:
                         target_search.append(object_class.actor_id.in_(self.get_actors_in(tg, return_type="qid")))
                     else:
                         raise TypeError(f"Unknown target type : '{type(tg)}' --> {tg}")
-                if use_or:
+                if target_join_or:
                     q[nq] = q[nq].where(or_(*target_search))
                 else:
                     q[nq] = q[nq].where(and_(*target_search))
