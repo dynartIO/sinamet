@@ -1,7 +1,7 @@
-from .core.mapper import Mapper
-from .core.mapper import MapperError
+from .mapper import Mapper
+from .mapper import MapperError
 
-from .core.config import config
+from .config import config
 
 from .sidb import Sidb
 

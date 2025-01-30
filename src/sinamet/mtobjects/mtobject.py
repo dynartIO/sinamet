@@ -24,7 +24,7 @@ from sinamet.errors import SidbMultiFoundError, SidbNotFoundError
 if typing.TYPE_CHECKING:
     from shapely import Geometry
     from sqlalchemy import Select
-    from sinamet.core.mapper import Mapper
+    from sinamet.mapper import Mapper
     from sinamet.mtobjects.actor import Actor
 
 

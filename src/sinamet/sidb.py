@@ -16,8 +16,8 @@ from sqlalchemy.orm.exc import UnmappedInstanceError
 from sqlalchemy.orm.session import Session, object_session, sessionmaker
 from sqlalchemy.sql import Select, and_, delete, func, or_, select
 
-from sinamet.core.config import config
-from sinamet.core.mapper import Mapper, MapperError
+from sinamet.config import config
+from sinamet.mapper import Mapper, MapperError
 from sinamet.errors import SidbMultiFoundError, SidbNotFoundError
 from sinamet.mtobjects.actor import Actor
 from sinamet.mtobjects.dbobject import DBObjectClassBase

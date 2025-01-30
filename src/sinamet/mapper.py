@@ -67,7 +67,7 @@ class Mapper():
 
         Returns:
             Si la clé éxiste, le dictionnaire contenant les informations liées à
-                la clé, renvoyé par [get_dict_i][core.mapper.Mapper.get_dict_i].
+                la clé, renvoyé par [get_dict_i][mapper.Mapper.get_dict_i].
                 Sinon, renvoie `None`
 
         Raises:
