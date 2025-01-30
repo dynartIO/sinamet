@@ -462,8 +462,8 @@ class Sidb:
     def get_territory(self,
                       *args,
                       like_value: bool = False,
-                      case_value: bool = True,
-                      accent_value: bool = True,
+                      ignore_case: bool = False,
+                      ignore_accent: bool = False,
                       return_type: Literal['object',
                                            'id',
                                            'query',
@@ -489,8 +489,8 @@ class Sidb:
         Args:
             like_value: Si True, compare la valeur passée avec LIKE à la place de l'égalité (=)
                 (les charactères spéciaux `%` et `_` ne seront pas échappés).
-            case_value: Recherche sensible à la casse.
-            accent_value: Recherche sensible à l'accentuation.
+            ignore_case: Recherche ignorant la casse.
+            ignore_accent: Recherche ignorant l'accentuation.
             return_type: Type de retour de la fonction. Valeurs possibles:
 
                 * `object`: L'objet `Territory`.
@@ -523,8 +523,8 @@ class Sidb:
         return self.get_mtobject_tap(Territory,
                                      *args,
                                      like_value=like_value,
-                                     case_value=case_value,
-                                     accent_value=accent_value,
+                                     ignore_case=ignore_case,
+                                     ignore_accent=ignore_accent,
                                      return_type=return_type,
                                      raise_none=raise_none,
                                      multi=multi,
@@ -534,8 +534,8 @@ class Sidb:
     def get_territories(self,
                         *args,
                         like_value: bool = False,
-                        case_value: bool = True,
-                        accent_value: bool = True,
+                        ignore_case: bool = False,
+                        ignore_accent: bool = False,
                         map_id: Iterable[int] | int | Select = [],
                         return_type: Literal['list',
                                              'object',
@@ -553,8 +553,8 @@ class Sidb:
         Args:
             like_value: Si True, compare la valeur passée avec LIKE à la place de l'égalité (=)
                 (les charactères spéciaux `%` et `_` ne seront pas échappés).
-            case_value: Recherche sensible à la casse.
-            accent_value: Recherche sensible à l'accentuation.
+            ignore_case: Recherche ignorant la casse.
+            ignore_accent: Recherche ignorant l'accentuation.
             map_id: Filtre d'identifiants des objets.
             return_type: Type de retour de la fonction. Valeurs possibles:
 
@@ -581,8 +581,8 @@ class Sidb:
         return self.get_mtobjects_tap(Territory,
                                       *args,
                                       like_value=like_value,
-                                      case_value=case_value,
-                                      accent_value=accent_value,
+                                      ignore_case=ignore_case,
+                                      ignore_accent=ignore_accent,
                                       map_id=map_id,
                                       return_type=return_type,
                                       cache_properties=cache_properties,
@@ -792,8 +792,8 @@ class Sidb:
     def get_actor(self,
                   *args,
                   like_value: bool = False,
-                  case_value: bool = True,
-                  accent_value: bool = True,
+                  ignore_case: bool = False,
+                  ignore_accent: bool = False,
                   return_type: Literal['object',
                                        'id',
                                        'query',
@@ -819,8 +819,8 @@ class Sidb:
         Args:
             like_value: Si True, compare la valeur passée avec LIKE à la place de l'égalité (=)
                 (les charactères spéciaux `%` et `_` ne seront pas échappés).
-            case_value: Recherche sensible à la casse.
-            accent_value: Recherche sensible à l'accentuation.
+            ignore_case: Recherche ignorant la casse.
+            ignore_accent: Recherche ignorant l'accentuation.
             return_type: Type de retour de la fonction. Valeurs possibles:
 
                 * `object`: L'objet `Actor`.
@@ -852,8 +852,8 @@ class Sidb:
         return self.get_mtobject_tap(Actor,
                                      *args,
                                      like_value=like_value,
-                                     case_value=case_value,
-                                     accent_value=accent_value,
+                                     ignore_case=ignore_case,
+                                     ignore_accent=ignore_accent,
                                      return_type=return_type,
                                      raise_none=raise_none,
                                      multi=multi,
@@ -863,8 +863,8 @@ class Sidb:
     def get_actors(self,
                    *args,
                    like_value: bool = False,
-                   case_value: bool = True,
-                   accent_value: bool = True,
+                   ignore_case: bool = False,
+                   ignore_accent: bool = False,
                    map_id: Iterable[int] | int | Select = [],
                    return_type: Literal['list',
                                         'object',
@@ -886,8 +886,8 @@ class Sidb:
         Args:
             like_value: Si True, compare la valeur passée avec LIKE à la place de l'égalité (=)
                 (les charactères spéciaux `%` et `_` ne seront pas échappés).
-            case_value: Recherche sensible à la casse.
-            accent_value: Recherche sensible à l'accentuation.
+            ignore_case: Recherche ignorant la casse.
+            ignore_accent: Recherche ignorant l'accentuation.
             map_id: Filtre d'identifiants des objets.
             return_type: Type de retour de la fonction. Valeurs possibles:
 
@@ -911,8 +911,8 @@ class Sidb:
         return self.get_mtobjects_tap(Actor,
                                       *args,
                                       like_value=like_value,
-                                      case_value=case_value,
-                                      accent_value=accent_value,
+                                      ignore_case=ignore_case,
+                                      ignore_accent=ignore_accent,
                                       map_id=map_id,
                                       return_type=return_type,
                                       cache_properties=cache_properties,
@@ -1166,8 +1166,8 @@ class Sidb:
                     *args,
                     nomenclature: str | None = None,
                     like_value: bool = False,
-                    case_value: bool = True,
-                    accent_value: bool = True,
+                    ignore_case: bool = False,
+                    ignore_accent: bool = False,
                     return_type: Literal['object',
                                          'id',
                                          'query',
@@ -1190,8 +1190,8 @@ class Sidb:
             nomenclature: Nom de la nomenclature du produit recherché.
             like_value: Si True, compare la valeur passée avec LIKE à la place de l'égalité (=)
                 (les charactères spéciaux `%` et `_` ne seront pas échappés).
-            case_value: Recherche sensible à la casse.
-            accent_value: Recherche sensible à l'accentuation.
+            ignore_case: Recherche ignorant la casse.
+            ignore_accent: Recherche ignorant l'accentuation.
             return_type: Type de retour de la fonction. Valeurs possibles:
 
                 * `object`: L'objet `Product`.
@@ -1227,8 +1227,8 @@ class Sidb:
                                      *args,
                                      nomenclature=nomenclature,
                                      like_value=like_value,
-                                     case_value=case_value,
-                                     accent_value=accent_value,
+                                     ignore_case=ignore_case,
+                                     ignore_accent=ignore_accent,
                                      return_type=return_type,
                                      raise_none=raise_none,
                                      multi=multi,
@@ -1238,8 +1238,8 @@ class Sidb:
     def get_products(self,
                      *args,
                      like_value: bool = False,
-                     case_value: bool = True,
-                     accent_value: bool = True,
+                     ignore_case: bool = True,
+                     ignore_accent: bool = True,
                      map_id: Iterable[int] | int | Select = [],
                      return_type: Literal['list',
                                           'object',
@@ -1258,8 +1258,8 @@ class Sidb:
         Args:
             like_value: Si True, compare la valeur passée avec LIKE à la place de l'égalité (=)
                 (les charactères spéciaux `%` et `_` ne seront pas échappés).
-            case_value: Recherche sensible à la casse.
-            accent_value: Recherche sensible à l'accentuation.
+            ignore_case: Recherche ignorant la casse.
+            ignore_accent: Recherche ignorant l'accentuation.
             map_id: Filtre d'identifiants des objets.
             return_type: Type de retour de la fonction. Valeurs possibles:
 
@@ -1285,8 +1285,8 @@ class Sidb:
         return self.get_mtobjects_tap(Product,
                                       *args,
                                       like_value=like_value,
-                                      case_value=case_value,
-                                      accent_value=accent_value,
+                                      ignore_case=ignore_case,
+                                      ignore_accent=ignore_accent,
                                       map_id=map_id,
                                       return_type=return_type,
                                       cache_properties=cache_properties,
@@ -2150,8 +2150,8 @@ class Sidb:
                          mtobject_class: type[Territory | Actor | Product],
                          *args,
                          like_value: bool = False,
-                         case_value: bool = True,
-                         accent_value: bool = True,
+                         ignore_case: bool = False,
+                         ignore_accent: bool = False,
                          return_type: Literal['object', 'id',
                                               'queryid', 'qid',
                                               'query'] = 'object',
@@ -2176,7 +2176,7 @@ class Sidb:
             print(f'key = {key}, value = {value}')
 
         # Recherche dans le cache si recherche sur clé exacte uniquement
-        if key != "Id" and not like_value and case_value and accent_value:
+        if key != "Id" and not like_value and not ignore_case and not ignore_accent:
             if verbose:
                 print("Looking for object in cache ...")
             cached_object = self.get_one_mtobject_from_cache(mtobject_class.__name__,
@@ -2196,11 +2196,11 @@ class Sidb:
             if key == "Id":
                 q[nq] = q[nq].where(mtobject_class.id == value)
             else:
-                # Gestion de la casse (case_value) et/ou de l'accentuation (accent_value)
-                prop = Property.value_literal if accent_value else func.unaccent(Property.value_literal)
-                prop = prop if case_value else func.lower(prop)
-                value = value if accent_value else func.unaccent(value)
-                value = value if case_value else func.lower(value)
+                # Gestion de la casse (ignore_case) et/ou de l'accentuation (ignore_accent)
+                prop = func.unaccent(Property.value_literal) if ignore_accent else Property.value_literal
+                prop = func.lower(prop) if ignore_case else prop
+                value = func.unaccent(value) if ignore_accent else value
+                value = func.lower(value) if ignore_case else value
 
                 if like_value:
                     q[nq] = q[nq].where(prop.like(value))
@@ -2236,7 +2236,7 @@ class Sidb:
                 raise SidbNotFoundError(f"No such object has been found in the database ({key}={value})")
             return None
         if len(result) == 1:
-            if key != "Id" and not like_value and case_value and accent_value:
+            if key != "Id" and not like_value and not ignore_case and not ignore_accent:
                 self.set_cache_mtobject_codename(result[0], key, value, False, prefix=nomenclature)
             self.cache_mtobject_properties(result[0])
             return result[0]
@@ -2262,8 +2262,8 @@ class Sidb:
                           mtobject_class: type[Territory | Actor | Product],
                           *args,
                           like_value: bool = False,
-                          case_value: bool = True,
-                          accent_value: bool = True,
+                          ignore_case: bool = False,
+                          ignore_accent: bool = False,
                           map_id: Iterable[int] | int | Select = [],
                           return_type: Literal['list', 'object',
                                                'id', 'queryid', 'qid',
@@ -2304,10 +2304,10 @@ class Sidb:
 
             # Add a filter for the properties' values.
             if value != "*":
-                prop = Property.value_literal if accent_value else func.unaccent(Property.value_literal)
-                prop = prop if case_value else func.lower(prop)
-                value = value if accent_value else func.unaccent(value)
-                value = value if case_value else func.lower(value)
+                prop = func.unaccent(Property.value_literal) if ignore_accent else Property.value_literal
+                prop = func.lower(prop) if ignore_case else prop
+                value = func.unaccent(value) if ignore_accent else value
+                value = func.lower(value) if ignore_case else value
                 if like_value:
                     q[nq] = q[nq].where(prop.like(value))
                 else:
