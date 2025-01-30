@@ -487,7 +487,10 @@ class Sidb:
             >>> territory = get_territory("Name", "Saint-%", like_value=True)
 
         Args:
-            like_value: Si True, compare la valeur passée avec LIKE à la place de l'égalité (=)
+            *args: Duo d'arguments "NomDeProprieté", "Valeur", ou chaîne-objet "Territory(Code=xxxxx)", ou vide si kwargs renseignés
+            **kwargs: code=="xxxxx" ou code_insee="xxxxx" ou name="xxxxxx" ou name_fr="xxxxx"
+            like_value: Si True, la valeur est recherchée à travers
+                l'[instruction LIKE de SQL](https://www.postgresql.org/docs/current/functions-matching.html#FUNCTIONS-LIKE)
                 (les charactères spéciaux `%` et `_` ne seront pas échappés).
             ignore_case: Recherche ignorant la casse.
             ignore_accent: Recherche ignorant l'accentuation.
@@ -551,7 +554,9 @@ class Sidb:
         """ Trouve plusieurs territoires.
 
         Args:
-            like_value: Si True, compare la valeur passée avec LIKE à la place de l'égalité (=)
+            *args: Duo d'arguments "NomDeProprieté", "Valeur"
+            like_value: Si True, la valeur est recherchée à travers
+                l'[instruction LIKE de SQL](https://www.postgresql.org/docs/current/functions-matching.html#FUNCTIONS-LIKE)
                 (les charactères spéciaux `%` et `_` ne seront pas échappés).
             ignore_case: Recherche ignorant la casse.
             ignore_accent: Recherche ignorant l'accentuation.
@@ -574,10 +579,9 @@ class Sidb:
 
         Raises:
             ValueError: Paramètres invalides.
-
-        FutureDev:
-            Ajouter l'option "source_ref" pour selectionner les source_ref
         """
+        # FutureDev: Ajouter l'option "source_ref" pour selectionner les source_ref
+
         return self.get_mtobjects_tap(Territory,
                                       *args,
                                       like_value=like_value,
@@ -817,6 +821,11 @@ class Sidb:
             >>> actor = get_actor("Id", 487)
 
         Args:
+            *args: Duo d'arguments "NomDeProprieté", "Valeur", ou chaîne-objet "Actor(Code=xxxxx)", ou vide si kwargs renseignés
+            **kwargs: code=="xxxxx" ou code_siret="xxxxx" ou name="xxxxxx" ou name_fr="xxxxx"
+            like_value: Si True, la valeur est recherchée à travers
+                l'[instruction LIKE de SQL](https://www.postgresql.org/docs/current/functions-matching.html#FUNCTIONS-LIKE)
+                (les charactères spéciaux `%` et `_` ne seront pas échappés).
             like_value: Si True, compare la valeur passée avec LIKE à la place de l'égalité (=)
                 (les charactères spéciaux `%` et `_` ne seront pas échappés).
             ignore_case: Recherche ignorant la casse.
@@ -884,7 +893,9 @@ class Sidb:
             >>> all_actors = get_actors()
 
         Args:
-            like_value: Si True, compare la valeur passée avec LIKE à la place de l'égalité (=)
+            *args: Duo d'arguments "NomDeProprieté", "Valeur"
+            like_value: Si True, la valeur est recherchée à travers
+                l'[instruction LIKE de SQL](https://www.postgresql.org/docs/current/functions-matching.html#FUNCTIONS-LIKE)
                 (les charactères spéciaux `%` et `_` ne seront pas échappés).
             ignore_case: Recherche ignorant la casse.
             ignore_accent: Recherche ignorant l'accentuation.
@@ -1187,6 +1198,11 @@ class Sidb:
         """Trouve un produit.
 
         Args:
+            *args: Duo d'arguments "NomDeProprieté", "Valeur", ou chaîne-objet "Product(Code=xxxxx)", ou vide si kwargs renseignés
+            **kwargs: code=="xxxxx" ou name="xxxxxx" ou name_fr="xxxxx"
+            like_value: Si True, la valeur est recherchée à travers
+                l'[instruction LIKE de SQL](https://www.postgresql.org/docs/current/functions-matching.html#FUNCTIONS-LIKE)
+                (les charactères spéciaux `%` et `_` ne seront pas échappés).
             nomenclature: Nom de la nomenclature du produit recherché.
             like_value: Si True, compare la valeur passée avec LIKE à la place de l'égalité (=)
                 (les charactères spéciaux `%` et `_` ne seront pas échappés).
@@ -1220,9 +1236,9 @@ class Sidb:
             errors.SidbNotFoundError: Aucun produit n'a pu être trouvé avec ces critères.
             ValueError: Si les critères de recherche sont mauvais.
 
-        FutureDev :
-            Implementer l'option "use_alias" (True par design)
         """
+
+        #FutureDev : Implementer l'option "use_alias" (True par design)
         return self.get_mtobject_tap(Product,
                                      *args,
                                      nomenclature=nomenclature,
@@ -1256,7 +1272,9 @@ class Sidb:
         """Trouve plusieurs produits.
 
         Args:
-            like_value: Si True, compare la valeur passée avec LIKE à la place de l'égalité (=)
+            *args: Duo d'arguments "NomDeProprieté", "Valeur"
+            like_value: Si True, la valeur est recherchée à travers
+                l'[instruction LIKE de SQL](https://www.postgresql.org/docs/current/functions-matching.html#FUNCTIONS-LIKE)
                 (les charactères spéciaux `%` et `_` ne seront pas échappés).
             ignore_case: Recherche ignorant la casse.
             ignore_accent: Recherche ignorant l'accentuation.
@@ -1468,10 +1486,9 @@ class Sidb:
         """
         Convertit un produit en ses produits dérivés dans une autre nomenclature, hiérarchie inclue.
         Si product est une liste de produits, ils doivent tous avoir la même nomenclature.
-
-        FutureDev:
-            Améliorer Prototype
         """
+
+        # FutureDev:  Améliorer Prototype
         if isinstance(product, Product):
             nomenclature = product.get_property('Nomenclature', multi='first')
         else:
@@ -1648,9 +1665,10 @@ class Sidb:
             (int): Nombre de stocks correspondants aux arguments donnés.
             (Select): Requète des stocks ou des identifiants.
 
-        Note: FutureDev
-            - Implementer target_(asc/desc).
+
         """
+        #Note: FutureDev Implementer target_(asc/desc).
+
         return self.get_mtobjects_gs(Stock, target=target, product=product,
                                      product_asc=product_asc,
                                      product_desc=product_desc, date_point=date_point,
@@ -1762,10 +1780,8 @@ class Sidb:
             (list[int]): Liste des identifiants des flux recherchés.
             (int): Nombre de flux correspondants aux arguments donnés.
             (Select): Requète des flux ou des identifiants.
-
-        Note: FutureDev
-            - Implementer target_(asc/desc).
         """
+        # Note: FutureDev - Implementer target_(asc / desc).
         return self.get_mtobjects_gs(Gateflow, target=target, flowtype=flowtype,
                                      product=product, product_asc=product_asc,
                                      product_desc=product_desc, date_point=date_point,
@@ -1919,13 +1935,15 @@ class Sidb:
             target: Le territoire et/ou l'acteur lié(s) aux flux.
             direction: La direction des flux, peut être `import`, `export`,
                 `internal` ou `all`.
-            btarget: Cible complémentaire.
-            xtarget: Cible exclue.
+            btarget: Territoire ou acteur complémentaire spécifique
+                (origine pour les imports, destination pour les exports)
+            xtarget: Territoire ou acteur complémentaire à exclure
+                (origine pour les imports, destination pour les exports).
             product: Le produit lié aux flux.
-            product_asc: Effectue une recherche ascendante sur le produit,
-                recherche le produit et ses parents.
-            product_desc: Effectue une recherche descendante sur le produit,
-                recherche le produit et ses enfants.
+            product_asc: Effectue une recherche ascendante sur le produit
+                (recherche le produit et ses parents).
+            product_desc: Effectue une recherche descendante sur le produit
+                (recherche le produit et ses enfants).
             date_point: La date ponctuelle des flux.
             date_start: La date de départ des flux.
             date_end: La date de fin des flux.
@@ -1949,10 +1967,8 @@ class Sidb:
             (list[int]): Liste des identifiants des flux recherchés.
             (int): Nombre de flux correspondants aux arguments donnés.
             (Select): Requète des flux ou des identifiants.
-
-        Note: FutureDev
-            - Implementer target_(asc/desc).
         """
+        # FutureDev Implementer target_(asc/desc).
         if direction not in ["import", "export", "internal", "all"] and direction is not None:
             raise ValueError(f"Unknown direction = '{direction}'")
         if type(target) is list:
@@ -2544,9 +2560,10 @@ class Sidb:
                          verbose: bool = False
                          ) -> list[Gateflow] | list[Stock] | list[int] | int | Select:
         """
-        FutureDev:
-            - Implementer target_(asc/desc).
+        Fonction générique pour récupérer des gateflows ou des stocks
         """
+        # FutureDev: Implementer target_(asc/desc).
+
         date_point = to_date(date_point)
         date_start, date_end = get_start_end_dates(start=date_start, end=date_end,
                                                    year=year, month=month)
@@ -2739,10 +2756,8 @@ class Sidb:
             (list[int]): La liste des identifiants des objets.
             (int): Le nombre d'objets.
             (Select): La requête des objets ou des identifiants.
-
-        Note: FutureDev
-            Implémenter profondeur.
         """
+        # FutureDev : Implémenter profondeur.
         sidb = Sidb.get_sidb_from_object(mtobject)
 
         if not isinstance(mtobject, (Territory, Actor, Product)):
@@ -2789,10 +2804,8 @@ class Sidb:
             (list[int]): La liste des identifiants des objets.
             (int): Le nombre d'objets.
             (Select): La requête des objets ou des identifiants.
-
-        Note: FutureDev
-            Implémenter profondeur.
         """
+        #  FutureDev:  Implémenter profondeur.
         sidb = Sidb.get_sidb_from_object(mtobject)
 
         if not isinstance(mtobject, (Territory, Actor, Product)):
