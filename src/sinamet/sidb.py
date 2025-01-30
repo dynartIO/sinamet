@@ -1784,7 +1784,7 @@ class Sidb:
         """
         Retourne les flux d'entrée de `target`.
 
-        Fonction wrapper de [get_gateflows][sidb.gateflow.SidbGateflow.get_gateflows].
+        Fonction wrapper de [get_gateflows][sidb.Sidb.get_gateflows].
         """
         return self.get_gateflows(target, flowtype="input", **kwargs)
 
@@ -1795,7 +1795,7 @@ class Sidb:
         """
         Retourne les flux de sortie de `target`.
 
-        Fonction wrapper de [get_gateflows][sidb.gateflow.SidbGateflow.get_gateflows].
+        Fonction wrapper de [get_gateflows][sidb.Sidb.get_gateflows].
         """
         return self.get_gateflows(target, flowtype="output", **kwargs)
 
@@ -1806,7 +1806,7 @@ class Sidb:
         """
         Retourne les flux de consommation de `target`.
 
-        Fonction wrapper de [get_gateflows][sidb.gateflow.SidbGateflow.get_gateflows].
+        Fonction wrapper de [get_gateflows][sidb.Sidb.get_gateflows].
         """
         return self.get_gateflows(target, flowtype="consumption", **kwargs)
 
@@ -1817,7 +1817,7 @@ class Sidb:
         """
         Retourne les flux de production de `target`.
 
-        Fonction wrapper de [get_gateflows][sidb.gateflow.SidbGateflow.get_gateflows].
+        Fonction wrapper de [get_gateflows][sidb.Sidb.get_gateflows].
         """
         return self.get_gateflows(target, flowtype="production", **kwargs)
 
@@ -1828,7 +1828,7 @@ class Sidb:
         """
         Retourne les flux d'extraction de `target`.
 
-        Fonction wrapper de [get_gateflows][sidb.gateflow.SidbGateflow.get_gateflows].
+        Fonction wrapper de [get_gateflows][sidb.Sidb.get_gateflows].
         """
         return self.get_gateflows(target, flowtype="extraction", **kwargs)
 
@@ -1839,7 +1839,7 @@ class Sidb:
         """
         Retourne les flux d'émission de `target`.
 
-        Fonction wrapper de [get_gateflows][sidb.gateflow.SidbGateflow.get_gateflows].
+        Fonction wrapper de [get_gateflows][sidb.Sidb.get_gateflows].
         """
         return self.get_gateflows(target, flowtype="emission", **kwargs)
 
@@ -2083,7 +2083,7 @@ class Sidb:
         Retourne les flux importés: ceux dont l'origine est à l'extérieur de
         `target` et la destination est à l'intérieur.
 
-        Fonction wrapper de [get_pathflows][sidb.pathflow.SidbPathflow.get_pathflows].
+        Fonction wrapper de [get_pathflows][sidb.Sidb.get_pathflows].
         """
         return self.get_pathflows(target, direction="import", **kwargs)
 
@@ -2095,7 +2095,7 @@ class Sidb:
         Retourne les flux exportés: ceux dont l'origine est à l'intérieur de
         `target` et la destination est à l'extérieur.
 
-        Fonction wrapper de [get_pathflows][sidb.pathflow.SidbPathflow.get_pathflows].
+        Fonction wrapper de [get_pathflows][sidb.Sidb.get_pathflows].
         """
         return self.get_pathflows(target, direction="export", **kwargs)
 
@@ -2107,7 +2107,7 @@ class Sidb:
         Retourne les flux internes: ceux dont l'origine et la destination sont
         dans `target`.
 
-        Fonction wrapper de [get_pathflows][sidb.pathflow.SidbPathflow.get_pathflows].
+        Fonction wrapper de [get_pathflows][sidb.Sidb.get_pathflows].
         """
         return self.get_pathflows(target, direction="internal", **kwargs)
 
