@@ -199,8 +199,8 @@ pathflow), à un produit, à une temporalité et à une ou plusieurs quantités 
 
 Exemple du mapper pour le chargement d'un flux de céréales (item 01.1 de la nomenclature NST 2007) entre la Charente
 et la Gironde en 2024 (type *Pathflow* car l'origine et la destination sont connus) :
-
-    mapper = Mapper("Pathflow", sourceref="script-test")
+```python
+    mapper = Mapper("Pathflow", source_ref="script-test")
     mapper.add("EmitterTerritoryCode@insee", "16")
     mapper.add("ReceiverTerritoryCode@insee", "33")
     mapper.add("ProductCode", "01.1")
@@ -208,15 +208,15 @@ et la Gironde en 2024 (type *Pathflow* car l'origine et la destination sont conn
     mapper.add("Quantity@t", 17)
     mapper.add("Quantity@keuro", 15.6)
     mapper.add("Year", 2024)
-
+```
 Exemple du mapper pour la production de céréales en Charente en 2024 
 (type *Gateflow* alias *Production* car il n'y a pas d'origine + destination):
-
-    mapper = Mapper("Production", sourceref=mysrcref)
+```python
+    mapper = Mapper("Production", source_ref=mysrcref)
     mapper.add("TerritoryCode@insee", "16")
     mapper.add("ProductCode", "01.1")
     mapper.add("ProductNomenclature", "NST2007")
     mapper.add("Quantity@t", 17)
     mapper.add("Quantity@keuro", 15.6)
     mapper.add("Year", 2024)
-
+```

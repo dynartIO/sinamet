@@ -97,9 +97,9 @@ Mon produit: <Product-422:NST2007(01.1)-Céréales>
 Les données sur le transport de marchandises sont stockées comme des
 [Pathflows](../documentation/mtobjecttypes.md), avec un territoire
 d'origine et de destination. Pour récuperer les pathflows, nous disposons des fonctions
-[`sidb.get_imports()`](../documentation/sidb.md#sidb.pathflow.SidbPathflow.get_imports),
-[`sidb.get_exports()`](../documentation/sidb.md#sidb.pathflow.SidbPathflow.get_exports) et
-[`sidb.get_internals()`](../documentation/sidb.md#sidb.pathflow.SidbPathflow.get_internals).
+[`sidb.get_imports()`](../documentation/sidb.md#sidb.Sidb.get_imports),
+[`sidb.get_exports()`](../documentation/sidb.md#sidb.Sidb.get_exports) et
+[`sidb.get_internals()`](../documentation/sidb.md#sidb.Sidb.get_internals).
 
 ```py linenums='21'
     flux_import = sidb.get_imports(charente, product=mon_produit)

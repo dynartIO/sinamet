@@ -13,19 +13,19 @@ with Sidb.connect() as sidb:
 
 ## Récupérer un objet
 
-::: sidb.territory.SidbTerritory.get_territory
+::: sidb.Sidb.get_territory
     options:
         show_root_heading: true
         show_root_full_path: false
         heading_level: 3
 
-::: sidb.actor.SidbActor.get_actor
+::: sidb.Sidb.get_actor
     options:
         show_root_heading: true
         show_root_full_path: false
         heading_level: 3
 
-::: sidb.product.SidbProduct.get_product
+::: sidb.Sidb.get_product
     options:
         show_root_heading: true
         show_root_full_path: false
@@ -33,97 +33,97 @@ with Sidb.connect() as sidb:
 
 ## Récupérer une liste d'objets
 
-::: sidb.territory.SidbTerritory.get_territories
+::: sidb.Sidb.get_territories
     options:
         show_root_heading: true
         show_root_full_path: false
         heading_level: 3
 
-::: sidb.actor.SidbActor.get_actors
+::: sidb.Sidb.get_actors
     options:
         show_root_heading: true
         show_root_full_path: false
         heading_level: 3
 
-::: sidb.product.SidbProduct.get_products
+::: sidb.Sidb.get_products
     options:
         show_root_heading: true
         show_root_full_path: false
         heading_level: 3
 
-::: sidb.product.SidbProduct.get_product_list
+::: sidb.Sidb.get_product_list
     options:
         show_root_heading: true
         show_root_full_path: false
         heading_level: 3
 
-::: sidb.gateflow.SidbGateflow.get_gateflows
+::: sidb.Sidb.get_gateflows
     options:
         show_root_heading: true
         show_root_full_path: false
         heading_level: 3
 
-::: sidb.gateflow.SidbGateflow.get_inputs
+::: sidb.Sidb.get_inputs
     options:
         show_root_heading: true
         show_root_full_path: false
         heading_level: 3
 
-::: sidb.gateflow.SidbGateflow.get_outputs
+::: sidb.Sidb.get_outputs
     options:
         show_root_heading: true
         show_root_full_path: false
         heading_level: 3
 
-::: sidb.gateflow.SidbGateflow.get_consumptions
+::: sidb.Sidb.get_consumptions
     options:
         show_root_heading: true
         show_root_full_path: false
         heading_level: 3
 
-::: sidb.gateflow.SidbGateflow.get_productions
+::: sidb.Sidb.get_productions
     options:
         show_root_heading: true
         show_root_full_path: false
         heading_level: 3
 
-::: sidb.gateflow.SidbGateflow.get_extractions
+::: sidb.Sidb.get_extractions
     options:
         show_root_heading: true
         show_root_full_path: false
         heading_level: 3
 
-::: sidb.gateflow.SidbGateflow.get_emissions
+::: sidb.Sidb.get_emissions
     options:
         show_root_heading: true
         show_root_full_path: false
         heading_level: 3
 
-::: sidb.pathflow.SidbPathflow.get_pathflows
+::: sidb.Sidb.get_pathflows
     options:
         show_root_heading: true
         show_root_full_path: false
         heading_level: 3
 
-::: sidb.pathflow.SidbPathflow.get_imports
+::: sidb.Sidb.get_imports
     options:
         show_root_heading: true
         show_root_full_path: false
         heading_level: 3
 
-::: sidb.pathflow.SidbPathflow.get_exports
+::: sidb.Sidb.get_exports
     options:
         show_root_heading: true
         show_root_full_path: false
         heading_level: 3
 
-::: sidb.pathflow.SidbPathflow.get_internals
+::: sidb.Sidb.get_internals
     options:
         show_root_heading: true
         show_root_full_path: false
         heading_level: 3
 
-::: sidb.stock.SidbStock.get_stocks
+::: sidb.Sidb.get_stocks
     options:
         show_root_heading: true
         show_root_full_path: false
@@ -131,19 +131,19 @@ with Sidb.connect() as sidb:
 
 ## Récupérer une liste d'objets contenus dans un autre
 
-::: sidb.territory.SidbTerritory.get_territories_in
+::: sidb.Sidb.get_territories_in
     options:
         show_root_heading: true
         show_root_full_path: false
         heading_level: 3
 
-::: sidb.actor.SidbActor.get_actors_in
+::: sidb.Sidb.get_actors_in
     options:
         show_root_heading: true
         show_root_full_path: false
         heading_level: 3
 
-::: sidb.product.SidbProduct.get_products_in
+::: sidb.Sidb.get_products_in
     options:
         show_root_heading: true
         show_root_full_path: false
@@ -151,19 +151,19 @@ with Sidb.connect() as sidb:
 
 ## Récupérer une liste d'objets en contenant un autre
 
-::: sidb.territory.SidbTerritory.get_territories_on
+::: sidb.Sidb.get_territories_on
     options:
         show_root_heading: true
         show_root_full_path: false
         heading_level: 3
 
-::: sidb.actor.SidbActor.get_actors_on
+::: sidb.Sidb.get_actors_on
     options:
         show_root_heading: true
         show_root_full_path: false
         heading_level: 3
 
-::: sidb.product.SidbProduct.get_products_on
+::: sidb.Sidb.get_products_on
     options:
         show_root_heading: true
         show_root_full_path: false
@@ -171,7 +171,7 @@ with Sidb.connect() as sidb:
 
 ## Autres fonctions
 
-::: sidb.Sidb.get_sourcerefs
+::: sidb.Sidb.get_source_refs
     options:
         show_root_heading: true
         show_root_full_path: false
@@ -221,7 +221,7 @@ with Sidb.connect() as sidb:
         show_root_full_path: false
         heading_level: 3
 
-::: sidb.Sidb.delete_sourceref
+::: sidb.Sidb.delete_source_ref
     options:
         show_root_heading: true
         show_root_full_path: false

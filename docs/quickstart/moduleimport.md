@@ -75,7 +75,7 @@ pour simplifier les géométries de frontières. Le module d'importation créé 
 On lui donne un code, un nom en français et en anglais, et une échelle, pour pouvoir structurer la base.
 
 ```python
-  mapper = Mapper("Territory", sourceref=mysrcref)
+  mapper = Mapper("Territory", source_ref=mysrcref)
   mapper.add("Code", "WORLD", primarykey=True)
   mapper.add("Name@fr", "Monde")
   mapper.add("Name@en", "World")
@@ -92,7 +92,7 @@ leur importation) :
 
 ```python
 for row in df.to_dict(orient='records'):
-    mapper = Mapper('Territory', sourceref=mysrcref)
+    mapper = Mapper('Territory', source_ref=mysrcref)
     mapper.add("Code@isoa2", row["FIPS_10_"], primarykey=True)
     mapper.add("Code@isoa3", row['ISO_A3'])
     mapper.add("Name@fr", row['NAME_FR'])
@@ -120,7 +120,7 @@ Le fichier `nomenclature_nst2007/cmd_imp_nomenclature_nst2007.py` sert quand à 
 nomenclature NST2007 utilisée pour structurer les données sur les statistiques de transport de marchandises (Sitram).
 
 ```python
-  mapper = Mapper("Product", sourceref=mysrcref)
+  mapper = Mapper("Product", source_ref=mysrcref)
   mapper.add("Nomenclature", "NST2007")
   mapper.add("Name@fr", row['Intitulé'])
   mapper.add("Code", str(row['Code']), primarykey=True)
@@ -139,7 +139,7 @@ Une fois les départements et les produits de la nomenclature NST2007 importés,
 les données Sitram. Ces données décrivent des flux entre différents départements :
 
 ```python
-  mapper = Mapper("Pathflow", sourceref=mysrcref)
+  mapper = Mapper("Pathflow", source_ref=mysrcref)
   mapper.add("EmitterTerritoryCode@insee", row['département de chargement'])
   mapper.add("ReceiverTerritoryCode@insee", row['département de déchargement'])
   mapper.add("Year", year)

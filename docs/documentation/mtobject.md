@@ -18,7 +18,7 @@ Les fonctions ci-dessous sont donc accessibles pour tous les objets.
         - get_names
         - get_properties
         - get_properties_gen
-        - get_sourceref
+        - get_source_ref
         - get_children
         - is_in
 
