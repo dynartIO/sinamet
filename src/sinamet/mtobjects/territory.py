@@ -6,7 +6,7 @@ from .mtobject import MTObject
 
 
 class Territory(MTObject):
-    """Object territoire."""
+    """Table territoire."""
     __tablename__ = 'territory'
 
     id: Mapped[int] = mapped_column(ForeignKey('mtobject.id', ondelete='CASCADE'),
@@ -16,7 +16,7 @@ class Territory(MTObject):
         'polymorphic_identity': __tablename__,
     }
 
-    def __str__(self):
+    def __str__(self) -> str:
         _str_return = "<Territory-" + str(self.id) + ": " \
                     + str(self.get_code()) + "-" + str(self.get_name(force_cache=False, raise_none=False)) + ">"
         return _str_return

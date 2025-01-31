@@ -16,11 +16,11 @@ class Product(MTObject):
         'polymorphic_identity': __tablename__,
     }
 
-    def __str__(self):
+    def __str__(self) -> str:
         code = self.get_code(raise_none=False) or 'No code'
         name = self.get_name(raise_none=False) or 'No name'
         nomenclature = self.get_property('Nomenclature', raise_none=False) or 'No nomenclature'
         return f"<Product-{self.id}:{nomenclature}({code})-{name}>"
 
-    def str_hard_property(self):
+    def str_hard_property(self) -> str:
         return ""

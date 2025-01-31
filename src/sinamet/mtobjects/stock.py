@@ -25,7 +25,7 @@ class Stock(MTQuantifiable):
         'polymorphic_identity': __tablename__,
     }
 
-    def __str__(self):
+    def __str__(self) -> str:
         _strquantity = ""
         for key, val in self.quantity.items():
             _strquantity += str(val) + " " + key + " / "

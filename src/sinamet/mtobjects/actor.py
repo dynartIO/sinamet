@@ -21,10 +21,10 @@ class Actor(MTObject):
         'polymorphic_identity': __tablename__,
     }
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"<Actor|{self.get_name(raise_none=False)}>"
 
-    def str_hard_property(self):
+    def str_hard_property(self) -> str:
         str_ = f"Code(s) : {self.get_code(raise_none=False) or 'no code'}\n"
         str_ += f"Name(s) : {self.get_name(raise_none=False) or 'no name'}\n"
         return str_

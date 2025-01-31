@@ -27,7 +27,7 @@ class Gateflow(MTQuantifiable):
         'polymorphic_identity': __tablename__,
     }
 
-    def __str__(self):
+    def __str__(self) -> str:
         _strquantity = ""
         for key, val in self.quantity.items():
             _strquantity += str(val) + " " + key + " / "
@@ -45,7 +45,7 @@ class Gateflow(MTQuantifiable):
                (self.flowtype, self.id, self.product.get_name(),
                 self.str_period(), _strquantity, actor_terr)
 
-    def str_hard_property(self):
+    def str_hard_property(self) -> str:
         _str = "    {%s:%s}\n" % ("self.flowtype", self.flowtype)
         _str += "   {%s:%s}\n" % ("self.product", self.product)
         _str += "   {%s:%s}\n" % ("self.quantity", self.quantity)
@@ -55,6 +55,6 @@ class Gateflow(MTQuantifiable):
                                           self.date_start, self.date_end, self.date_point)
         return _str
 
-    def str_period(self):
+    def str_period(self) -> str:
         _str_time = "[" + str(self.date_start) + " -> " + str(self.date_end) + "]"
         return _str_time
