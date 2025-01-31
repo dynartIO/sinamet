@@ -32,7 +32,7 @@ from sinamet.tools.timext import get_start_end_dates, to_date
 
 
 class Sidb:
-    sessionmakers: dict[str, sessionmaker] = {}
+    sessionmakers: dict[str, sessionmaker[Session]] = {}
     sessions: list[Sidb] = []
 
     def __init__(self, session: Session):
@@ -43,7 +43,8 @@ class Sidb:
     @staticmethod
     def connect(autocommit: bool = True,
                 verbose: bool = False,
-                **kwargs) -> Iterator[Sidb]:
+                **kwargs: str
+                ) -> Iterator[Sidb]:
         """Gestionnaire de contexte permettant une connexion à la base de donnée.
 
         Parameters:
@@ -67,9 +68,9 @@ class Sidb:
         elif verbose:
             print(f"Found a sessionmaker for {config.current_environref=}.")
         session = Session()
+        sidb = Sidb(session)
+        Sidb.sessions.append(sidb)
         try:
-            sidb = Sidb(session)
-            Sidb.sessions.append(sidb)
             yield sidb
             if autocommit:
                 session.commit()
