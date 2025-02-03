@@ -18,11 +18,15 @@ def dictinit(sets, *args):
 
 
 def dictvalue0(listp):
-    return {p["namefield"]: p["value0"] for p in listp}
+    return {p["namefield"]: p["value0"] for p in listp if p["typefield"] not in ["title", "empty"]}
+
+
+def dictdefaultvalues(listp):
+    return {p["namefield"]: p["defaultvalue"] for p in listp if p["typefield"] not in ["title", "empty"]}
 
 
 def listnamesfields(listp):
-    return [p["namefield"] for p in listp]
+    return [p["namefield"] for p in listp if p["typefield"] not in ["title", "empty"]]
 
 
 def check_argv(default_params: Any = None) -> Any:
