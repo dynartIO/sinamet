@@ -1,7 +1,7 @@
 import hashlib
 import base64
+import unicodedata
 import re
-import unidecode
 
 
 def hexhash(string, length = 30):
@@ -20,6 +20,15 @@ def alphanumhash(*content, length=32):
     return myhash
 
 
-def minimize(string):
-    """Renvoie une chaine sans accent, ni caractères spéciaux, ni espacen en miniscule"""
-    return re.sub(r'\W+', '', unidecode.unidecode(string).lower())
+def minimize(string: str) -> str:
+    """Renvoie une chaine sans accents, ni caractères spéciaux, ni espace en miniscule"""
+    special_characters: dict[str, str] = {
+            'æ': 'ae',
+            'œ': 'oe',
+            'ß': 'ss',
+    }
+    nfkd_form = unicodedata.normalize('NFKD', string.lower())
+    unicode_lst = [c for c in nfkd_form if not unicodedata.combining(c)]
+    unicode_str = u''.join([special_characters[c] if c in special_characters else c
+                            for c in unicode_lst])
+    return re.sub('[^a-z0-9]', '', unicode_str)
