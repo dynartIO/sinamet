@@ -10,7 +10,8 @@ authors = [
 	{name = "Benoit Ribon", email = "b.ribon@dynartio.com"},
 	{email = "libadmin@sinamet.tech"},
 ]
-license = {file = "LICENSE"}
+license = "MIT"
+license-files = ["LICENSE"]
 classifiers = [
 	"License :: OSI Approved :: MIT License",
 	"Programming Language :: Python",
