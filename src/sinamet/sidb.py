@@ -6,11 +6,11 @@ from contextlib import contextmanager
 
 from datetime import date
 
-from typing import Any, Literal, TypeVar
+from typing import Any, Literal, Sequence, TypeVar
 
 import warnings
 
-from sqlalchemy import create_engine
+from sqlalchemy import ColumnElement, Engine, create_engine
 from sqlalchemy.orm import aliased
 from sqlalchemy.orm.exc import UnmappedInstanceError
 from sqlalchemy.orm.session import Session, object_session, sessionmaker
@@ -198,9 +198,10 @@ class Sidb:
         src_lst = self.session.scalars(
                 select(Property.source_ref).distinct()
                 ).all()
+        src_lst = set(filter(None, src_lst))
         if not subinclude:
             return sorted(src_lst)
-        temp_add = []
+        temp_add: list[str] = []
         for src in src_lst:
             temp = src.split(":")
             temp_compo = ""
@@ -209,7 +210,7 @@ class Sidb:
                 if temp_compo not in src_lst and temp_compo not in temp_add:
                     temp_add.append(temp_compo)
                 temp_compo += ":"
-        src_lst += temp_add
+        src_lst.update(temp_add)
         return sorted(src_lst)
 
     def get_statistics(self) -> dict[str, list[str] | int]:
@@ -225,12 +226,12 @@ class Sidb:
                 - La liste des sources de références.
                 - La liste des noms de propriétés.
         """
-        stats = {}
+        stats: dict[str, list[str] | int] = {}
         lstobjecttype = [Territory, Product, Actor, Stock, Gateflow, Pathflow, Property]
         for obj in lstobjecttype:
             stats[f"nb-mtobject-{obj.__tablename__}"] = self.session.scalar(
                                                             select(func.count(obj.id))
-                                                        )
+                                                        ) or 0
         stats["nomenclatures"] = self.get_list_nomenclatures()
         stats["scales"] = self.get_territory_scales()
 
@@ -239,7 +240,7 @@ class Sidb:
                     .join(Territory.properties)
                     .where((Property.name_a == 'Scale')
                            & (Property.value_literal == sc)))
-            stats["nb-scale-" + sc.lower()] = self.session.scalar(stmt)
+            stats["nb-scale-" + sc.lower()] = self.session.scalar(stmt) or 0
 
         stats["source_refs"] = self.get_source_refs(False)
         stats["property_name"] = [f"{a}{'' if b is None else f'@{b}'}"
@@ -248,15 +249,12 @@ class Sidb:
                                       .distinct()
                                       ).all()
                                   ]
-        stats["source_ref_name"] = self.session.scalars(
-                select(Property.source_ref).distinct()
-                ).all()
         return stats
 
     def get_properties(self, properties: Iterable[str] | str,
                        map_id: Select | list[int] | None = None,
                        startlike: bool = False,
-                       return_type: str = 'list') -> list[Property]:
+                       return_type: str = 'list') -> Sequence[Property]:
         """Charge et renvoie les propriétés correspondantes.
 
         Parameters:
@@ -275,7 +273,7 @@ class Sidb:
         if isinstance(properties, str):
             properties = (properties,)
         q = select(Property)
-        mysqllst = []
+        mysqllst: list[ColumnElement[bool]] = []
         for prop in properties:
             mytabname = Property.tabname(prop)
             if mytabname[1] is not None:
@@ -308,7 +306,7 @@ class Sidb:
                                                        'query', 'id',
                                                        'list', 'object',
                                                        'count']
-                                  ) -> Select | list[Any] | int:
+                                  ) -> Select | Sequence[Any] | int:
         match return_type:
             case 'qid' | 'queryid':
                 return qnq['id']
@@ -320,8 +318,9 @@ class Sidb:
                 return self.session.scalars(qnq['object']).unique().all()
             case 'count':
                 return self.session.scalar(
-                        select(func.count()).select_from(qnq['id'].distinct())
-                )
+                        select(func.count())
+                        .select_from(qnq['id'].distinct().subquery())
+                ) or 0
             case _:
                 raise ValueError(f'Unknown return type, got {return_type}')
 
@@ -347,7 +346,7 @@ class Sidb:
             s.update(cache_properties)
         self.get_properties(list(s), map_id=q_id)
 
-    def get_distinct_property_values(self, prop_name: str) -> list[str]:
+    def get_distinct_property_values(self, prop_name: str) -> Sequence[str | None]:
         """
         Renvoie toutes les valeurs distinctes de propriétés avec
         un certain nom.
@@ -418,9 +417,12 @@ class Sidb:
     def drop_all(self) -> None:
         """Ferme la session et supprime les tables de la base de donnée."""
         self.session.close()
-        engine = self.session.bind
-        engine.dispose()
-        DBObjectClassBase.metadata.drop_all(engine)
+        bind = self.session.bind
+        if not bind:
+            return
+        DBObjectClassBase.metadata.drop_all(bind)
+        if isinstance(bind, Engine):
+            bind.dispose()
 
     def reset(self) -> None:
         """
@@ -428,7 +430,8 @@ class Sidb:
         recrée.
         """
         self.drop_all()
-        DBObjectClassBase.metadata.create_all(self.session.bind)
+        if self.session.bind:
+            DBObjectClassBase.metadata.create_all(self.session.bind)
 
     def get_cache(self, obj_type: str, key: str, value: str) -> MTObject | None:
         """Récupère l'objet en cache associé aux paramètres.
