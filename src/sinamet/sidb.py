@@ -122,8 +122,8 @@ class Sidb:
             print(mapper)
 
         try:
-            if mapper.type in ["input", "output", "consumption", "production",
-                               "extraction", "emission", "internal"]:
+            if mapper.type in ('input', 'output', 'consumption', 'production',
+                               'extraction', 'emission'):
                 return self.load_gateflow(mapper, flowtype=mapper.type, verbose=verbose)
 
             # Call load function of mapper.type object.
