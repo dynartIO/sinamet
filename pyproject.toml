@@ -33,7 +33,7 @@ dynamic = ["version"]
 
 [project.urls]
 Documentation = "https://docs.sinamet.tech"
-"Source Code" = "https://github.com/dynartIO/sinamet"
+"Source Code" = "https://gitlab.com/dynartio/sinamet"
 
 [project.optional-dependencies]
 demo = [
