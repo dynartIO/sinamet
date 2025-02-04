@@ -16,27 +16,28 @@ if typing.TYPE_CHECKING:
 class Mapper():
     def __init__(self,
                  type: str,
-                 source_ref: str | None = None):
+                 source_ref: str | None = None
+                 ) -> None:
         """Constructeur du Mapper.
 
         Parameters:
             type: Le type d'objet lié au Mapper (Territory, Actor, ...)
             source_ref: La source de référence de l'objet.
         """
-        self.type = type.lower()
+        self.type: str = type.lower()
 
-        self.keys = []
-        self.values = []
-        self.date_start = []
-        self.date_end = []
-        self.date_point = []
-        self.source_refs = []
-        self.foreign_keys = []
-        self.primary_keys = []
-        self.unique = []
+        self.keys: list[str] = []
+        self.values: list[str | MTObject | Geometry] = []
+        self.date_start: list[date | None] = []
+        self.date_end: list[date | None] = []
+        self.date_point: list[date | None] = []
+        self.source_refs: list[str | None] = []
+        self.foreign_keys: list[bool] = []
+        self.primary_keys: list[bool] = []
+        self.unique: list[bool] = []
 
-        self.primary_key = -1
-        self.all_srcref = source_ref
+        self.primary_key: int = -1
+        self.all_srcref: str | None = source_ref
 
     def __str__(self) -> str:
         st = "MAPPER : Type " + self.type + " ------------\n"
@@ -82,7 +83,7 @@ class Mapper():
             raise ValueError(f"Several corresponding key '{key}'"
                              "have been found. Only one was expected.")
 
-    def get_dict_i(self, index: int) -> dict[str, str]:
+    def get_dict_i(self, index: int) -> dict[str, Any]:
         """Renvoie le dictionnaire correspondant à un index.
 
         Parameters:
@@ -101,7 +102,7 @@ class Mapper():
                 - `unique`: Si la propriété, doit être unique pour l'objet.
                 - `source_ref`: La source de référence de la propriété.
         """
-        dic = {}
+        dic: dict[str, Any] = {}
         dic["key"] = self.keys[index]
         dic["value"] = self.values[index]
         dic["type_value"] = None  # :todo: Implementation ???
@@ -150,7 +151,7 @@ class Mapper():
         Returns:
             La liste des indexs correspondants.
         """
-        lst_key = []
+        lst_key: list[int] = []
         for index, k in enumerate(self.keys):
             if k == key and exact:
                 lst_key.append(index)
@@ -194,9 +195,14 @@ class Mapper():
             year: L'année de la propriété.
             month: Le mois de la propriété.
             source_ref: La source de référence de la propriété.
-            primary_key: Indique si la propriété est une [clé primaire](../quickstart/indepth.md#cles-primaires-et-etrangeres) (uniquement pour les `Code` ou `Name`)
-            foreign_key: Indique si la propriété est une [clé étrangère](../quickstart/indepth.md#cles-primaires-et-etrangeres) (uniquement pour les `Code` ou `Name`)
-            unique: Vérifie l'unicité de la propriété avant de l'associer au MTObject (En développement).
+            primary_key: Indique si la propriété est une
+                [clé primaire](../quickstart/indepth.md#cles-primaires-et-etrangeres)
+                (uniquement pour les `Code` ou `Name`)
+            foreign_key: Indique si la propriété est une
+                [clé étrangère](../quickstart/indepth.md#cles-primaires-et-etrangeres)
+                (uniquement pour les `Code` ou `Name`)
+            unique: Vérifie l'unicité de la propriété avant de l'associer au MTObject
+                (En développement).
         """
         # To depreciate
         if key == "SourceRef":
@@ -242,7 +248,11 @@ class Mapper():
 
 
 class MapperError(Exception):
-    def __init__(self, mapper: Mapper, result: dict[str, str], key: str):
+    def __init__(self,
+                 mapper: Mapper,
+                 result: dict[str, str],
+                 key: str
+                 ) -> None:
         self.mapper = mapper
         self.result = result
         self.key = key
