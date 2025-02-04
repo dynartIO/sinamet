@@ -14,4 +14,4 @@ from .mtobjects import Gateflow
 from .mtobjects import Stock
 from .mtobjects import Property
 
-__version__ = '0.0.1'
+__version__ = '0.0.2'
