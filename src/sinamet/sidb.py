@@ -1722,7 +1722,7 @@ class Sidb:
     def get_gateflows(self,
                       target: list[Territory | Actor] = [],
                       flowtype: Literal['input', 'output',
-                                        'comsumption',
+                                        'consumption',
                                         'production',
                                         'extraction',
                                         'emission', None] = None,
@@ -1749,7 +1749,7 @@ class Sidb:
 
         Parameters:
             target: Le territoire et/ou l'acteur lié(s) aux flux.
-            flowtype: Type de flux, peut être `input`, `output`, `comsumption`,
+            flowtype: Type de flux, peut être `input`, `output`, `consumption`,
                 `production`, `extraction` ou `emission`.
             product: Le produit lié aux flux.
             product_asc: Effectue une recherche ascendante sur le produit,
@@ -1864,7 +1864,7 @@ class Sidb:
     def load_gateflow(self,
                       mapper: Mapper,
                       flowtype: Literal['input', 'output',
-                                        'comsumption',
+                                        'consumption',
                                         'production',
                                         'extraction',
                                         'emission', None] = None,
