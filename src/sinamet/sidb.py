@@ -57,10 +57,8 @@ class Sidb:
         if not Session:
             if verbose:
                 print(f"No sessionmaker found for {config.current_environref=}.")
-            if "COREDB_PATH" not in config:
+            if not (db_path := config.get('COREDB_PATH')):
                 db_path = config.init_db(verbose=verbose, **kwargs)
-            else:
-                db_path = config["COREDB_PATH"]
             engine = create_engine(db_path)
             DBObjectClassBase.metadata.create_all(engine)
             Session = sessionmaker(engine)

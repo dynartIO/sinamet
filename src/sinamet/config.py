@@ -29,6 +29,12 @@ class SinametConfig:
             return False
         return item in self.configs[self.current_environref]
 
+    def get(self, key: str, default: Any | None = None) -> Any | None:
+        try:
+            return self[key]
+        except KeyError:
+            return default
+
     def init_key(self,
                  key: str,
                  value: str | None = None,
