@@ -6,7 +6,7 @@ from contextlib import contextmanager
 
 from datetime import date
 
-from typing import Any, Literal, Sequence, TypeVar
+from typing import Any, Literal, Sequence, TypeVar, overload
 
 import warnings
 
@@ -306,7 +306,7 @@ class Sidb:
                                                        'query', 'id',
                                                        'list', 'object',
                                                        'count']
-                                  ) -> Select | Sequence[Any] | int:
+                                  ) -> Select | Sequence | int:
         match return_type:
             case 'qid' | 'queryid':
                 return qnq['id']
@@ -481,7 +481,9 @@ class Sidb:
                                      ] = 'warn_list',
                       verbose: bool = False,
                       **kwargs
-                      ) -> Territory | int | Select | None:
+                      ) -> (Territory | int |
+                            Sequence[Territory] | Sequence[int] |
+                            Select[tuple[Territory | int]] | None):
         """Trouve un territoire.
 
         Examples:
@@ -552,7 +554,8 @@ class Sidb:
                                              ] = 'list',
                         cache_properties: list[str] = [],
                         verbose: bool = False,
-                        ) -> list[Territory] | list[int] | int | Select:
+                        ) -> (Sequence[Territory] | Sequence[int] | int |
+                              Select[tuple[Territory | int]]):
         """ Trouve plusieurs territoires.
 
         Args:
@@ -608,7 +611,8 @@ class Sidb:
                                                 'count',
                                                 ] = "list",
                            verbose: bool = False
-                           ) -> list[Territory] | list[int] | int | Select:
+                           ) -> (Sequence[Territory] | Sequence[int] | int |
+                                 Select[tuple[Territory | int]]):
         """Trouve des territoires contenus dans un territoire.
 
         Args:
@@ -652,7 +656,8 @@ class Sidb:
                                                 'qid',
                                                 'count',
                                                 ] = "list",
-                           ) -> list[Territory] | list[int] | int | Select:
+                           ) -> (Sequence[Territory] | Sequence[int] | int |
+                                 Select[tuple[Territory | int]]):
         """Trouve des territoires contenant le territoire.
 
         Args:
@@ -694,7 +699,9 @@ class Sidb:
                                                                 'qid',
                                                                 'count',
                                                                 ] = 'list',
-                                           ) -> list[Territory] | list[int] | int | Select:
+                                           ) -> (Sequence[Territory] |
+                                                 Sequence[int] | int |
+                                                 Select[tuple[Territory | int]]):
         """Trouve les territoires contenant `name_code` dans leurs noms ou codes.
 
         Args:
@@ -737,7 +744,7 @@ class Sidb:
         self.compute_query_cache_properties(cache_properties, return_type, q['id'])
         return result
 
-    def get_territory_scales(self) -> list[str]:
+    def get_territory_scales(self) -> Sequence[str | None]:
         """Renvoie la liste des différentes échelles des territoires."""
         stmt = select(Property.value_literal).filter_by(name_a='Scale').distinct()
         return self.session.scalars(stmt).all()
@@ -815,7 +822,9 @@ class Sidb:
                                  ] = 'warn_list',
                   verbose: bool = False,
                   **kwargs
-                  ) -> Actor | int | Select | None:
+                  ) -> (Actor | int |
+                        Sequence[Actor] | Sequence[int] |
+                        Select[tuple[Actor | int]] | None):
         """Trouve un acteur.
 
         Examples:
@@ -887,7 +896,8 @@ class Sidb:
                                         ] = 'list',
                    cache_properties: list[str] = [],
                    verbose: bool = False,
-                   ) -> list[Actor] | list[int] | int | Select:
+                   ) -> (Sequence[Actor] | Sequence[int] | int |
+                         Select[tuple[Actor | int]]):
         """Trouve plusieurs acteurs.
 
         Examples:
@@ -945,7 +955,8 @@ class Sidb:
                                            'count',
                                            ] = "list",
                       verbose: bool = False
-                      ) -> list[Actor] | list[int] | int | Select:
+                      ) -> (Sequence[Actor] | Sequence[int] | int |
+                            Select[tuple[Actor | int]]):
         """Trouve des acteurs contenus dans un territoire ou dans un autre acteur.
 
         Args:
@@ -994,7 +1005,8 @@ class Sidb:
                                            'qid',
                                            'count',
                                            ] = "list",
-                      ) -> list[Territory] | list[int] | int | Select:
+                      ) -> (Sequence[Actor] | Sequence[int] | int |
+                            Select[tuple[Actor | int]]):
         """Trouve des acteurs contenant un autre acteur.
 
         Args:
@@ -1035,7 +1047,7 @@ class Sidb:
                                                'count',
                                                ] = "list",
                           verbose: bool = False
-                          ) -> list[Actor] | int | Select:
+                          ) -> Sequence[Actor] | int | Select:
         """Trouve les acteurs correspondants aux identifiants.
 
         Args:
@@ -1078,7 +1090,8 @@ class Sidb:
                                                            'qid',
                                                            'count',
                                                            ] = 'list',
-                                      ) -> list[Actor] | list[int] | int | Select:
+                                      ) -> (Sequence[Actor] | Sequence[int] |
+                                            int | Select[tuple[Actor | int]]):
         """Trouve les acteurs contenant `name_code` dans leurs noms ou codes.
 
         Args:
@@ -1196,7 +1209,9 @@ class Sidb:
                                    ] = 'warn_list',
                     verbose: bool = False,
                     **kwargs
-                    ) -> Product | int | Select | None:
+                    ) -> (Product | int |
+                          Sequence[Product] | Sequence[int] |
+                          Select[tuple[Product | int]] | None):
         """Trouve un produit.
 
         Args:
@@ -1239,8 +1254,7 @@ class Sidb:
             ValueError: Si les critères de recherche sont mauvais.
 
         """
-
-        #FutureDev : Implementer l'option "use_alias" (True par design)
+        # FutureDev : Implementer l'option "use_alias" (True par design)
         return self.get_mtobject_tap(Product,
                                      *args,
                                      nomenclature=nomenclature,
@@ -1270,7 +1284,8 @@ class Sidb:
                      cache_properties: list[str] = [],
                      nomenclature: str | None = None,
                      verbose: bool = False,
-                     ) -> list[Product] | list[int] | int | Select:
+                     ) -> (Sequence[Product] | Sequence[int] | int |
+                           Select[tuple[Product | int]]):
         """Trouve plusieurs produits.
 
         Args:
@@ -1324,7 +1339,8 @@ class Sidb:
                                                  'count',
                                                  ] = "list",
                             verbose: bool = False
-                            ) -> list[Product] | int | Select:
+                            ) -> (Sequence[Product] | int |
+                                  Select[tuple[Product | int]]):
         """Trouve les produits correspondants aux identifiants.
 
         Args:
@@ -1362,7 +1378,8 @@ class Sidb:
                                              'count',
                                              ] = "list",
                         verbose: bool = False
-                        ) -> list[Product] | list[int] | int | Select:
+                        ) -> (Sequence[Product] | Sequence[int] | int |
+                              Select[tuple[Product | int]]):
         """Trouve des produits inclus dans le produit `product`.
 
         Args:
@@ -1404,7 +1421,8 @@ class Sidb:
                                              'qid',
                                              'count',
                                              ] = "list",
-                        ) -> list[Product] | list[int] | int | Select:
+                        ) -> (Sequence[Product] | Sequence[int] | int |
+                              Select[tuple[Product | int]]):
         """Trouve les produits incluant le produit `product`.
 
         Args:
@@ -1443,7 +1461,8 @@ class Sidb:
                                               'count',
                                               ] = "list",
                          verbose: bool = False,
-                         ) -> list[Product] | list[int] | int | Select:
+                         ) -> (Sequence[Product] | Sequence[int] | int |
+                               Select[tuple[Product | int]]):
         """Trouve des produits par nomenclature.
 
         Args:
@@ -2162,9 +2181,66 @@ class Sidb:
             raise MapperError(mapper, result, "product")
 
     # MTObject's common methods
-    def get_mtobject_with_id(self, id: int) -> MTObject:
+    def get_mtobject_with_id(self, id: int) -> MTObject | None:
         """Renvoie l'objet correspondant à un identifiant."""
         return self.session.get(MTObject, id)
+
+    @overload
+    def get_mtobject_tap(self,
+                         mtobject_class: type[Territory],
+                         *args,
+                         like_value: bool = False,
+                         ignore_case: bool = False,
+                         ignore_accent: bool = False,
+                         return_type: Literal['object', 'id',
+                                              'queryid', 'qid',
+                                              'query'] = 'object',
+                         raise_none: bool = True,
+                         multi: Literal['raise', 'warn_first',
+                                        'warn_list', 'first',
+                                        'list'] = "warn_list",
+                         nomenclature: str | None = None,
+                         verbose: bool = False,
+                         **kwargs
+                         ) -> Territory | Sequence[Territory] | int | Select | None: ...
+
+    @overload
+    def get_mtobject_tap(self,
+                         mtobject_class: type[Actor],
+                         *args,
+                         like_value: bool = False,
+                         ignore_case: bool = False,
+                         ignore_accent: bool = False,
+                         return_type: Literal['object', 'id',
+                                              'queryid', 'qid',
+                                              'query'] = 'object',
+                         raise_none: bool = True,
+                         multi: Literal['raise', 'warn_first',
+                                        'warn_list', 'first',
+                                        'list'] = "warn_list",
+                         nomenclature: str | None = None,
+                         verbose: bool = False,
+                         **kwargs
+                         ) -> Actor | Sequence[Actor] | int | Select | None: ...
+
+    @overload
+    def get_mtobject_tap(self,
+                         mtobject_class: type[Product],
+                         *args,
+                         like_value: bool = False,
+                         ignore_case: bool = False,
+                         ignore_accent: bool = False,
+                         return_type: Literal['object', 'id',
+                                              'queryid', 'qid',
+                                              'query'] = 'object',
+                         raise_none: bool = True,
+                         multi: Literal['raise', 'warn_first',
+                                        'warn_list', 'first',
+                                        'list'] = "warn_list",
+                         nomenclature: str | None = None,
+                         verbose: bool = False,
+                         **kwargs
+                         ) -> Product | Sequence[Product] | int | Select | None: ...
 
     def get_mtobject_tap(self,
                          mtobject_class: type[Territory | Actor | Product],
@@ -2182,7 +2258,9 @@ class Sidb:
                          nomenclature: str | None = None,
                          verbose: bool = False,
                          **kwargs
-                         ) -> Territory | Actor | Product | int | Select | None:
+                         ) -> (Territory | Actor | Product | Sequence[Territory] |
+                               Sequence[Actor] | Sequence[Product] | int
+                               | Select | None):
 
         if mtobject_class not in [Actor, Territory, Product]:
             raise TypeError(f"mtobject_class has to be Actor, Territory or Product, got {mtobject_class}")
@@ -2245,7 +2323,7 @@ class Sidb:
             print("Build query = ", q["object"])
 
         result = self.compute_query_return_type(q, return_type)
-        if isinstance(result, Select):
+        if isinstance(result, (Select, int)):
             return result
         if verbose:
             print(result, len(result))
@@ -2278,6 +2356,54 @@ class Sidb:
                 self.get_properties(["Name", "Code"], map_id=q["id"])
                 return result
 
+    @overload
+    def get_mtobjects_tap(self,
+                          mtobject_class: type[Territory],
+                          *args,
+                          like_value: bool = False,
+                          ignore_case: bool = False,
+                          ignore_accent: bool = False,
+                          map_id: Iterable[int] | int | Select = [],
+                          return_type: Literal['list', 'object',
+                                               'id', 'queryid', 'qid',
+                                               'query', 'count'] = 'list',
+                          cache_properties: list[str] = [],
+                          nomenclature: str | None = None,
+                          verbose: bool = False,
+                          ) -> (Sequence[Territory] | Sequence[int] | Select | int): ...
+
+    @overload
+    def get_mtobjects_tap(self,
+                          mtobject_class: type[Actor],
+                          *args,
+                          like_value: bool = False,
+                          ignore_case: bool = False,
+                          ignore_accent: bool = False,
+                          map_id: Iterable[int] | int | Select = [],
+                          return_type: Literal['list', 'object',
+                                               'id', 'queryid', 'qid',
+                                               'query', 'count'] = 'list',
+                          cache_properties: list[str] = [],
+                          nomenclature: str | None = None,
+                          verbose: bool = False,
+                          ) -> (Sequence[Actor] | Sequence[int] | Select | int): ...
+
+    @overload
+    def get_mtobjects_tap(self,
+                          mtobject_class: type[Product],
+                          *args,
+                          like_value: bool = False,
+                          ignore_case: bool = False,
+                          ignore_accent: bool = False,
+                          map_id: Iterable[int] | int | Select = [],
+                          return_type: Literal['list', 'object',
+                                               'id', 'queryid', 'qid',
+                                               'query', 'count'] = 'list',
+                          cache_properties: list[str] = [],
+                          nomenclature: str | None = None,
+                          verbose: bool = False,
+                          ) -> (Sequence[Product] | Sequence[int] | Select | int): ...
+
     def get_mtobjects_tap(self,
                           mtobject_class: type[Territory | Actor | Product],
                           *args,
@@ -2291,8 +2417,8 @@ class Sidb:
                           cache_properties: list[str] = [],
                           nomenclature: str | None = None,
                           verbose: bool = False,
-                          ) -> (list[Territory] | list[Actor] | list[Product] |
-                                list[int] | Select | int):
+                          ) -> (Sequence[Territory] | Sequence[Actor] | Sequence[Product] |
+                                Sequence[int] | Select | int):
         if mtobject_class not in [Actor, Territory, Product]:
             raise TypeError(f"mtobject_class has to be Actor, Territory or Product, got '{mtobject_class}'.")
         if return_type not in (_list := ["list", "object", "id", "queryid", "qid", "query", "count"]):
@@ -2412,8 +2538,9 @@ class Sidb:
                                                   'id', 'queryid', 'qid',
                                                   'query', 'count'] = 'list',
                              verbose: bool = False
-                             ) -> (list[Territory] | list[Actor] | list[Product] |
-                                   list[int] | Select | int):
+                             ) -> (Sequence[Territory] | Sequence[Actor] |
+                                   Sequence[Product] | Sequence[int] |
+                                   Select | int):
         if verbose:
             print(f"-------- GET MTOBJECT IN | {type(mtobject)=}")
 
@@ -2478,9 +2605,8 @@ class Sidb:
                     q[nq] = q[nq].where(property2_alias.name_a == "Scale")
                     q[nq] = q[nq].where(property2_alias.value_literal == scale)
         else:
-            print()
-            raise AttributeError("Distinct type are not defined yet [Initial_look_in = "
-                                 f"{type(mtobject)}| return_type = {type(returnmtobjecttype)}]")
+            raise TypeError("Distinct type are not defined yet [Initial_look_in = "
+                            f"{type(mtobject)}| return_type = {type(returnmtobjecttype)}]")
 
         returnval = self.compute_query_return_type(q, return_type)
         self.compute_query_cache_properties(cache_properties, return_type, q['id'])
@@ -2490,7 +2616,7 @@ class Sidb:
                              mtobject: (Territory | Actor | Product |
                                         list[Territory] | list[Actor] |
                                         list[Product] | int),
-                             mtobject_to_return: type[Territory, Actor, Product],
+                             mtobject_to_return: type[Territory | Actor | Product],
                              scale: str | None = None,
                              self_include: bool = False,
                              cache_properties: list[str] = [],
@@ -2507,7 +2633,7 @@ class Sidb:
             id_start = mtobject.id
             type_mtobject = type(mtobject)
         elif isinstance(mtobject, int):
-            id_start = mtobject.id
+            id_start = mtobject
             type_mtobject = mtobject_to_return
         elif isinstance(mtobject, (list, tuple)):
             if isinstance(mtobject[0], int):
@@ -2649,7 +2775,7 @@ class Sidb:
         self.compute_query_cache_properties(cache_properties, return_type, q['id'])
         return result
 
-    def cache_mtobject_properties(self, mtobject: MTObject) -> list[Property]:
+    def cache_mtobject_properties(self, mtobject: MTObject) -> Sequence[Property]:
         """Met en cache les propriétés d'un MTObject"""
         return self.session.scalars(
             select(Property)
@@ -2785,8 +2911,8 @@ class Sidb:
                                                   'query', 'id',
                                                   'list', 'object',
                                                   'count'] = 'list'
-                             ) -> (list[Territory] | list[Actor] |
-                                   list[Product] | list[int] |
+                             ) -> (Sequence[Territory] | Sequence[Actor] |
+                                   Sequence[Product] | Sequence[int] |
                                    Select | int):
         """Récupère les parents directs d'un objet.
 
