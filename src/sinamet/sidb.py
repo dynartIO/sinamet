@@ -6,7 +6,7 @@ from contextlib import contextmanager
 
 from datetime import date
 
-from typing import Any, Literal, Sequence, TypeVar, overload
+from typing import Literal, Sequence, overload
 
 import warnings
 
@@ -461,29 +461,107 @@ class Sidb:
         self.cache = {}
 
     # Territory
-    def get_territory(self,
-                      *args,
-                      like_value: bool = False,
-                      ignore_case: bool = False,
-                      ignore_accent: bool = False,
-                      return_type: Literal['object',
-                                           'id',
-                                           'query',
-                                           'queryid',
-                                           'qid',
-                                           ] = 'object',
-                      raise_none: bool = True,
-                      multi: Literal['raise',
-                                     'first',
-                                     'list',
-                                     'warn_list',
-                                     'warn_first',
-                                     ] = 'warn_list',
-                      verbose: bool = False,
-                      **kwargs
-                      ) -> (Territory | int |
-                            Sequence[Territory] | Sequence[int] |
-                            Select[tuple[Territory | int]] | None):
+    @overload
+    def get_territory(
+            self,
+            *args,
+            like_value: bool = False,
+            ignore_case: bool = False,
+            ignore_accent: bool = False,
+            return_type: Literal['object'] = 'object',
+            raise_none: bool = True,
+            multi: Literal['raise',
+                           'first',
+                           'list',
+                           'warn_list',
+                           'warn_first',
+                           ] = 'warn_list',
+            verbose: bool = False,
+            **kwargs
+            ) -> (Territory | Sequence[Territory] | None): ...
+
+    @overload
+    def get_territory(
+            self,
+            *args,
+            like_value: bool = False,
+            ignore_case: bool = False,
+            ignore_accent: bool = False,
+            return_type: Literal['id'],
+            raise_none: bool = True,
+            multi: Literal['raise',
+                           'first',
+                           'list',
+                           'warn_list',
+                           'warn_first',
+                           ] = 'warn_list',
+            verbose: bool = False,
+            **kwargs
+            ) -> (int | Sequence[int] | None): ...
+
+    @overload
+    def get_territory(
+            self,
+            *args,
+            like_value: bool = False,
+            ignore_case: bool = False,
+            ignore_accent: bool = False,
+            return_type: Literal['query'],
+            raise_none: bool = True,
+            multi: Literal['raise',
+                           'first',
+                           'list',
+                           'warn_list',
+                           'warn_first',
+                           ] = 'warn_list',
+            verbose: bool = False,
+            **kwargs
+            ) -> Select[tuple[Territory]]: ...
+
+    @overload
+    def get_territory(
+            self,
+            *args,
+            like_value: bool = False,
+            ignore_case: bool = False,
+            ignore_accent: bool = False,
+            return_type: Literal['queryid', 'qid'],
+            raise_none: bool = True,
+            multi: Literal['raise',
+                           'first',
+                           'list',
+                           'warn_list',
+                           'warn_first',
+                           ] = 'warn_list',
+            verbose: bool = False,
+            **kwargs
+            ) -> Select[tuple[int]]: ...
+
+    def get_territory(
+            self,
+            *args,
+            like_value: bool = False,
+            ignore_case: bool = False,
+            ignore_accent: bool = False,
+            return_type: Literal['object',
+                                 'id',
+                                 'query',
+                                 'queryid',
+                                 'qid',
+                                 ] = 'object',
+            raise_none: bool = True,
+            multi: Literal['raise',
+                           'first',
+                           'list',
+                           'warn_list',
+                           'warn_first',
+                           ] = 'warn_list',
+            verbose: bool = False,
+            **kwargs
+            ) -> (Territory | int |
+                  Sequence[Territory] | Sequence[int] |
+                  Select[tuple[Territory]] | Select[tuple[int]] |
+                  None):
         """Trouve un territoire.
 
         Examples:
@@ -538,24 +616,90 @@ class Sidb:
                                      verbose=verbose,
                                      **kwargs)
 
-    def get_territories(self,
-                        *args,
-                        like_value: bool = False,
-                        ignore_case: bool = False,
-                        ignore_accent: bool = False,
-                        map_id: Iterable[int] | int | Select = [],
-                        return_type: Literal['list',
-                                             'object',
-                                             'id',
-                                             'query',
-                                             'queryid',
-                                             'qid',
-                                             'count',
-                                             ] = 'list',
-                        cache_properties: list[str] = [],
-                        verbose: bool = False,
-                        ) -> (Sequence[Territory] | Sequence[int] | int |
-                              Select[tuple[Territory | int]]):
+    @overload
+    def get_territories(
+            self,
+            *args,
+            like_value: bool = False,
+            ignore_case: bool = False,
+            ignore_accent: bool = False,
+            map_id: Iterable[int] | int | Select | None = None,
+            return_type: Literal['list', 'object'] = 'list',
+            cache_properties: list[str] = [],
+            verbose: bool = False,
+            ) -> Sequence[Territory]: ...
+
+    @overload
+    def get_territories(
+            self,
+            *args,
+            like_value: bool = False,
+            ignore_case: bool = False,
+            ignore_accent: bool = False,
+            map_id: Iterable[int] | int | Select | None = None,
+            return_type: Literal['id'],
+            cache_properties: list[str] = [],
+            verbose: bool = False,
+            ) -> Sequence[int]: ...
+
+    @overload
+    def get_territories(
+            self,
+            *args,
+            like_value: bool = False,
+            ignore_case: bool = False,
+            ignore_accent: bool = False,
+            map_id: Iterable[int] | int | Select | None = None,
+            return_type: Literal['count'],
+            cache_properties: list[str] = [],
+            verbose: bool = False,
+            ) -> int: ...
+
+    @overload
+    def get_territories(
+            self,
+            *args,
+            like_value: bool = False,
+            ignore_case: bool = False,
+            ignore_accent: bool = False,
+            map_id: Iterable[int] | int | Select | None = None,
+            return_type: Literal['query'],
+            cache_properties: list[str] = [],
+            verbose: bool = False,
+            ) -> Select[tuple[Territory]]: ...
+
+    @overload
+    def get_territories(
+            self,
+            *args,
+            like_value: bool = False,
+            ignore_case: bool = False,
+            ignore_accent: bool = False,
+            map_id: Iterable[int] | int | Select | None = None,
+            return_type: Literal['queryid', 'qid'],
+            cache_properties: list[str] = [],
+            verbose: bool = False,
+            ) -> Select[tuple[int]]: ...
+
+    def get_territories(
+            self,
+            *args,
+            like_value: bool = False,
+            ignore_case: bool = False,
+            ignore_accent: bool = False,
+            map_id: Iterable[int] | int | Select | None = None,
+            return_type: Literal['list',
+                                 'object',
+                                 'id',
+                                 'query',
+                                 'queryid',
+                                 'qid',
+                                 'count',
+                                 ] = 'list',
+            cache_properties: list[str] = [],
+            verbose: bool = False,
+            ) -> (Sequence[Territory] | Sequence[int] | int |
+                  Select[tuple[Territory]] | Select[tuple[int]]):
         """ Trouve plusieurs territoires.
 
         Args:
@@ -597,22 +741,78 @@ class Sidb:
                                       cache_properties=cache_properties,
                                       verbose=verbose)
 
-    def get_territories_in(self,
-                           territory: Territory,
-                           scale: str | None = None,
-                           self_include: bool = True,
-                           cache_properties: list[str] = [],
-                           return_type: Literal['list',
-                                                'object',
-                                                'id',
-                                                'query',
-                                                'queryid',
-                                                'qid',
-                                                'count',
-                                                ] = "list",
-                           verbose: bool = False
-                           ) -> (Sequence[Territory] | Sequence[int] | int |
-                                 Select[tuple[Territory | int]]):
+    @overload
+    def get_territories_in(
+            self,
+            territory: Territory | Sequence[Territory],
+            return_type: Literal['list', 'object'] = 'list',
+            scale: str | None = None,
+            self_include: bool = True,
+            cache_properties: list[str] = [],
+            verbose: bool = False
+            ) -> Sequence[Territory]: ...
+
+    @overload
+    def get_territories_in(
+            self,
+            territory: Territory | Sequence[Territory],
+            return_type: Literal['id'],
+            scale: str | None = None,
+            self_include: bool = True,
+            cache_properties: list[str] = [],
+            verbose: bool = False
+            ) -> Sequence[int]: ...
+
+    @overload
+    def get_territories_in(
+            self,
+            territory: Territory | Sequence[Territory],
+            return_type: Literal['count'],
+            scale: str | None = None,
+            self_include: bool = True,
+            cache_properties: list[str] = [],
+            verbose: bool = False
+            ) -> int: ...
+
+    @overload
+    def get_territories_in(
+            self,
+            territory: Territory | Sequence[Territory],
+            return_type: Literal['query'],
+            scale: str | None = None,
+            self_include: bool = True,
+            cache_properties: list[str] = [],
+            verbose: bool = False
+            ) -> Select[tuple[Territory]]: ...
+
+    @overload
+    def get_territories_in(
+            self,
+            territory: Territory | Sequence[Territory],
+            return_type: Literal['queryid', 'qid'],
+            scale: str | None = None,
+            self_include: bool = True,
+            cache_properties: list[str] = [],
+            verbose: bool = False
+            ) -> Select[tuple[int]]: ...
+
+    def get_territories_in(
+            self,
+            territory: Territory | Sequence[Territory],
+            return_type: Literal['list',
+                                 'object',
+                                 'id',
+                                 'query',
+                                 'queryid',
+                                 'qid',
+                                 'count',
+                                 ] = 'list',
+            scale: str | None = None,
+            self_include: bool = True,
+            cache_properties: list[str] = [],
+            verbose: bool = False
+            ) -> (Sequence[Territory] | Sequence[int] | int |
+                  Select[tuple[Territory]] | Select[tuple[int]]):
         """Trouve des territoires contenus dans un territoire.
 
         Args:
@@ -643,21 +843,72 @@ class Sidb:
                                          return_type=return_type,
                                          verbose=verbose)
 
-    def get_territories_on(self,
-                           territory: Territory,
-                           scale: str | None = None,
-                           self_include: bool = True,
-                           cache_properties: list[str] = [],
-                           return_type: Literal['list',
-                                                'object',
-                                                'id',
-                                                'query',
-                                                'queryid',
-                                                'qid',
-                                                'count',
-                                                ] = "list",
-                           ) -> (Sequence[Territory] | Sequence[int] | int |
-                                 Select[tuple[Territory | int]]):
+    @overload
+    def get_territories_on(
+            self,
+            territory: Territory | Sequence[Territory],
+            return_type: Literal['list', 'object'] = 'list',
+            scale: str | None = None,
+            self_include: bool = True,
+            cache_properties: list[str] = [],
+            ) -> Sequence[Territory]: ...
+
+    @overload
+    def get_territories_on(
+            self,
+            territory: Territory | Sequence[Territory],
+            return_type: Literal['id'],
+            scale: str | None = None,
+            self_include: bool = True,
+            cache_properties: list[str] = [],
+            ) -> Sequence[int]: ...
+
+    @overload
+    def get_territories_on(
+            self,
+            territory: Territory | Sequence[Territory],
+            return_type: Literal['count'],
+            scale: str | None = None,
+            self_include: bool = True,
+            cache_properties: list[str] = [],
+            ) -> int: ...
+
+    @overload
+    def get_territories_on(
+            self,
+            territory: Territory | Sequence[Territory],
+            return_type: Literal['query'],
+            scale: str | None = None,
+            self_include: bool = True,
+            cache_properties: list[str] = [],
+            ) -> Select[tuple[Territory]]: ...
+
+    @overload
+    def get_territories_on(
+            self,
+            territory: Territory | Sequence[Territory],
+            return_type: Literal['queryid', 'qid'],
+            scale: str | None = None,
+            self_include: bool = True,
+            cache_properties: list[str] = [],
+            ) -> Select[tuple[int]]: ...
+
+    def get_territories_on(
+            self,
+            territory: Territory | Sequence[Territory],
+            return_type: Literal['list',
+                                 'object',
+                                 'id',
+                                 'query',
+                                 'queryid',
+                                 'qid',
+                                 'count',
+                                 ] = 'list',
+            scale: str | None = None,
+            self_include: bool = True,
+            cache_properties: list[str] = [],
+            ) -> (Sequence[Territory] | Sequence[int] | int |
+                  Select[tuple[Territory]] | Select[tuple[int]]):
         """Trouve des territoires contenant le territoire.
 
         Args:
@@ -688,20 +939,60 @@ class Sidb:
                                          cache_properties=cache_properties,
                                          return_type=return_type)
 
-    def get_all_territories_like_name_code(self,
-                                           name_code: str,
-                                           cache_properties: list[str] = [],
-                                           return_type: Literal['list',
-                                                                'object',
-                                                                'id',
-                                                                'query',
-                                                                'queryid',
-                                                                'qid',
-                                                                'count',
-                                                                ] = 'list',
-                                           ) -> (Sequence[Territory] |
-                                                 Sequence[int] | int |
-                                                 Select[tuple[Territory | int]]):
+    @overload
+    def get_all_territories_like_name_code(
+            self,
+            name_code: str,
+            return_type: Literal['list', 'object'] = 'list',
+            cache_properties: list[str] = [],
+            ) -> Sequence[Territory]: ...
+
+    @overload
+    def get_all_territories_like_name_code(
+            self,
+            name_code: str,
+            return_type: Literal['id'],
+            cache_properties: list[str] = [],
+            ) -> Sequence[int]: ...
+
+    @overload
+    def get_all_territories_like_name_code(
+            self,
+            name_code: str,
+            return_type: Literal['count'],
+            cache_properties: list[str] = [],
+            ) -> int: ...
+
+    @overload
+    def get_all_territories_like_name_code(
+            self,
+            name_code: str,
+            return_type: Literal['query'],
+            cache_properties: list[str] = [],
+            ) -> Select[tuple[Territory]]: ...
+
+    @overload
+    def get_all_territories_like_name_code(
+            self,
+            name_code: str,
+            return_type: Literal['queryid', 'qid'],
+            cache_properties: list[str] = [],
+            ) -> Select[tuple[int]]: ...
+
+    def get_all_territories_like_name_code(
+            self,
+            name_code: str,
+            return_type: Literal['list',
+                                 'object',
+                                 'id',
+                                 'query',
+                                 'queryid',
+                                 'qid',
+                                 'count',
+                                 ] = 'list',
+            cache_properties: list[str] = [],
+            ) -> (Sequence[Territory] | Sequence[int] | int |
+                  Select[tuple[Territory]] | Select[tuple[int]]):
         """Trouve les territoires contenant `name_code` dans leurs noms ou codes.
 
         Args:
@@ -744,10 +1035,10 @@ class Sidb:
         self.compute_query_cache_properties(cache_properties, return_type, q['id'])
         return result
 
-    def get_territory_scales(self) -> Sequence[str | None]:
+    def get_territory_scales(self) -> list[str]:
         """Renvoie la liste des différentes échelles des territoires."""
         stmt = select(Property.value_literal).filter_by(name_a='Scale').distinct()
-        return self.session.scalars(stmt).all()
+        return [s for s in self.session.scalars(stmt).all() if s]
 
     def load_territory(self, mapper: Mapper, verbose: bool = False) -> None:
         """Charge un territoire et ses propriétés dans la base de données.
@@ -778,6 +1069,8 @@ class Sidb:
             territory = Territory()
             self.session.add(territory)
             new_territory = True
+        elif isinstance(territory, Sequence):
+            territory = territory[0]
 
         territory.delete_cached_properties()
         # Tous les attributs non spécifiques
@@ -802,29 +1095,107 @@ class Sidb:
             raise MapperError(mapper, result, "isinterritory")
 
     # Actor
-    def get_actor(self,
-                  *args,
-                  like_value: bool = False,
-                  ignore_case: bool = False,
-                  ignore_accent: bool = False,
-                  return_type: Literal['object',
-                                       'id',
-                                       'query',
-                                       'queryid',
-                                       'qid',
-                                       ] = 'object',
-                  raise_none: bool = True,
-                  multi: Literal['raise',
-                                 'first',
-                                 'list',
-                                 'warn_list',
-                                 'warn_first',
-                                 ] = 'warn_list',
-                  verbose: bool = False,
-                  **kwargs
-                  ) -> (Actor | int |
-                        Sequence[Actor] | Sequence[int] |
-                        Select[tuple[Actor | int]] | None):
+    @overload
+    def get_actor(
+            self,
+            *args,
+            like_value: bool = False,
+            ignore_case: bool = False,
+            ignore_accent: bool = False,
+            return_type: Literal['object'] = 'object',
+            raise_none: bool = True,
+            multi: Literal['raise',
+                           'first',
+                           'list',
+                           'warn_list',
+                           'warn_first',
+                           ] = 'warn_list',
+            verbose: bool = False,
+            **kwargs
+            ) -> (Actor | Sequence[Actor] | None): ...
+
+    @overload
+    def get_actor(
+            self,
+            *args,
+            like_value: bool = False,
+            ignore_case: bool = False,
+            ignore_accent: bool = False,
+            return_type: Literal['id'],
+            raise_none: bool = True,
+            multi: Literal['raise',
+                           'first',
+                           'list',
+                           'warn_list',
+                           'warn_first',
+                           ] = 'warn_list',
+            verbose: bool = False,
+            **kwargs
+            ) -> (int | Sequence[int] | None): ...
+
+    @overload
+    def get_actor(
+            self,
+            *args,
+            like_value: bool = False,
+            ignore_case: bool = False,
+            ignore_accent: bool = False,
+            return_type: Literal['query'],
+            raise_none: bool = True,
+            multi: Literal['raise',
+                           'first',
+                           'list',
+                           'warn_list',
+                           'warn_first',
+                           ] = 'warn_list',
+            verbose: bool = False,
+            **kwargs
+            ) -> Select[tuple[Actor]]: ...
+
+    @overload
+    def get_actor(
+            self,
+            *args,
+            like_value: bool = False,
+            ignore_case: bool = False,
+            ignore_accent: bool = False,
+            return_type: Literal['queryid', 'qid'],
+            raise_none: bool = True,
+            multi: Literal['raise',
+                           'first',
+                           'list',
+                           'warn_list',
+                           'warn_first',
+                           ] = 'warn_list',
+            verbose: bool = False,
+            **kwargs
+            ) -> Select[tuple[int]]: ...
+
+    def get_actor(
+            self,
+            *args,
+            like_value: bool = False,
+            ignore_case: bool = False,
+            ignore_accent: bool = False,
+            return_type: Literal['object',
+                                 'id',
+                                 'query',
+                                 'queryid',
+                                 'qid',
+                                 ] = 'object',
+            raise_none: bool = True,
+            multi: Literal['raise',
+                           'first',
+                           'list',
+                           'warn_list',
+                           'warn_first',
+                           ] = 'warn_list',
+            verbose: bool = False,
+            **kwargs
+            ) -> (Actor | int |
+                  Sequence[Actor] | Sequence[int] |
+                  Select[tuple[Actor]] | Select[tuple[int]] |
+                  None):
         """Trouve un acteur.
 
         Examples:
@@ -880,24 +1251,90 @@ class Sidb:
                                      verbose=verbose,
                                      **kwargs)
 
-    def get_actors(self,
-                   *args,
-                   like_value: bool = False,
-                   ignore_case: bool = False,
-                   ignore_accent: bool = False,
-                   map_id: Iterable[int] | int | Select = [],
-                   return_type: Literal['list',
-                                        'object',
-                                        'id',
-                                        'query',
-                                        'queryid',
-                                        'qid',
-                                        'count',
-                                        ] = 'list',
-                   cache_properties: list[str] = [],
-                   verbose: bool = False,
-                   ) -> (Sequence[Actor] | Sequence[int] | int |
-                         Select[tuple[Actor | int]]):
+    @overload
+    def get_actors(
+            self,
+            *args,
+            like_value: bool = False,
+            ignore_case: bool = False,
+            ignore_accent: bool = False,
+            map_id: Iterable[int] | int | Select | None = None,
+            return_type: Literal['list', 'object'] = 'list',
+            cache_properties: list[str] = [],
+            verbose: bool = False,
+            ) -> Sequence[Actor]: ...
+
+    @overload
+    def get_actors(
+            self,
+            *args,
+            like_value: bool = False,
+            ignore_case: bool = False,
+            ignore_accent: bool = False,
+            map_id: Iterable[int] | int | Select | None = None,
+            return_type: Literal['id'],
+            cache_properties: list[str] = [],
+            verbose: bool = False,
+            ) -> Sequence[int]: ...
+
+    @overload
+    def get_actors(
+            self,
+            *args,
+            like_value: bool = False,
+            ignore_case: bool = False,
+            ignore_accent: bool = False,
+            map_id: Iterable[int] | int | Select | None = None,
+            return_type: Literal['count'],
+            cache_properties: list[str] = [],
+            verbose: bool = False,
+            ) -> int: ...
+
+    @overload
+    def get_actors(
+            self,
+            *args,
+            like_value: bool = False,
+            ignore_case: bool = False,
+            ignore_accent: bool = False,
+            map_id: Iterable[int] | int | Select | None = None,
+            return_type: Literal['query'],
+            cache_properties: list[str] = [],
+            verbose: bool = False,
+            ) -> Select[tuple[Actor]]: ...
+
+    @overload
+    def get_actors(
+            self,
+            *args,
+            like_value: bool = False,
+            ignore_case: bool = False,
+            ignore_accent: bool = False,
+            map_id: Iterable[int] | int | Select | None = None,
+            return_type: Literal['queryid', 'qid'],
+            cache_properties: list[str] = [],
+            verbose: bool = False,
+            ) -> Select[tuple[int]]: ...
+
+    def get_actors(
+            self,
+            *args,
+            like_value: bool = False,
+            ignore_case: bool = False,
+            ignore_accent: bool = False,
+            map_id: Iterable[int] | int | Select | None = None,
+            return_type: Literal['list',
+                                 'object',
+                                 'id',
+                                 'query',
+                                 'queryid',
+                                 'qid',
+                                 'count',
+                                 ] = 'list',
+            cache_properties: list[str] = [],
+            verbose: bool = False,
+            ) -> (Sequence[Actor] | Sequence[int] | int |
+                  Select[tuple[Actor]] | Select[tuple[int]]):
         """Trouve plusieurs acteurs.
 
         Examples:
@@ -941,26 +1378,82 @@ class Sidb:
                                       cache_properties=cache_properties,
                                       verbose=verbose)
 
-    def get_actors_in(self,
-                      mtobject: Actor | Territory,
-                      scale: str | None = None,
-                      self_include: bool = True,
-                      cache_properties: list[str] = [],
-                      return_type: Literal['list',
-                                           'object',
-                                           'id',
-                                           'query',
-                                           'queryid',
-                                           'qid',
-                                           'count',
-                                           ] = "list",
-                      verbose: bool = False
-                      ) -> (Sequence[Actor] | Sequence[int] | int |
-                            Select[tuple[Actor | int]]):
+    @overload
+    def get_actors_in(
+            self,
+            actor: Actor | Territory,
+            return_type: Literal['list', 'object'] = 'list',
+            scale: str | None = None,
+            self_include: bool = True,
+            cache_properties: list[str] = [],
+            verbose: bool = False
+            ) -> Sequence[Actor]: ...
+
+    @overload
+    def get_actors_in(
+            self,
+            actor: Actor | Territory,
+            return_type: Literal['id'],
+            scale: str | None = None,
+            self_include: bool = True,
+            cache_properties: list[str] = [],
+            verbose: bool = False
+            ) -> Sequence[int]: ...
+
+    @overload
+    def get_actors_in(
+            self,
+            actor: Actor | Territory,
+            return_type: Literal['count'],
+            scale: str | None = None,
+            self_include: bool = True,
+            cache_properties: list[str] = [],
+            verbose: bool = False
+            ) -> int: ...
+
+    @overload
+    def get_actors_in(
+            self,
+            actor: Actor | Territory,
+            return_type: Literal['query'],
+            scale: str | None = None,
+            self_include: bool = True,
+            cache_properties: list[str] = [],
+            verbose: bool = False
+            ) -> Select[tuple[Actor]]: ...
+
+    @overload
+    def get_actors_in(
+            self,
+            actor: Actor | Territory,
+            return_type: Literal['queryid', 'qid'],
+            scale: str | None = None,
+            self_include: bool = True,
+            cache_properties: list[str] = [],
+            verbose: bool = False
+            ) -> Select[tuple[int]]: ...
+
+    def get_actors_in(
+            self,
+            actor: Actor | Territory,
+            return_type: Literal['list',
+                                 'object',
+                                 'id',
+                                 'query',
+                                 'queryid',
+                                 'qid',
+                                 'count',
+                                 ] = 'list',
+            scale: str | None = None,
+            self_include: bool = True,
+            cache_properties: list[str] = [],
+            verbose: bool = False
+            ) -> (Sequence[Actor] | Sequence[int] | int |
+                  Select[tuple[Actor]] | Select[tuple[int]]):
         """Trouve des acteurs contenus dans un territoire ou dans un autre acteur.
 
         Args:
-            mtobject: L'object `Actor` ou `Territory` contenant des acteurs.
+            actor: L'object `Actor` ou `Territory` contenant des acteurs.
             scale: Échelle de recherche.
             self_include: Inclure ou non l'élément passé en paramètre.
             cache_properties: Liste des propriétés à mettre en cache.
@@ -982,9 +1475,7 @@ class Sidb:
         Raises:
             TypeError: Type de l'object non supporté.
         """
-        if not isinstance(mtobject, (Actor, Territory)):
-            raise TypeError(f"MTObject type '{type(mtobject)}' not supported")
-        return self.get_mtobjects_tap_in(mtobject,
+        return self.get_mtobjects_tap_in(actor,
                                          Actor,
                                          scale=scale,
                                          self_include=self_include,
@@ -992,21 +1483,72 @@ class Sidb:
                                          return_type=return_type,
                                          verbose=verbose)
 
-    def get_actors_on(self,
-                      actor: Actor,
-                      scale: str | None = None,
-                      self_include: bool = True,
-                      cache_properties: list[str] = [],
-                      return_type: Literal['list',
-                                           'object',
-                                           'id',
-                                           'query',
-                                           'queryid',
-                                           'qid',
-                                           'count',
-                                           ] = "list",
-                      ) -> (Sequence[Actor] | Sequence[int] | int |
-                            Select[tuple[Actor | int]]):
+    @overload
+    def get_actors_on(
+            self,
+            actor: Actor | Sequence[Actor],
+            return_type: Literal['list', 'object'] = 'list',
+            scale: str | None = None,
+            self_include: bool = True,
+            cache_properties: list[str] = [],
+            ) -> Sequence[Actor]: ...
+
+    @overload
+    def get_actors_on(
+            self,
+            actor: Actor | Sequence[Actor],
+            return_type: Literal['id'],
+            scale: str | None = None,
+            self_include: bool = True,
+            cache_properties: list[str] = [],
+            ) -> Sequence[int]: ...
+
+    @overload
+    def get_actors_on(
+            self,
+            actor: Actor | Sequence[Actor],
+            return_type: Literal['count'],
+            scale: str | None = None,
+            self_include: bool = True,
+            cache_properties: list[str] = [],
+            ) -> int: ...
+
+    @overload
+    def get_actors_on(
+            self,
+            actor: Actor | Sequence[Actor],
+            return_type: Literal['query'],
+            scale: str | None = None,
+            self_include: bool = True,
+            cache_properties: list[str] = [],
+            ) -> Select[tuple[Actor]]: ...
+
+    @overload
+    def get_actors_on(
+            self,
+            actor: Actor | Sequence[Actor],
+            return_type: Literal['queryid', 'qid'],
+            scale: str | None = None,
+            self_include: bool = True,
+            cache_properties: list[str] = [],
+            ) -> Select[tuple[int]]: ...
+
+    def get_actors_on(
+            self,
+            actor: Actor | Sequence[Actor],
+            return_type: Literal['list',
+                                 'object',
+                                 'id',
+                                 'query',
+                                 'queryid',
+                                 'qid',
+                                 'count',
+                                 ] = 'list',
+            scale: str | None = None,
+            self_include: bool = True,
+            cache_properties: list[str] = [],
+            ) -> (Sequence[Actor] | Sequence[int] | int |
+                  Select[tuple[Actor]] | Select[tuple[int]]):
         """Trouve des acteurs contenant un autre acteur.
 
         Args:
@@ -1036,18 +1578,19 @@ class Sidb:
                                          cache_properties=cache_properties,
                                          return_type=return_type)
 
-    def get_actors_by_ids(self,
-                          ids: Iterable[int] | int,
-                          cache_properties: list[str] = [],
-                          return_type: Literal['list',
-                                               'object',
-                                               'query',
-                                               'queryid',
-                                               'qid',
-                                               'count',
-                                               ] = "list",
-                          verbose: bool = False
-                          ) -> Sequence[Actor] | int | Select:
+    def get_actors_by_ids(
+            self,
+            ids: Iterable[int] | int,
+            cache_properties: list[str] = [],
+            return_type: Literal['list',
+                                 'object',
+                                 'query',
+                                 'queryid',
+                                 'qid',
+                                 'count',
+                                 ] = "list",
+            verbose: bool = False
+            ) -> Sequence[Actor] | int | Select:
         """Trouve les acteurs correspondants aux identifiants.
 
         Args:
@@ -1079,19 +1622,60 @@ class Sidb:
         self.compute_query_cache_properties(cache_properties, return_type, q['id'])
         return result
 
-    def get_all_actors_like_name_code(self,
-                                      name_code: str,
-                                      cache_properties: list[str] = [],
-                                      return_type: Literal['list',
-                                                           'object',
-                                                           'id',
-                                                           'query',
-                                                           'queryid',
-                                                           'qid',
-                                                           'count',
-                                                           ] = 'list',
-                                      ) -> (Sequence[Actor] | Sequence[int] |
-                                            int | Select[tuple[Actor | int]]):
+    @overload
+    def get_all_actors_like_name_code(
+            self,
+            name_code: str,
+            return_type: Literal['list', 'object'] = 'list',
+            cache_properties: list[str] = [],
+            ) -> Sequence[Actor]: ...
+
+    @overload
+    def get_all_actors_like_name_code(
+            self,
+            name_code: str,
+            return_type: Literal['id'],
+            cache_properties: list[str] = [],
+            ) -> Sequence[int]: ...
+
+    @overload
+    def get_all_actors_like_name_code(
+            self,
+            name_code: str,
+            return_type: Literal['count'],
+            cache_properties: list[str] = [],
+            ) -> int: ...
+
+    @overload
+    def get_all_actors_like_name_code(
+            self,
+            name_code: str,
+            return_type: Literal['query'],
+            cache_properties: list[str] = [],
+            ) -> Select[tuple[Actor]]: ...
+
+    @overload
+    def get_all_actors_like_name_code(
+            self,
+            name_code: str,
+            return_type: Literal['queryid', 'qid'],
+            cache_properties: list[str] = [],
+            ) -> Select[tuple[int]]: ...
+
+    def get_all_actors_like_name_code(
+            self,
+            name_code: str,
+            return_type: Literal['list',
+                                 'object',
+                                 'id',
+                                 'query',
+                                 'queryid',
+                                 'qid',
+                                 'count',
+                                 ] = 'list',
+            cache_properties: list[str] = [],
+            ) -> (Sequence[Actor] | Sequence[int] | int |
+                  Select[tuple[Actor]] | Select[tuple[int]]):
         """Trouve les acteurs contenant `name_code` dans leurs noms ou codes.
 
         Args:
@@ -1164,6 +1748,8 @@ class Sidb:
         if actor is None:
             actor = Actor()
             self.session.add(actor)
+        elif isinstance(actor, Sequence):
+            actor = actor[0]
 
         actor.delete_cached_properties()
 
@@ -1188,30 +1774,112 @@ class Sidb:
             raise MapperError(mapper, result, "territory")
 
     # Product
-    def get_product(self,
-                    *args,
-                    nomenclature: str | None = None,
-                    like_value: bool = False,
-                    ignore_case: bool = False,
-                    ignore_accent: bool = False,
-                    return_type: Literal['object',
-                                         'id',
-                                         'query',
-                                         'queryid',
-                                         'qid',
-                                         ] = 'object',
-                    raise_none: bool = True,
-                    multi: Literal['raise',
-                                   'first',
-                                   'list',
-                                   'warn_list',
-                                   'warn_first',
-                                   ] = 'warn_list',
-                    verbose: bool = False,
-                    **kwargs
-                    ) -> (Product | int |
-                          Sequence[Product] | Sequence[int] |
-                          Select[tuple[Product | int]] | None):
+    @overload
+    def get_product(
+            self,
+            *args: str,
+            nomenclature: str | None = None,
+            like_value: bool = False,
+            ignore_case: bool = False,
+            ignore_accent: bool = False,
+            return_type: Literal['object'] = 'object',
+            raise_none: bool = True,
+            multi: Literal['raise',
+                           'first',
+                           'list',
+                           'warn_list',
+                           'warn_first',
+                           ] = 'warn_list',
+            verbose: bool = False,
+            **kwargs: str
+            ) -> (Product | Sequence[Product] | None): ...
+
+    @overload
+    def get_product(
+            self,
+            *args: str,
+            nomenclature: str | None = None,
+            like_value: bool = False,
+            ignore_case: bool = False,
+            ignore_accent: bool = False,
+            return_type: Literal['id'],
+            raise_none: bool = True,
+            multi: Literal['raise',
+                           'first',
+                           'list',
+                           'warn_list',
+                           'warn_first',
+                           ] = 'warn_list',
+            verbose: bool = False,
+            **kwargs: str
+            ) -> (int | Sequence[int] | None): ...
+
+    @overload
+    def get_product(
+            self,
+            *args: str,
+            nomenclature: str | None = None,
+            like_value: bool = False,
+            ignore_case: bool = False,
+            ignore_accent: bool = False,
+            return_type: Literal['query'],
+            raise_none: bool = True,
+            multi: Literal['raise',
+                           'first',
+                           'list',
+                           'warn_list',
+                           'warn_first',
+                           ] = 'warn_list',
+            verbose: bool = False,
+            **kwargs: str
+            ) -> Select[tuple[Product]]: ...
+
+    @overload
+    def get_product(
+            self,
+            *args: str,
+            nomenclature: str | None = None,
+            like_value: bool = False,
+            ignore_case: bool = False,
+            ignore_accent: bool = False,
+            return_type: Literal['queryid', 'qid'],
+            raise_none: bool = True,
+            multi: Literal['raise',
+                           'first',
+                           'list',
+                           'warn_list',
+                           'warn_first',
+                           ] = 'warn_list',
+            verbose: bool = False,
+            **kwargs: str
+            ) -> Select[tuple[int]]: ...
+
+    def get_product(
+            self,
+            *args: str,
+            nomenclature: str | None = None,
+            like_value: bool = False,
+            ignore_case: bool = False,
+            ignore_accent: bool = False,
+            return_type: Literal['object',
+                                 'id',
+                                 'query',
+                                 'queryid',
+                                 'qid',
+                                 ] = 'object',
+            raise_none: bool = True,
+            multi: Literal['raise',
+                           'first',
+                           'list',
+                           'warn_list',
+                           'warn_first',
+                           ] = 'warn_list',
+            verbose: bool = False,
+            **kwargs: str
+            ) -> (Product | int |
+                  Sequence[Product] | Sequence[int] |
+                  Select[tuple[Product]] | Select[tuple[int]] |
+                  None):
         """Trouve un produit.
 
         Args:
@@ -1267,25 +1935,96 @@ class Sidb:
                                      verbose=verbose,
                                      **kwargs)
 
-    def get_products(self,
-                     *args,
-                     like_value: bool = False,
-                     ignore_case: bool = False,
-                     ignore_accent: bool = False,
-                     map_id: Iterable[int] | int | Select = [],
-                     return_type: Literal['list',
-                                          'object',
-                                          'id',
-                                          'query',
-                                          'queryid',
-                                          'qid',
-                                          'count',
-                                          ] = 'list',
-                     cache_properties: list[str] = [],
-                     nomenclature: str | None = None,
-                     verbose: bool = False,
-                     ) -> (Sequence[Product] | Sequence[int] | int |
-                           Select[tuple[Product | int]]):
+    @overload
+    def get_products(
+            self,
+            *args: str,
+            nomenclature: str | None = None,
+            like_value: bool = False,
+            ignore_case: bool = False,
+            ignore_accent: bool = False,
+            map_id: Iterable[int] | int | Select | None = None,
+            return_type: Literal['list', 'object'] = 'list',
+            cache_properties: list[str] = [],
+            verbose: bool = False,
+            ) -> Sequence[Product]: ...
+
+    @overload
+    def get_products(
+            self,
+            *args: str,
+            nomenclature: str | None = None,
+            like_value: bool = False,
+            ignore_case: bool = False,
+            ignore_accent: bool = False,
+            map_id: Iterable[int] | int | Select | None = None,
+            return_type: Literal['id'],
+            cache_properties: list[str] = [],
+            verbose: bool = False,
+            ) -> Sequence[int]: ...
+
+    @overload
+    def get_products(
+            self,
+            *args: str,
+            nomenclature: str | None = None,
+            like_value: bool = False,
+            ignore_case: bool = False,
+            ignore_accent: bool = False,
+            map_id: Iterable[int] | int | Select | None = None,
+            return_type: Literal['count'],
+            cache_properties: list[str] = [],
+            verbose: bool = False,
+            ) -> int: ...
+
+    @overload
+    def get_products(
+            self,
+            *args: str,
+            nomenclature: str | None = None,
+            like_value: bool = False,
+            ignore_case: bool = False,
+            ignore_accent: bool = False,
+            map_id: Iterable[int] | int | Select | None = None,
+            return_type: Literal['query'],
+            cache_properties: list[str] = [],
+            verbose: bool = False,
+            ) -> Select[tuple[Product]]: ...
+
+    @overload
+    def get_products(
+            self,
+            *args: str,
+            nomenclature: str | None = None,
+            like_value: bool = False,
+            ignore_case: bool = False,
+            ignore_accent: bool = False,
+            map_id: Iterable[int] | int | Select | None = None,
+            return_type: Literal['queryid', 'qid'],
+            cache_properties: list[str] = [],
+            verbose: bool = False,
+            ) -> Select[tuple[int]]: ...
+
+    def get_products(
+            self,
+            *args: str,
+            nomenclature: str | None = None,
+            like_value: bool = False,
+            ignore_case: bool = False,
+            ignore_accent: bool = False,
+            map_id: Iterable[int] | int | Select | None = None,
+            return_type: Literal['list',
+                                 'object',
+                                 'id',
+                                 'query',
+                                 'queryid',
+                                 'qid',
+                                 'count',
+                                 ] = 'list',
+            cache_properties: list[str] = [],
+            verbose: bool = False,
+            ) -> (Sequence[Product] | Sequence[int] | int |
+                  Select[tuple[Product]] | Select[tuple[int]]):
         """Trouve plusieurs produits.
 
         Args:
@@ -1329,7 +2068,7 @@ class Sidb:
                                       verbose=verbose)
 
     def get_products_by_ids(self,
-                            ids: list[int] | int,
+                            ids: Iterable[int] | int,
                             cache_properties: list[str] = [],
                             return_type: Literal['list',
                                                  'object',
@@ -1340,7 +2079,7 @@ class Sidb:
                                                  ] = "list",
                             verbose: bool = False
                             ) -> (Sequence[Product] | int |
-                                  Select[tuple[Product | int]]):
+                                  Select[tuple[Product]] | Select[tuple[int]]):
         """Trouve les produits correspondants aux identifiants.
 
         Args:
@@ -1365,21 +2104,72 @@ class Sidb:
                                          return_type=return_type,
                                          verbose=verbose)
 
-    def get_products_in(self,
-                        product: Product | list[Product],
-                        self_include: bool = True,
-                        cache_properties: list[str] = [],
-                        return_type: Literal['list',
-                                             'object',
-                                             'id',
-                                             'query',
-                                             'queryid',
-                                             'qid',
-                                             'count',
-                                             ] = "list",
-                        verbose: bool = False
-                        ) -> (Sequence[Product] | Sequence[int] | int |
-                              Select[tuple[Product | int]]):
+    @overload
+    def get_products_in(
+            self,
+            product: Product | Sequence[Product],
+            return_type: Literal['list', 'object'] = 'list',
+            self_include: bool = True,
+            cache_properties: list[str] = [],
+            verbose: bool = False
+            ) -> Sequence[Product]: ...
+
+    @overload
+    def get_products_in(
+            self,
+            product: Product | Sequence[Product],
+            return_type: Literal['id'],
+            self_include: bool = True,
+            cache_properties: list[str] = [],
+            verbose: bool = False
+            ) -> Sequence[int]: ...
+
+    @overload
+    def get_products_in(
+            self,
+            product: Product | Sequence[Product],
+            return_type: Literal['count'],
+            self_include: bool = True,
+            cache_properties: list[str] = [],
+            verbose: bool = False
+            ) -> int: ...
+
+    @overload
+    def get_products_in(
+            self,
+            product: Product | Sequence[Product],
+            return_type: Literal['query'],
+            self_include: bool = True,
+            cache_properties: list[str] = [],
+            verbose: bool = False
+            ) -> Select[tuple[Product]]: ...
+
+    @overload
+    def get_products_in(
+            self,
+            product: Product | Sequence[Product],
+            return_type: Literal['queryid', 'qid'],
+            self_include: bool = True,
+            cache_properties: list[str] = [],
+            verbose: bool = False
+            ) -> Select[tuple[int]]: ...
+
+    def get_products_in(
+            self,
+            product: Product | Sequence[Product],
+            return_type: Literal['list',
+                                 'object',
+                                 'id',
+                                 'query',
+                                 'queryid',
+                                 'qid',
+                                 'count',
+                                 ] = 'list',
+            self_include: bool = True,
+            cache_properties: list[str] = [],
+            verbose: bool = False
+            ) -> (Sequence[Product] | Sequence[int] | int |
+                  Select[tuple[Product]] | Select[tuple[int]]):
         """Trouve des produits inclus dans le produit `product`.
 
         Args:
@@ -1409,20 +2199,66 @@ class Sidb:
                                          return_type=return_type,
                                          verbose=verbose)
 
-    def get_products_on(self,
-                        product: Product,
-                        self_include: bool = True,
-                        cache_properties: list[str] = [],
-                        return_type: Literal['list',
-                                             'object',
-                                             'id',
-                                             'query',
-                                             'queryid',
-                                             'qid',
-                                             'count',
-                                             ] = "list",
-                        ) -> (Sequence[Product] | Sequence[int] | int |
-                              Select[tuple[Product | int]]):
+    @overload
+    def get_products_on(
+            self,
+            product: Product | Sequence[Product],
+            return_type: Literal['list', 'object'] = 'list',
+            self_include: bool = True,
+            cache_properties: list[str] = [],
+            ) -> Sequence[Product]: ...
+
+    @overload
+    def get_products_on(
+            self,
+            product: Product | Sequence[Product],
+            return_type: Literal['id'],
+            self_include: bool = True,
+            cache_properties: list[str] = [],
+            ) -> Sequence[int]: ...
+
+    @overload
+    def get_products_on(
+            self,
+            product: Product | Sequence[Product],
+            return_type: Literal['count'],
+            self_include: bool = True,
+            cache_properties: list[str] = [],
+            ) -> int: ...
+
+    @overload
+    def get_products_on(
+            self,
+            product: Product | Sequence[Product],
+            return_type: Literal['query'],
+            self_include: bool = True,
+            cache_properties: list[str] = [],
+            ) -> Select[tuple[Product]]: ...
+
+    @overload
+    def get_products_on(
+            self,
+            product: Product | Sequence[Product],
+            return_type: Literal['queryid', 'qid'],
+            self_include: bool = True,
+            cache_properties: list[str] = [],
+            ) -> Select[tuple[int]]: ...
+
+    def get_products_on(
+            self,
+            product: Product | Sequence[Product],
+            return_type: Literal['list',
+                                 'object',
+                                 'id',
+                                 'query',
+                                 'queryid',
+                                 'qid',
+                                 'count',
+                                 ] = 'list',
+            self_include: bool = True,
+            cache_properties: list[str] = [],
+            ) -> (Sequence[Product] | Sequence[int] | int |
+                  Select[tuple[Product]] | Select[tuple[int]]):
         """Trouve les produits incluant le produit `product`.
 
         Args:
@@ -1449,9 +2285,48 @@ class Sidb:
                                          cache_properties=cache_properties,
                                          return_type=return_type)
 
+    @overload
     def get_product_list(self,
                          nomenclature: str,
+                         return_type: Literal['list', 'object'] = 'list',
                          cache_properties: list[str] = [],
+                         verbose: bool = False,
+                         ) -> Sequence[Product]: ...
+
+    @overload
+    def get_product_list(self,
+                         nomenclature: str,
+                         return_type: Literal['id'],
+                         cache_properties: list[str] = [],
+                         verbose: bool = False,
+                         ) -> Sequence[int]: ...
+
+    @overload
+    def get_product_list(self,
+                         nomenclature: str,
+                         return_type: Literal['count'],
+                         cache_properties: list[str] = [],
+                         verbose: bool = False,
+                         ) -> int: ...
+
+    @overload
+    def get_product_list(self,
+                         nomenclature: str,
+                         return_type: Literal['query'],
+                         cache_properties: list[str] = [],
+                         verbose: bool = False,
+                         ) -> Select[tuple[Product]]: ...
+
+    @overload
+    def get_product_list(self,
+                         nomenclature: str,
+                         return_type: Literal['queryid', 'qid'],
+                         cache_properties: list[str] = [],
+                         verbose: bool = False,
+                         ) -> Select[tuple[int]]: ...
+
+    def get_product_list(self,
+                         nomenclature: str,
                          return_type: Literal['list',
                                               'object',
                                               'id',
@@ -1459,10 +2334,11 @@ class Sidb:
                                               'queryid',
                                               'qid',
                                               'count',
-                                              ] = "list",
+                                              ] = 'list',
+                         cache_properties: list[str] = [],
                          verbose: bool = False,
                          ) -> (Sequence[Product] | Sequence[int] | int |
-                               Select[tuple[Product | int]]):
+                               Select[tuple[Product]]) | Select[tuple[int]]:
         """Trouve des produits par nomenclature.
 
         Args:
@@ -1493,8 +2369,8 @@ class Sidb:
                                       verbose=verbose)
 
     def get_products_in_conversion(self,
-                                   product: Product | Iterable[Product],
-                                   dest_nomenclature,
+                                   product: Product | Sequence[Product],
+                                   dest_nomenclature: str,
                                    return_type: Literal['list',
                                                         'object',
                                                         'id',
@@ -1502,8 +2378,8 @@ class Sidb:
                                                         'queryid',
                                                         'qid',
                                                         'count',
-                                                        ] = "list",
-                                   ):
+                                                        ] = 'list',
+                                   ) -> list[Product]:
         """
         Convertit un produit en ses produits dérivés dans une autre nomenclature, hiérarchie inclue.
         Si product est une liste de produits, ils doivent tous avoir la même nomenclature.
@@ -1515,6 +2391,10 @@ class Sidb:
         else:
             nomenclature = product[0].get_property('Nomenclature', multi='first')
 
+        if not isinstance(nomenclature, str):
+            raise TypeError('Invalid type for nomenclature '
+                            f'(expected `str`, got `{type(nomenclature)}`).')
+
         set_sel = set(self.get_products(f"ConversionProductCode@{dest_nomenclature}", "*",
                                         nomenclature=nomenclature,
                                         return_type="id"))
@@ -1523,20 +2403,28 @@ class Sidb:
         stmt = select(Property.value_literal)
         stmt = stmt.where(Property.item_id.in_(set_sel))
         stmt = stmt.where(Property.name_a == "ConversionProductCode")
-        stmt = stmt.where(Property.name_b == f"{dest_nomenclature}").distinct()
+        stmt = stmt.where(Property.name_b == dest_nomenclature).distinct()
 
-        result = self.session.scalars(stmt).all()
-        return [self.get_product(code=r[0], nomenclature=dest_nomenclature) for r in result]
+        converted_products: list[Product] = []
+        for result in filter(None, self.session.scalars(stmt).all()):
+            p = self.get_product(code=result,
+                                 nomenclature=dest_nomenclature,
+                                 raise_none=False)
+            if isinstance(p, Product):
+                converted_products.append(p)
+            elif isinstance(p, Sequence):
+                converted_products.extend(p)
+        return converted_products
 
     def get_list_nomenclatures(self) -> list[str]:
         """Renvoie la liste des nomenclatures."""
         stmt = select(Property.value_literal).filter_by(name_a='Nomenclature').distinct()
-        return self.session.scalars(stmt).all()
+        return [s for s in self.session.scalars(stmt).all() if s]
 
     def get_root_nomenclature(self,
                               nomenclature: str,
                               verbose: bool = False
-                              ) -> Product:
+                              ) -> Product | None:
         """Trouve le produit original d'une nomenclature.
 
         Args:
@@ -1607,6 +2495,9 @@ class Sidb:
         if product is None:
             product = Product()
             self.session.add(product)
+        elif isinstance(product, Sequence):
+            product = product[0]
+
         product.delete_cached_properties()
 
         product.set_extra_properties(mapper)
@@ -1629,27 +2520,140 @@ class Sidb:
             raise MapperError(mapper, result, "isinproduct")
 
     # Stock
-    def get_stocks(self,
-                   target: list[Territory | Actor] = [],
-                   product: Product | None = None,
-                   product_asc: bool = False,
-                   product_desc: bool = True,
-                   date_point: str | date | None = None,
-                   date_start: str | date | None = None,
-                   date_end: str | date | None = None,
-                   year: str | int | None = None,
-                   month: str | int | None = None,
-                   source_ref: str | None = None,
-                   filter_by: list[tuple[str, str]] = [],
-                   target_join_or: bool = True,
-                   map_id: Iterable[int] | int | Select = [],
-                   return_type: Literal['list', 'object',
-                                        'id', 'query',
-                                        'queryid', 'qid',
-                                        'count'] = 'list',
-                   cache_properties: list[str] = [],
-                   verbose: bool = False
-                   ) -> list[Stock] | list[int] | int | Select:
+    @overload
+    def get_stocks(
+            self,
+            target: Iterable[Territory | Actor] | Territory | Actor = [],
+            product: Product | None = None,
+            *,
+            product_asc: bool = False,
+            product_desc: bool = True,
+            date_point: str | date | None = None,
+            date_start: str | date | None = None,
+            date_end: str | date | None = None,
+            year: str | int | None = None,
+            month: str | int | None = None,
+            source_ref: str | None = None,
+            filter_by: list[tuple[str, str]] = [],
+            target_join_or: bool = True,
+            map_id: Iterable[int] | int | Select | None = None,
+            return_type: Literal['list', 'object'] = 'list',
+            cache_properties: list[str] = [],
+            verbose: bool = False
+            ) -> Sequence[Stock]: ...
+
+    @overload
+    def get_stocks(
+            self,
+            target: Iterable[Territory | Actor] | Territory | Actor = [],
+            product: Product | None = None,
+            *,
+            product_asc: bool = False,
+            product_desc: bool = True,
+            date_point: str | date | None = None,
+            date_start: str | date | None = None,
+            date_end: str | date | None = None,
+            year: str | int | None = None,
+            month: str | int | None = None,
+            source_ref: str | None = None,
+            filter_by: list[tuple[str, str]] = [],
+            target_join_or: bool = True,
+            map_id: Iterable[int] | int | Select | None = None,
+            return_type: Literal['id'],
+            cache_properties: list[str] = [],
+            verbose: bool = False
+            ) -> Sequence[int]: ...
+
+    @overload
+    def get_stocks(
+            self,
+            target: Iterable[Territory | Actor] | Territory | Actor = [],
+            product: Product | None = None,
+            *,
+            product_asc: bool = False,
+            product_desc: bool = True,
+            date_point: str | date | None = None,
+            date_start: str | date | None = None,
+            date_end: str | date | None = None,
+            year: str | int | None = None,
+            month: str | int | None = None,
+            source_ref: str | None = None,
+            filter_by: list[tuple[str, str]] = [],
+            target_join_or: bool = True,
+            map_id: Iterable[int] | int | Select | None = None,
+            return_type: Literal['count'],
+            cache_properties: list[str] = [],
+            verbose: bool = False
+            ) -> int: ...
+
+    @overload
+    def get_stocks(
+            self,
+            target: Iterable[Territory | Actor] | Territory | Actor = [],
+            product: Product | None = None,
+            *,
+            product_asc: bool = False,
+            product_desc: bool = True,
+            date_point: str | date | None = None,
+            date_start: str | date | None = None,
+            date_end: str | date | None = None,
+            year: str | int | None = None,
+            month: str | int | None = None,
+            source_ref: str | None = None,
+            filter_by: list[tuple[str, str]] = [],
+            target_join_or: bool = True,
+            map_id: Iterable[int] | int | Select | None = None,
+            return_type: Literal['query'],
+            cache_properties: list[str] = [],
+            verbose: bool = False
+            ) -> Select[tuple[Stock]]: ...
+
+    @overload
+    def get_stocks(
+            self,
+            target: Iterable[Territory | Actor] | Territory | Actor = [],
+            product: Product | None = None,
+            *,
+            product_asc: bool = False,
+            product_desc: bool = True,
+            date_point: str | date | None = None,
+            date_start: str | date | None = None,
+            date_end: str | date | None = None,
+            year: str | int | None = None,
+            month: str | int | None = None,
+            source_ref: str | None = None,
+            filter_by: list[tuple[str, str]] = [],
+            target_join_or: bool = True,
+            map_id: Iterable[int] | int | Select | None = None,
+            return_type: Literal['queryid', 'qid'],
+            cache_properties: list[str] = [],
+            verbose: bool = False
+            ) -> Select[tuple[int]]: ...
+
+    def get_stocks(
+            self,
+            target: Iterable[Territory | Actor] | Territory | Actor = [],
+            product: Product | None = None,
+            *,
+            product_asc: bool = False,
+            product_desc: bool = True,
+            date_point: str | date | None = None,
+            date_start: str | date | None = None,
+            date_end: str | date | None = None,
+            year: str | int | None = None,
+            month: str | int | None = None,
+            source_ref: str | None = None,
+            filter_by: list[tuple[str, str]] = [],
+            target_join_or: bool = True,
+            map_id: Iterable[int] | int | Select | None = None,
+            return_type: Literal['list', 'object',
+                                 'id', 'query',
+                                 'queryid', 'qid',
+                                 'count'] = 'list',
+            cache_properties: list[str] = [],
+            verbose: bool = False
+            ) -> (Sequence[Stock] | Sequence[int] | int |
+                  Select[tuple[Stock]] | Select[tuple[int]]):
         """Trouve des stocks (Stock).
 
         Parameters:
@@ -1685,11 +2689,8 @@ class Sidb:
             (list[int]): Liste des identifiants des stocks recherchés.
             (int): Nombre de stocks correspondants aux arguments donnés.
             (Select): Requète des stocks ou des identifiants.
-
-
         """
-        #Note: FutureDev Implementer target_(asc/desc).
-
+        # Note: FutureDev Implementer target_(asc/desc).
         return self.get_mtobjects_gs(Stock, target=target, product=product,
                                      product_asc=product_asc,
                                      product_desc=product_desc, date_point=date_point,
@@ -1738,32 +2739,170 @@ class Sidb:
             raise MapperError(mapper, result, "actor")
 
     # Gateflow
-    def get_gateflows(self,
-                      target: list[Territory | Actor] = [],
-                      flowtype: Literal['input', 'output',
-                                        'consumption',
-                                        'production',
-                                        'extraction',
-                                        'emission', None] = None,
-                      product: Product | None = None,
-                      product_asc: bool = False,
-                      product_desc: bool = True,
-                      date_point: str | date | None = None,
-                      date_start: str | date | None = None,
-                      date_end: str | date | None = None,
-                      year: str | int | None = None,
-                      month: str | int | None = None,
-                      source_ref: str | None = None,
-                      filter_by: list[tuple[str, str]] = [],
-                      target_join_or: bool = True,
-                      map_id: Iterable[int] | int | Select = [],
-                      return_type: Literal['list', 'object',
-                                           'id', 'query',
-                                           'queryid', 'qid',
-                                           'count'] = 'list',
-                      cache_properties: list[str] = [],
-                      verbose: bool = False
-                      ) -> list[Gateflow] | list[int] | int | Select:
+    @overload
+    def get_gateflows(
+            self,
+            target: Iterable[Territory | Actor] | Territory | Actor = [],
+            flowtype: Literal['input', 'output',
+                              'consumption',
+                              'production',
+                              'extraction',
+                              'emission', None] = None,
+            product: Product | None = None,
+            *,
+            product_asc: bool = False,
+            product_desc: bool = True,
+            date_point: str | date | None = None,
+            date_start: str | date | None = None,
+            date_end: str | date | None = None,
+            year: str | int | None = None,
+            month: str | int | None = None,
+            source_ref: str | None = None,
+            filter_by: list[tuple[str, str]] = [],
+            target_join_or: bool = True,
+            map_id: Iterable[int] | int | Select | None = None,
+            return_type: Literal['list', 'object'] = 'list',
+            cache_properties: list[str] = [],
+            verbose: bool = False
+            ) -> Sequence[Gateflow]: ...
+
+    @overload
+    def get_gateflows(
+            self,
+            target: Iterable[Territory | Actor] | Territory | Actor = [],
+            flowtype: Literal['input', 'output',
+                              'consumption',
+                              'production',
+                              'extraction',
+                              'emission', None] = None,
+            product: Product | None = None,
+            *,
+            product_asc: bool = False,
+            product_desc: bool = True,
+            date_point: str | date | None = None,
+            date_start: str | date | None = None,
+            date_end: str | date | None = None,
+            year: str | int | None = None,
+            month: str | int | None = None,
+            source_ref: str | None = None,
+            filter_by: list[tuple[str, str]] = [],
+            target_join_or: bool = True,
+            map_id: Iterable[int] | int | Select | None = None,
+            return_type: Literal['id'],
+            cache_properties: list[str] = [],
+            verbose: bool = False
+            ) -> Sequence[int]: ...
+
+    @overload
+    def get_gateflows(
+            self,
+            target: Iterable[Territory | Actor] | Territory | Actor = [],
+            flowtype: Literal['input', 'output',
+                              'consumption',
+                              'production',
+                              'extraction',
+                              'emission', None] = None,
+            product: Product | None = None,
+            *,
+            product_asc: bool = False,
+            product_desc: bool = True,
+            date_point: str | date | None = None,
+            date_start: str | date | None = None,
+            date_end: str | date | None = None,
+            year: str | int | None = None,
+            month: str | int | None = None,
+            source_ref: str | None = None,
+            filter_by: list[tuple[str, str]] = [],
+            target_join_or: bool = True,
+            map_id: Iterable[int] | int | Select | None = None,
+            return_type: Literal['count'],
+            cache_properties: list[str] = [],
+            verbose: bool = False
+            ) -> int: ...
+
+    @overload
+    def get_gateflows(
+            self,
+            target: Iterable[Territory | Actor] | Territory | Actor = [],
+            flowtype: Literal['input', 'output',
+                              'consumption',
+                              'production',
+                              'extraction',
+                              'emission', None] = None,
+            product: Product | None = None,
+            *,
+            product_asc: bool = False,
+            product_desc: bool = True,
+            date_point: str | date | None = None,
+            date_start: str | date | None = None,
+            date_end: str | date | None = None,
+            year: str | int | None = None,
+            month: str | int | None = None,
+            source_ref: str | None = None,
+            filter_by: list[tuple[str, str]] = [],
+            target_join_or: bool = True,
+            map_id: Iterable[int] | int | Select | None = None,
+            return_type: Literal['query'],
+            cache_properties: list[str] = [],
+            verbose: bool = False
+            ) -> Select[tuple[Gateflow]]: ...
+
+    @overload
+    def get_gateflows(
+            self,
+            target: Iterable[Territory | Actor] | Territory | Actor = [],
+            flowtype: Literal['input', 'output',
+                              'consumption',
+                              'production',
+                              'extraction',
+                              'emission', None] = None,
+            product: Product | None = None,
+            *,
+            product_asc: bool = False,
+            product_desc: bool = True,
+            date_point: str | date | None = None,
+            date_start: str | date | None = None,
+            date_end: str | date | None = None,
+            year: str | int | None = None,
+            month: str | int | None = None,
+            source_ref: str | None = None,
+            filter_by: list[tuple[str, str]] = [],
+            target_join_or: bool = True,
+            map_id: Iterable[int] | int | Select | None = None,
+            return_type: Literal['queryid', 'qid'],
+            cache_properties: list[str] = [],
+            verbose: bool = False
+            ) -> Select[tuple[int]]: ...
+
+    def get_gateflows(
+            self,
+            target: Iterable[Territory | Actor] | Territory | Actor = [],
+            flowtype: Literal['input', 'output',
+                              'consumption',
+                              'production',
+                              'extraction',
+                              'emission', None] = None,
+            product: Product | None = None,
+            *,
+            product_asc: bool = False,
+            product_desc: bool = True,
+            date_point: str | date | None = None,
+            date_start: str | date | None = None,
+            date_end: str | date | None = None,
+            year: str | int | None = None,
+            month: str | int | None = None,
+            source_ref: str | None = None,
+            filter_by: list[tuple[str, str]] = [],
+            target_join_or: bool = True,
+            map_id: Iterable[int] | int | Select | None = None,
+            return_type: Literal['list', 'object',
+                                 'id', 'query',
+                                 'queryid', 'qid',
+                                 'count'] = 'list',
+            cache_properties: list[str] = [],
+            verbose: bool = False
+            ) -> (Sequence[Gateflow] | Sequence[int] | int |
+                  Select[tuple[Gateflow]] | Select[tuple[int]]):
         """Trouve des flux de porte (Gateflow).
 
         Parameters:
@@ -1814,71 +2953,401 @@ class Sidb:
                                      cache_properties=cache_properties,
                                      return_type=return_type, verbose=verbose)
 
-    def get_inputs(self,
-                   target: list[Territory | Actor] = [],
-                   **kwargs
-                   ) -> list[Gateflow] | list[int] | int | Select:
+    @overload
+    def get_inputs(
+            self,
+            target: Iterable[Territory | Actor] | Territory | Actor = [],
+            *,
+            return_type: Literal['list', 'object'] = 'list',
+            **kwargs
+            ) -> Sequence[Gateflow]: ...
+
+    @overload
+    def get_inputs(
+            self,
+            target: Iterable[Territory | Actor] | Territory | Actor = [],
+            *,
+            return_type: Literal['id'],
+            **kwargs
+            ) -> Sequence[int]: ...
+
+    @overload
+    def get_inputs(
+            self,
+            target: Iterable[Territory | Actor] | Territory | Actor = [],
+            *,
+            return_type: Literal['count'],
+            **kwargs
+            ) -> int: ...
+
+    @overload
+    def get_inputs(
+            self,
+            target: Iterable[Territory | Actor] | Territory | Actor = [],
+            *,
+            return_type: Literal['query'],
+            **kwargs
+            ) -> Select[tuple[Gateflow]]: ...
+
+    @overload
+    def get_inputs(
+            self,
+            target: Iterable[Territory | Actor] | Territory | Actor = [],
+            *,
+            return_type: Literal['queryid', 'qid'],
+            **kwargs
+            ) -> Select[tuple[int]]: ...
+
+    def get_inputs(
+            self,
+            target: Iterable[Territory | Actor] | Territory | Actor = [],
+            *,
+            return_type: Literal['list', 'object',
+                                 'id', 'query',
+                                 'queryid', 'qid',
+                                 'count'] = 'list',
+            **kwargs
+            ) -> (Sequence[Gateflow] | Sequence[int] | int |
+                  Select[tuple[Gateflow]] | Select[tuple[int]]):
         """
         Retourne les flux d'entrée de `target`.
 
         Fonction wrapper de [get_gateflows][sidb.Sidb.get_gateflows].
         """
-        return self.get_gateflows(target, flowtype="input", **kwargs)
+        return self.get_gateflows(target,
+                                  flowtype='input',
+                                  return_type=return_type,
+                                  **kwargs)
 
-    def get_outputs(self,
-                    target: list[Territory | Actor] = [],
-                    **kwargs
-                    ) -> list[Gateflow] | list[int] | int | Select:
+    @overload
+    def get_outputs(
+            self,
+            target: Iterable[Territory | Actor] | Territory | Actor = [],
+            *,
+            return_type: Literal['list', 'object'] = 'list',
+            **kwargs
+            ) -> Sequence[Gateflow]: ...
+
+    @overload
+    def get_outputs(
+            self,
+            target: Iterable[Territory | Actor] | Territory | Actor = [],
+            *,
+            return_type: Literal['id'],
+            **kwargs
+            ) -> Sequence[int]: ...
+
+    @overload
+    def get_outputs(
+            self,
+            target: Iterable[Territory | Actor] | Territory | Actor = [],
+            *,
+            return_type: Literal['count'],
+            **kwargs
+            ) -> int: ...
+
+    @overload
+    def get_outputs(
+            self,
+            target: Iterable[Territory | Actor] | Territory | Actor = [],
+            *,
+            return_type: Literal['query'],
+            **kwargs
+            ) -> Select[tuple[Gateflow]]: ...
+
+    @overload
+    def get_outputs(
+            self,
+            target: Iterable[Territory | Actor] | Territory | Actor = [],
+            *,
+            return_type: Literal['queryid', 'qid'],
+            **kwargs
+            ) -> Select[tuple[int]]: ...
+
+    def get_outputs(
+            self,
+            target: Iterable[Territory | Actor] | Territory | Actor = [],
+            *,
+            return_type: Literal['list', 'object',
+                                 'id', 'query',
+                                 'queryid', 'qid',
+                                 'count'] = 'list',
+            **kwargs
+            ) -> (Sequence[Gateflow] | Sequence[int] | int |
+                  Select[tuple[Gateflow]] | Select[tuple[int]]):
         """
         Retourne les flux de sortie de `target`.
 
         Fonction wrapper de [get_gateflows][sidb.Sidb.get_gateflows].
         """
-        return self.get_gateflows(target, flowtype="output", **kwargs)
+        return self.get_gateflows(target,
+                                  flowtype='output',
+                                  return_type=return_type,
+                                  **kwargs)
 
-    def get_consumptions(self,
-                         target: list[Territory | Actor] = [],
-                         **kwargs
-                         ) -> list[Gateflow] | list[int] | int | Select:
+    @overload
+    def get_consumptions(
+            self,
+            target: Iterable[Territory | Actor] | Territory | Actor = [],
+            *,
+            return_type: Literal['list', 'object'] = 'list',
+            **kwargs
+            ) -> Sequence[Gateflow]: ...
+
+    @overload
+    def get_consumptions(
+            self,
+            target: Iterable[Territory | Actor] | Territory | Actor = [],
+            *,
+            return_type: Literal['id'],
+            **kwargs
+            ) -> Sequence[int]: ...
+
+    @overload
+    def get_consumptions(
+            self,
+            target: Iterable[Territory | Actor] | Territory | Actor = [],
+            *,
+            return_type: Literal['count'],
+            **kwargs
+            ) -> int: ...
+
+    @overload
+    def get_consumptions(
+            self,
+            target: Iterable[Territory | Actor] | Territory | Actor = [],
+            *,
+            return_type: Literal['query'],
+            **kwargs
+            ) -> Select[tuple[Gateflow]]: ...
+
+    @overload
+    def get_consumptions(
+            self,
+            target: Iterable[Territory | Actor] | Territory | Actor = [],
+            *,
+            return_type: Literal['queryid', 'qid'],
+            **kwargs
+            ) -> Select[tuple[int]]: ...
+
+    def get_consumptions(
+            self,
+            target: Iterable[Territory | Actor] | Territory | Actor = [],
+            *,
+            return_type: Literal['list', 'object',
+                                 'id', 'query',
+                                 'queryid', 'qid',
+                                 'count'] = 'list',
+            **kwargs
+            ) -> (Sequence[Gateflow] | Sequence[int] | int |
+                  Select[tuple[Gateflow]] | Select[tuple[int]]):
         """
         Retourne les flux de consommation de `target`.
 
         Fonction wrapper de [get_gateflows][sidb.Sidb.get_gateflows].
         """
-        return self.get_gateflows(target, flowtype="consumption", **kwargs)
+        return self.get_gateflows(target,
+                                  flowtype='consumption',
+                                  return_type=return_type,
+                                  **kwargs)
 
-    def get_productions(self,
-                        target: list[Territory | Actor] = [],
-                        **kwargs
-                        ) -> list[Gateflow] | list[int] | int | Select:
+    @overload
+    def get_productions(
+            self,
+            target: Iterable[Territory | Actor] | Territory | Actor = [],
+            *,
+            return_type: Literal['list', 'object'] = 'list',
+            **kwargs
+            ) -> Sequence[Gateflow]: ...
+
+    @overload
+    def get_productions(
+            self,
+            target: Iterable[Territory | Actor] | Territory | Actor = [],
+            *,
+            return_type: Literal['id'],
+            **kwargs
+            ) -> Sequence[int]: ...
+
+    @overload
+    def get_productions(
+            self,
+            target: Iterable[Territory | Actor] | Territory | Actor = [],
+            *,
+            return_type: Literal['count'],
+            **kwargs
+            ) -> int: ...
+
+    @overload
+    def get_productions(
+            self,
+            target: Iterable[Territory | Actor] | Territory | Actor = [],
+            *,
+            return_type: Literal['query'],
+            **kwargs
+            ) -> Select[tuple[Gateflow]]: ...
+
+    @overload
+    def get_productions(
+            self,
+            target: Iterable[Territory | Actor] | Territory | Actor = [],
+            *,
+            return_type: Literal['queryid', 'qid'],
+            **kwargs
+            ) -> Select[tuple[int]]: ...
+
+    def get_productions(
+            self,
+            target: Iterable[Territory | Actor] | Territory | Actor = [],
+            *,
+            return_type: Literal['list', 'object',
+                                 'id', 'query',
+                                 'queryid', 'qid',
+                                 'count'] = 'list',
+            **kwargs
+            ) -> (Sequence[Gateflow] | Sequence[int] | int |
+                  Select[tuple[Gateflow]] | Select[tuple[int]]):
         """
         Retourne les flux de production de `target`.
 
         Fonction wrapper de [get_gateflows][sidb.Sidb.get_gateflows].
         """
-        return self.get_gateflows(target, flowtype="production", **kwargs)
+        return self.get_gateflows(target,
+                                  flowtype='production',
+                                  return_type=return_type,
+                                  **kwargs)
 
-    def get_extractions(self,
-                        target: list[Territory | Actor] = [],
-                        **kwargs
-                        ) -> list[Gateflow] | list[int] | int | Select:
+    @overload
+    def get_extractions(
+            self,
+            target: Iterable[Territory | Actor] | Territory | Actor = [],
+            *,
+            return_type: Literal['list', 'object'] = 'list',
+            **kwargs
+            ) -> Sequence[Gateflow]: ...
+
+    @overload
+    def get_extractions(
+            self,
+            target: Iterable[Territory | Actor] | Territory | Actor = [],
+            *,
+            return_type: Literal['id'],
+            **kwargs
+            ) -> Sequence[int]: ...
+
+    @overload
+    def get_extractions(
+            self,
+            target: Iterable[Territory | Actor] | Territory | Actor = [],
+            *,
+            return_type: Literal['count'],
+            **kwargs
+            ) -> int: ...
+
+    @overload
+    def get_extractions(
+            self,
+            target: Iterable[Territory | Actor] | Territory | Actor = [],
+            *,
+            return_type: Literal['query'],
+            **kwargs
+            ) -> Select[tuple[Gateflow]]: ...
+
+    @overload
+    def get_extractions(
+            self,
+            target: Iterable[Territory | Actor] | Territory | Actor = [],
+            *,
+            return_type: Literal['queryid', 'qid'],
+            **kwargs
+            ) -> Select[tuple[int]]: ...
+
+    def get_extractions(
+            self,
+            target: Iterable[Territory | Actor] | Territory | Actor = [],
+            *,
+            return_type: Literal['list', 'object',
+                                 'id', 'query',
+                                 'queryid', 'qid',
+                                 'count'] = 'list',
+            **kwargs
+            ) -> (Sequence[Gateflow] | Sequence[int] | int |
+                  Select[tuple[Gateflow]] | Select[tuple[int]]):
         """
         Retourne les flux d'extraction de `target`.
 
         Fonction wrapper de [get_gateflows][sidb.Sidb.get_gateflows].
         """
-        return self.get_gateflows(target, flowtype="extraction", **kwargs)
+        return self.get_gateflows(target,
+                                  flowtype='extraction',
+                                  return_type=return_type,
+                                  **kwargs)
 
-    def get_emissions(self,
-                      target: list[Territory | Actor] = [],
-                      **kwargs
-                      ) -> list[Gateflow] | list[int] | int | Select:
+    @overload
+    def get_emissions(
+            self,
+            target: Iterable[Territory | Actor] | Territory | Actor = [],
+            *,
+            return_type: Literal['list', 'object'] = 'list',
+            **kwargs
+            ) -> Sequence[Gateflow]: ...
+
+    @overload
+    def get_emissions(
+            self,
+            target: Iterable[Territory | Actor] | Territory | Actor = [],
+            *,
+            return_type: Literal['id'],
+            **kwargs
+            ) -> Sequence[int]: ...
+
+    @overload
+    def get_emissions(
+            self,
+            target: Iterable[Territory | Actor] | Territory | Actor = [],
+            *,
+            return_type: Literal['count'],
+            **kwargs
+            ) -> int: ...
+
+    @overload
+    def get_emissions(
+            self,
+            target: Iterable[Territory | Actor] | Territory | Actor = [],
+            *,
+            return_type: Literal['query'],
+            **kwargs
+            ) -> Select[tuple[Gateflow]]: ...
+
+    @overload
+    def get_emissions(
+            self,
+            target: Iterable[Territory | Actor] | Territory | Actor = [],
+            *,
+            return_type: Literal['queryid', 'qid'],
+            **kwargs
+            ) -> Select[tuple[int]]: ...
+
+    def get_emissions(
+            self,
+            target: Iterable[Territory | Actor] | Territory | Actor = [],
+            *,
+            return_type: Literal['list', 'object',
+                                 'id', 'query',
+                                 'queryid', 'qid',
+                                 'count'] = 'list',
+            **kwargs
+            ) -> (Sequence[Gateflow] | Sequence[int] | int |
+                  Select[tuple[Gateflow]] | Select[tuple[int]]):
         """
         Retourne les flux d'émission de `target`.
 
         Fonction wrapper de [get_gateflows][sidb.Sidb.get_gateflows].
         """
-        return self.get_gateflows(target, flowtype="emission", **kwargs)
+        return self.get_gateflows(target,
+                                  flowtype='emission',
+                                  return_type=return_type,
+                                  **kwargs)
 
     def load_gateflow(self,
                       mapper: Mapper,
@@ -1924,32 +3393,157 @@ class Sidb:
             raise MapperError(mapper, result, "actor")
 
     # Pathflow
-    T = TypeVar('T', Territory, Actor)
+    @overload
+    def get_pathflows[T: (Territory, Actor)](
+            self,
+            target: T | None = None,
+            direction: Literal['import', 'export',
+                               'internal', 'all',
+                               None] = None,
+            *,
+            btarget: T | None = None,
+            xtarget: T | None = None,
+            product: Product | None = None,
+            product_asc: bool = False,
+            product_desc: bool = True,
+            date_point: date | str | None = None,
+            date_start: date | str | None = None,
+            date_end: date | str | None = None,
+            year: str | int | None = None,
+            month: str | int | None = None,
+            source_ref: str | None = None,
+            filter_by: list[tuple[str, str]] = [],
+            map_id: Iterable[int] | int | Select = [],
+            return_type: Literal['list', 'object'] = 'list',
+            cache_properties: list[str] = [],
+            ) -> Sequence[Pathflow]: ...
 
-    def get_pathflows(self,
-                      target: T | None = None,
-                      direction: Literal['import', 'export',
-                                         'internal', 'all',
-                                         None] = None,
-                      btarget: T | None = None,
-                      xtarget: T | None = None,
-                      product: Product | None = None,
-                      product_asc: bool = False,
-                      product_desc: bool = True,
-                      date_point: date | str | None = None,
-                      date_start: date | str | None = None,
-                      date_end: date | str | None = None,
-                      year: str | int | None = None,
-                      month: str | int | None = None,
-                      source_ref: str | None = None,
-                      filter_by: list[tuple[str, str]] = [],
-                      map_id: Iterable[int] | int | Select = [],
-                      return_type: Literal['list', 'object',
-                                           'id', 'query',
-                                           'queryid', 'qid',
-                                           'count'] = 'list',
-                      cache_properties: list[str] = [],
-                      ) -> list[Pathflow] | list[int] | int | Select:
+    @overload
+    def get_pathflows[T: (Territory, Actor)](
+            self,
+            target: T | None = None,
+            direction: Literal['import', 'export',
+                               'internal', 'all',
+                               None] = None,
+            *,
+            btarget: T | None = None,
+            xtarget: T | None = None,
+            product: Product | None = None,
+            product_asc: bool = False,
+            product_desc: bool = True,
+            date_point: date | str | None = None,
+            date_start: date | str | None = None,
+            date_end: date | str | None = None,
+            year: str | int | None = None,
+            month: str | int | None = None,
+            source_ref: str | None = None,
+            filter_by: list[tuple[str, str]] = [],
+            map_id: Iterable[int] | int | Select = [],
+            return_type: Literal['id'],
+            cache_properties: list[str] = [],
+            ) -> Sequence[int]: ...
+
+    @overload
+    def get_pathflows[T: (Territory, Actor)](
+            self,
+            target: T | None = None,
+            direction: Literal['import', 'export',
+                               'internal', 'all',
+                               None] = None,
+            *,
+            btarget: T | None = None,
+            xtarget: T | None = None,
+            product: Product | None = None,
+            product_asc: bool = False,
+            product_desc: bool = True,
+            date_point: date | str | None = None,
+            date_start: date | str | None = None,
+            date_end: date | str | None = None,
+            year: str | int | None = None,
+            month: str | int | None = None,
+            source_ref: str | None = None,
+            filter_by: list[tuple[str, str]] = [],
+            map_id: Iterable[int] | int | Select = [],
+            return_type: Literal['count'],
+            cache_properties: list[str] = [],
+            ) -> int: ...
+
+    @overload
+    def get_pathflows[T: (Territory, Actor)](
+            self,
+            target: T | None = None,
+            direction: Literal['import', 'export',
+                               'internal', 'all',
+                               None] = None,
+            *,
+            btarget: T | None = None,
+            xtarget: T | None = None,
+            product: Product | None = None,
+            product_asc: bool = False,
+            product_desc: bool = True,
+            date_point: date | str | None = None,
+            date_start: date | str | None = None,
+            date_end: date | str | None = None,
+            year: str | int | None = None,
+            month: str | int | None = None,
+            source_ref: str | None = None,
+            filter_by: list[tuple[str, str]] = [],
+            map_id: Iterable[int] | int | Select = [],
+            return_type: Literal['query'],
+            cache_properties: list[str] = [],
+            ) -> Select[tuple[Pathflow]]: ...
+
+    @overload
+    def get_pathflows[T: (Territory, Actor)](
+            self,
+            target: T | None = None,
+            direction: Literal['import', 'export',
+                               'internal', 'all',
+                               None] = None,
+            *,
+            btarget: T | None = None,
+            xtarget: T | None = None,
+            product: Product | None = None,
+            product_asc: bool = False,
+            product_desc: bool = True,
+            date_point: date | str | None = None,
+            date_start: date | str | None = None,
+            date_end: date | str | None = None,
+            year: str | int | None = None,
+            month: str | int | None = None,
+            source_ref: str | None = None,
+            filter_by: list[tuple[str, str]] = [],
+            map_id: Iterable[int] | int | Select = [],
+            return_type: Literal['queryid', 'qid'],
+            cache_properties: list[str] = [],
+            ) -> Select[tuple[int]]: ...
+
+    def get_pathflows[T: (Territory, Actor)](
+            self,
+            target: T | None = None,
+            direction: Literal['import', 'export',
+                               'internal', 'all',
+                               None] = None,
+            btarget: T | None = None,
+            xtarget: T | None = None,
+            product: Product | None = None,
+            product_asc: bool = False,
+            product_desc: bool = True,
+            date_point: date | str | None = None,
+            date_start: date | str | None = None,
+            date_end: date | str | None = None,
+            year: str | int | None = None,
+            month: str | int | None = None,
+            source_ref: str | None = None,
+            filter_by: list[tuple[str, str]] = [],
+            map_id: Iterable[int] | int | Select | None = None,
+            return_type: Literal['list', 'object',
+                                 'id', 'query',
+                                 'queryid', 'qid',
+                                 'count'] = 'list',
+            cache_properties: list[str] = [],
+            ) -> (Sequence[Pathflow] | Sequence[int] | int |
+                  Select[tuple[Pathflow]] | Select[tuple[int]]):
         """Trouve des flux de chemin (Pathflow).
 
         Parameters:
@@ -2032,7 +3626,7 @@ class Sidb:
                     products_search.append(Pathflow.product_id == product.id)
                 q[nq] = q[nq].where(or_(*products_search))
 
-            if type(target) is Territory:
+            if isinstance(target, Territory):
                 # ToDo : Implement Actors continuation
                 # Vérify xtarget type
                 if xtarget is not None and type(xtarget) is not Territory:
@@ -2062,7 +3656,7 @@ class Sidb:
                     q[nq] = q[nq].where(or_(Pathflow.emitter_territory_id.in_(self.get_territories_in(target, return_type="qid")),
                                             Pathflow.receiver_territory_id.in_(self.get_territories_in(target, return_type="qid"))))
                 # x- and b-target
-            elif type(target) is Actor:
+            elif isinstance(target, Actor):
                 # ToDo : Implement Actors continuation
                 # Vérify xtarget type
                 if xtarget is not None and type(xtarget) is not Actor:
@@ -2103,7 +3697,7 @@ class Sidb:
                 if value != '*':
                     q[nq] = q[nq].where(p.value_literal == value)
 
-            if map_id:
+            if map_id is not None:
                 if (isinstance(map_id, int)):
                     map_id = (map_id,)
                 q[nq] = q[nq].where(Pathflow.id.in_(map_id))
@@ -2112,41 +3706,206 @@ class Sidb:
         self.compute_query_cache_properties(cache_properties, return_type, q['id'])
         return returnval
 
-    def get_imports(self,
-                    target: T | None = None,
-                    **kwargs
-                    ) -> list[Pathflow] | list[int] | int | Select:
+    @overload
+    def get_imports[T: (Territory, Actor)](
+            self,
+            target: T | None = None,
+            *,
+            return_type: Literal['list', 'object'] = 'list',
+            **kwargs
+            ) -> Sequence[Pathflow]: ...
+
+    @overload
+    def get_imports[T: (Territory, Actor)](
+            self,
+            target: T | None = None,
+            *,
+            return_type: Literal['id'],
+            **kwargs
+            ) -> Sequence[int]: ...
+
+    @overload
+    def get_imports[T: (Territory, Actor)](
+            self,
+            target: T | None = None,
+            *,
+            return_type: Literal['count'],
+            **kwargs
+            ) -> int: ...
+
+    @overload
+    def get_imports[T: (Territory, Actor)](
+            self,
+            target: T | None = None,
+            *,
+            return_type: Literal['query'],
+            **kwargs
+            ) -> Select[tuple[Pathflow]]: ...
+
+    @overload
+    def get_imports[T: (Territory, Actor)](
+            self,
+            target: T | None = None,
+            *,
+            return_type: Literal['queryid', 'qid'],
+            **kwargs
+            ) -> Select[tuple[int]]: ...
+
+    def get_imports[T: (Territory, Actor)](
+            self,
+            target: T | None = None,
+            *,
+            return_type: Literal['list', 'object',
+                                 'id', 'query',
+                                 'queryid', 'qid',
+                                 'count'] = 'list',
+            **kwargs
+            ) -> (Sequence[Pathflow] | Sequence[int] | int |
+                  Select[tuple[Pathflow]] | Select[tuple[int]]):
         """
         Retourne les flux importés: ceux dont l'origine est à l'extérieur de
         `target` et la destination est à l'intérieur.
 
         Fonction wrapper de [get_pathflows][sidb.Sidb.get_pathflows].
         """
-        return self.get_pathflows(target, direction="import", **kwargs)
+        return self.get_pathflows(target,
+                                  direction='import',
+                                  return_type=return_type,
+                                  **kwargs)
 
-    def get_exports(self,
-                    target: T | None = None,
-                    **kwargs
-                    ) -> list[Pathflow] | list[int] | int | Select:
+    @overload
+    def get_exports[T: (Territory, Actor)](
+            self,
+            target: T | None = None,
+            *,
+            return_type: Literal['list', 'object'] = 'list',
+            **kwargs
+            ) -> Sequence[Pathflow]: ...
+
+    @overload
+    def get_exports[T: (Territory, Actor)](
+            self,
+            target: T | None = None,
+            *,
+            return_type: Literal['id'],
+            **kwargs
+            ) -> Sequence[int]: ...
+
+    @overload
+    def get_exports[T: (Territory, Actor)](
+            self,
+            target: T | None = None,
+            *,
+            return_type: Literal['count'],
+            **kwargs
+            ) -> int: ...
+
+    @overload
+    def get_exports[T: (Territory, Actor)](
+            self,
+            target: T | None = None,
+            *,
+            return_type: Literal['query'],
+            **kwargs
+            ) -> Select[tuple[Pathflow]]: ...
+
+    @overload
+    def get_exports[T: (Territory, Actor)](
+            self,
+            target: T | None = None,
+            *,
+            return_type: Literal['queryid', 'qid'],
+            **kwargs
+            ) -> Select[tuple[int]]: ...
+
+    def get_exports[T: (Territory, Actor)](
+            self,
+            target: T | None = None,
+            *,
+            return_type: Literal['list', 'object',
+                                 'id', 'query',
+                                 'queryid', 'qid',
+                                 'count'] = 'list',
+            **kwargs
+            ) -> (Sequence[Pathflow] | Sequence[int] | int |
+                  Select[tuple[Pathflow]] | Select[tuple[int]]):
         """
         Retourne les flux exportés: ceux dont l'origine est à l'intérieur de
         `target` et la destination est à l'extérieur.
 
         Fonction wrapper de [get_pathflows][sidb.Sidb.get_pathflows].
         """
-        return self.get_pathflows(target, direction="export", **kwargs)
+        return self.get_pathflows(target,
+                                  direction='export',
+                                  return_type=return_type,
+                                  **kwargs)
 
-    def get_internals(self,
-                      target: T | None = None,
-                      **kwargs
-                      ) -> list[Pathflow] | list[int] | int | Select:
+    @overload
+    def get_internals[T: (Territory, Actor)](
+            self,
+            target: T | None = None,
+            *,
+            return_type: Literal['list', 'object'] = 'list',
+            **kwargs
+            ) -> Sequence[Pathflow]: ...
+
+    @overload
+    def get_internals[T: (Territory, Actor)](
+            self,
+            target: T | None = None,
+            *,
+            return_type: Literal['id'],
+            **kwargs
+            ) -> Sequence[int]: ...
+
+    @overload
+    def get_internals[T: (Territory, Actor)](
+            self,
+            target: T | None = None,
+            *,
+            return_type: Literal['count'],
+            **kwargs
+            ) -> int: ...
+
+    @overload
+    def get_internals[T: (Territory, Actor)](
+            self,
+            target: T | None = None,
+            *,
+            return_type: Literal['query'],
+            **kwargs
+            ) -> Select[tuple[Pathflow]]: ...
+
+    @overload
+    def get_internals[T: (Territory, Actor)](
+            self,
+            target: T | None = None,
+            *,
+            return_type: Literal['queryid', 'qid'],
+            **kwargs
+            ) -> Select[tuple[int]]: ...
+
+    def get_internals[T: (Territory, Actor)](
+            self,
+            target: T | None = None,
+            *,
+            return_type: Literal['list', 'object',
+                                 'id', 'query',
+                                 'queryid', 'qid',
+                                 'count'] = 'list',
+            **kwargs
+            ) -> (Sequence[Pathflow] | Sequence[int] | int |
+                  Select[tuple[Pathflow]] | Select[tuple[int]]):
         """
         Retourne les flux internes: ceux dont l'origine et la destination sont
         dans `target`.
 
         Fonction wrapper de [get_pathflows][sidb.Sidb.get_pathflows].
         """
-        return self.get_pathflows(target, direction="internal", **kwargs)
+        return self.get_pathflows(target,
+                                  direction='internal',
+                                  return_type=return_type,
+                                  **kwargs)
 
     def load_pathflow(self, mapper: Mapper, verbose: bool = False) -> None:
         """Charge un flux de chemin et ses propriétés dans la base de données.
@@ -2185,88 +3944,32 @@ class Sidb:
         """Renvoie l'objet correspondant à un identifiant."""
         return self.session.get(MTObject, id)
 
-    @overload
-    def get_mtobject_tap(self,
-                         mtobject_class: type[Territory],
-                         *args,
-                         like_value: bool = False,
-                         ignore_case: bool = False,
-                         ignore_accent: bool = False,
-                         return_type: Literal['object', 'id',
-                                              'queryid', 'qid',
-                                              'query'] = 'object',
-                         raise_none: bool = True,
-                         multi: Literal['raise', 'warn_first',
-                                        'warn_list', 'first',
-                                        'list'] = "warn_list",
-                         nomenclature: str | None = None,
-                         verbose: bool = False,
-                         **kwargs
-                         ) -> Territory | Sequence[Territory] | int | Select | None: ...
+    def get_mtobject_tap[T: (Territory, Actor, Product)](
+            self,
+            mtobject_class: type[T],
+            *args,
+            like_value: bool = False,
+            ignore_case: bool = False,
+            ignore_accent: bool = False,
+            return_type: Literal['object', 'id',
+                                 'queryid', 'qid',
+                                 'query'] = 'object',
+            raise_none: bool = True,
+            multi: Literal['raise', 'warn_first',
+                           'warn_list', 'first',
+                           'list'] = 'warn_list',
+            nomenclature: str | None = None,
+            verbose: bool = False,
+            **kwargs
+            ) -> (T | Sequence[T] | int | Sequence[int] |
+                  Select[tuple[T]] | Select[tuple[int]] |
+                  None):
 
-    @overload
-    def get_mtobject_tap(self,
-                         mtobject_class: type[Actor],
-                         *args,
-                         like_value: bool = False,
-                         ignore_case: bool = False,
-                         ignore_accent: bool = False,
-                         return_type: Literal['object', 'id',
-                                              'queryid', 'qid',
-                                              'query'] = 'object',
-                         raise_none: bool = True,
-                         multi: Literal['raise', 'warn_first',
-                                        'warn_list', 'first',
-                                        'list'] = "warn_list",
-                         nomenclature: str | None = None,
-                         verbose: bool = False,
-                         **kwargs
-                         ) -> Actor | Sequence[Actor] | int | Select | None: ...
-
-    @overload
-    def get_mtobject_tap(self,
-                         mtobject_class: type[Product],
-                         *args,
-                         like_value: bool = False,
-                         ignore_case: bool = False,
-                         ignore_accent: bool = False,
-                         return_type: Literal['object', 'id',
-                                              'queryid', 'qid',
-                                              'query'] = 'object',
-                         raise_none: bool = True,
-                         multi: Literal['raise', 'warn_first',
-                                        'warn_list', 'first',
-                                        'list'] = "warn_list",
-                         nomenclature: str | None = None,
-                         verbose: bool = False,
-                         **kwargs
-                         ) -> Product | Sequence[Product] | int | Select | None: ...
-
-    def get_mtobject_tap(self,
-                         mtobject_class: type[Territory | Actor | Product],
-                         *args,
-                         like_value: bool = False,
-                         ignore_case: bool = False,
-                         ignore_accent: bool = False,
-                         return_type: Literal['object', 'id',
-                                              'queryid', 'qid',
-                                              'query'] = 'object',
-                         raise_none: bool = True,
-                         multi: Literal['raise', 'warn_first',
-                                        'warn_list', 'first',
-                                        'list'] = "warn_list",
-                         nomenclature: str | None = None,
-                         verbose: bool = False,
-                         **kwargs
-                         ) -> (Territory | Actor | Product | Sequence[Territory] |
-                               Sequence[Actor] | Sequence[Product] | int
-                               | Select | None):
-
-        if mtobject_class not in [Actor, Territory, Product]:
+        if not issubclass(mtobject_class, (Actor, Territory, Product)):
             raise TypeError(f"mtobject_class has to be Actor, Territory or Product, got {mtobject_class}")
-        if return_type not in (_list := ["object", "id", "queryid", "qid", "query"]):
+        if return_type not in (_list := ("object", "id", "queryid", "qid", "query")):
             raise ValueError(f"return_type can only be one of {_list}, got {return_type}")
-        if multi not in (_list := ["raise", "warn_first", "warn_list", "first", "list"]):
+        if multi not in (_list := ("raise", "warn_first", "warn_list", "first", "list")):
             raise ValueError(f"many can only be one of {_list}, got {multi}")
 
         key, value = Sidb.get_one_mtobject_read_kw_arg(*args, **kwargs)
@@ -2356,72 +4059,25 @@ class Sidb:
                 self.get_properties(["Name", "Code"], map_id=q["id"])
                 return result
 
-    @overload
-    def get_mtobjects_tap(self,
-                          mtobject_class: type[Territory],
-                          *args,
-                          like_value: bool = False,
-                          ignore_case: bool = False,
-                          ignore_accent: bool = False,
-                          map_id: Iterable[int] | int | Select = [],
-                          return_type: Literal['list', 'object',
-                                               'id', 'queryid', 'qid',
-                                               'query', 'count'] = 'list',
-                          cache_properties: list[str] = [],
-                          nomenclature: str | None = None,
-                          verbose: bool = False,
-                          ) -> (Sequence[Territory] | Sequence[int] | Select | int): ...
-
-    @overload
-    def get_mtobjects_tap(self,
-                          mtobject_class: type[Actor],
-                          *args,
-                          like_value: bool = False,
-                          ignore_case: bool = False,
-                          ignore_accent: bool = False,
-                          map_id: Iterable[int] | int | Select = [],
-                          return_type: Literal['list', 'object',
-                                               'id', 'queryid', 'qid',
-                                               'query', 'count'] = 'list',
-                          cache_properties: list[str] = [],
-                          nomenclature: str | None = None,
-                          verbose: bool = False,
-                          ) -> (Sequence[Actor] | Sequence[int] | Select | int): ...
-
-    @overload
-    def get_mtobjects_tap(self,
-                          mtobject_class: type[Product],
-                          *args,
-                          like_value: bool = False,
-                          ignore_case: bool = False,
-                          ignore_accent: bool = False,
-                          map_id: Iterable[int] | int | Select = [],
-                          return_type: Literal['list', 'object',
-                                               'id', 'queryid', 'qid',
-                                               'query', 'count'] = 'list',
-                          cache_properties: list[str] = [],
-                          nomenclature: str | None = None,
-                          verbose: bool = False,
-                          ) -> (Sequence[Product] | Sequence[int] | Select | int): ...
-
-    def get_mtobjects_tap(self,
-                          mtobject_class: type[Territory | Actor | Product],
-                          *args,
-                          like_value: bool = False,
-                          ignore_case: bool = False,
-                          ignore_accent: bool = False,
-                          map_id: Iterable[int] | int | Select = [],
-                          return_type: Literal['list', 'object',
-                                               'id', 'queryid', 'qid',
-                                               'query', 'count'] = 'list',
-                          cache_properties: list[str] = [],
-                          nomenclature: str | None = None,
-                          verbose: bool = False,
-                          ) -> (Sequence[Territory] | Sequence[Actor] | Sequence[Product] |
-                                Sequence[int] | Select | int):
-        if mtobject_class not in [Actor, Territory, Product]:
+    def get_mtobjects_tap[T: (Territory, Actor, Product)](
+            self,
+            mtobject_class: type[T],
+            *args,
+            like_value: bool = False,
+            ignore_case: bool = False,
+            ignore_accent: bool = False,
+            map_id: Iterable[int] | int | Select | None = None,
+            return_type: Literal['list', 'object',
+                                 'id', 'queryid', 'qid',
+                                 'query', 'count'] = 'list',
+            cache_properties: list[str] = [],
+            nomenclature: str | None = None,
+            verbose: bool = False,
+            ) -> (Sequence[T] | Sequence[int] | int |
+                  Select[tuple[T]] | Select[tuple[int]]):
+        if not issubclass(mtobject_class, (Territory, Actor, Product)):
             raise TypeError(f"mtobject_class has to be Actor, Territory or Product, got '{mtobject_class}'.")
-        if return_type not in (_list := ["list", "object", "id", "queryid", "qid", "query", "count"]):
+        if return_type not in (_list := ("list", "object", "id", "queryid", "qid", "query", "count")):
             raise ValueError(f"return_type can only be one of {_list}, got '{return_type}'.")
 
         q = {}
@@ -2429,7 +4085,7 @@ class Sidb:
             q[nq] = select(targetq)
 
             # Add an id filter.
-            if map_id:
+            if map_id is not None:
                 if isinstance(map_id, int):
                     map_id = (map_id,)
                 q[nq] = q[nq].where(mtobject_class.id.in_(map_id))
@@ -2468,27 +4124,20 @@ class Sidb:
         self.compute_query_cache_properties(cache_properties, return_type, q['id'])
         return result
 
-    def get_mtobjects_by_ids(self,
-                             type_mtobject: type[Territory | Actor | Product |
-                                                 Gateflow | Pathflow | Stock],
-                             ids: list[int] | int,
-                             cache_properties: list[str] = [],
-                             return_type: Literal['list',
-                                                  'object',
-                                                  'query',
-                                                  'queryid',
-                                                  'qid',
-                                                  'count',
-                                                  ] = "list",
-                             verbose: bool = False
-                             ) -> (list[Territory]
-                                   | list[Actor]
-                                   | list[Product]
-                                   | list[Gateflow]
-                                   | list[Pathflow]
-                                   | list[Stock]
-                                   | int
-                                   | Select):
+    def get_mtobjects_by_ids[T: MTObject](
+            self,
+            type_mtobject: type[T],
+            ids: Iterable[int] | int,
+            cache_properties: list[str] = [],
+            return_type: Literal['list',
+                                 'object',
+                                 'query',
+                                 'queryid',
+                                 'qid',
+                                 'count',
+                                 ] = 'list',
+            verbose: bool = False,
+            ) -> (Sequence[T] | int | Select[tuple[T]] | Select[tuple[int]]):
         """Trouve les MTobjects correspondants aux identifiants.
 
         Args:
@@ -2510,7 +4159,7 @@ class Sidb:
             (Select): Requète des objects ou des identifiants.
         """
         if isinstance(ids, int):
-            ids = {ids}
+            ids = [ids]
 
         q = {}
         for nq, targetq in zip(["id", "object"], [type_mtobject.id, type_mtobject]):
@@ -2520,114 +4169,30 @@ class Sidb:
         self.compute_query_cache_properties(cache_properties, return_type, q['id'])
         return result
 
-    def get_mtobjects_tap_in(self,
-                             mtobject: (Territory | Actor | Product |
-                                        list[Territory] | list[Actor] |
-                                        list[Product] | int),
-                             returnmtobjecttype: (Literal['territory',
-                                                          'actor',
-                                                          'product']
-                                                  | type[Territory |
-                                                         Actor |
-                                                         Product]),
-                             scale: str | None = None,
-                             source_ref: str | None = None,
-                             self_include: bool = False,
-                             cache_properties: list[str] = [],
-                             return_type: Literal['list', 'object',
-                                                  'id', 'queryid', 'qid',
-                                                  'query', 'count'] = 'list',
-                             verbose: bool = False
-                             ) -> (Sequence[Territory] | Sequence[Actor] |
-                                   Sequence[Product] | Sequence[int] |
-                                   Select | int):
+    def get_mtobjects_tap_in[T: (Territory, Actor, Product)](
+            self,
+            mtobject: (Territory | Actor | Product |
+                       Sequence[Territory] | Sequence[Actor] |
+                       Sequence[Product] | Sequence[int] | int),
+            mtobject_to_return: type[T],
+            scale: str | None = None,
+            source_ref: str | None = None,
+            self_include: bool = False,
+            cache_properties: list[str] = [],
+            return_type: Literal['list', 'object',
+                                 'id', 'queryid', 'qid',
+                                 'query', 'count'] = 'list',
+            verbose: bool = False
+            ) -> (Sequence[T] | Sequence[int] | int |
+                  Select[tuple[T]] | Select[tuple[int]]):
         if verbose:
             print(f"-------- GET MTOBJECT IN | {type(mtobject)=}")
 
-        if isinstance(returnmtobjecttype, str):
-            returnmtobjecttype = Sidb.get_mtobjecttype_from_classname(returnmtobjecttype)
-
-        if returnmtobjecttype not in [Actor, Territory, Product]:
-            raise TypeError("'%s' is unsupported type" % returnmtobjecttype)
+        if not issubclass(mtobject_to_return, (Territory, Actor, Product)):
+            raise TypeError("'%s' is unsupported type" % mtobject_to_return)
 
         if source_ref is not None:
             raise ValueError("'source_ref' argument is not defined yet. #Todo")
-
-        if isinstance(mtobject, (Territory, Actor, Product)):
-            id_start = mtobject.id
-            type_mtobject = type(mtobject)
-        elif isinstance(mtobject, int):
-            id_start = mtobject
-            type_mtobject = returnmtobjecttype
-        elif isinstance(mtobject, (list, tuple)):
-            if isinstance(mtobject[0], int):
-                id_start = mtobject
-                type_mtobject = returnmtobjecttype
-            else:
-                type_mtobject = type(mtobject[0])
-                id_start = [mto.id for mto in mtobject]
-        else:
-            raise TypeError(f"Unexpected 'mtobject' type: {type(mtobject)}")
-
-        if type_mtobject is returnmtobjecttype:  # Même type objet initial et cible
-            if verbose:
-                print(f"----------- CASE type(mtobject) == returnmtobjecttype == {type(mtobject)}")
-            subquery = Sidb.subquery_recursive(returnmtobjecttype,
-                                               [returnmtobjecttype.id], id_start,
-                                               f"IsIn{returnmtobjecttype.__name__}")
-            if verbose:
-                print(f"Used in-key : IsIn{returnmtobjecttype.__name__}")
-            q = {}
-            for nq, targetq in zip(["id", "object"], [returnmtobjecttype.id, returnmtobjecttype]):
-                q[nq] = select(targetq).join(subquery)
-                if scale is not None:
-                    q[nq] = q[nq].join(returnmtobjecttype.properties)
-                    q[nq] = q[nq].where(Property.name_a == "Scale")
-                    q[nq] = q[nq].where(Property.value_literal == scale)
-                if not self_include:
-                    q[nq] = q[nq].where(returnmtobjecttype.id != id_start)
-
-        elif (type(mtobject) is Territory) and (returnmtobjecttype is Actor):
-            if verbose:
-                print("----------- CASE Actor in Territory")
-            q = {}
-            property1_alias = aliased(Property, name='property1_alias')
-            for nq, targetq in zip(["id", "object"], [returnmtobjecttype.id, returnmtobjecttype]):
-                mapid = self.get_mtobjects_tap_in(mtobject, Territory, return_type='qid')
-                q[nq] = select(targetq)
-                q[nq] = q[nq].join(property1_alias, returnmtobjecttype.properties)
-                q[nq] = q[nq].where(property1_alias.name_a == "IsInTerritory")
-                q[nq] = q[nq].where(property1_alias.value_mtobject_id.in_(mapid))
-
-                if scale is not None:
-                    property2_alias = aliased(Property, name='property2_alias')
-                    q[nq] = q[nq].join(property2_alias, returnmtobjecttype.properties)
-                    q[nq] = q[nq].where(property2_alias.name_a == "Scale")
-                    q[nq] = q[nq].where(property2_alias.value_literal == scale)
-        else:
-            raise TypeError("Distinct type are not defined yet [Initial_look_in = "
-                            f"{type(mtobject)}| return_type = {type(returnmtobjecttype)}]")
-
-        returnval = self.compute_query_return_type(q, return_type)
-        self.compute_query_cache_properties(cache_properties, return_type, q['id'])
-        return returnval
-
-    def get_mtobjects_tap_on(self,
-                             mtobject: (Territory | Actor | Product |
-                                        list[Territory] | list[Actor] |
-                                        list[Product] | int),
-                             mtobject_to_return: type[Territory | Actor | Product],
-                             scale: str | None = None,
-                             self_include: bool = False,
-                             cache_properties: list[str] = [],
-                             return_type: Literal['list', 'object',
-                                                  'id', 'queryid', 'qid',
-                                                  'query', 'count'] = 'list'
-                             ) -> (list[Territory] | list[Actor] | list[Product] |
-                                   list[int] | Select | int):
-        if mtobject_to_return not in [Territory, Actor, Product]:
-            raise TypeError("'mtobject_to_return' has to be Actor, Territory or "
-                            f"Product, got '{mtobject_to_return}'.")
 
         if isinstance(mtobject, (Territory, Actor, Product)):
             id_start = mtobject.id
@@ -2642,6 +4207,78 @@ class Sidb:
             else:
                 type_mtobject = type(mtobject[0])
                 id_start = [mto.id for mto in mtobject]
+        else:
+            raise TypeError(f"Unexpected 'mtobject' type: {type(mtobject)}")
+
+        if type_mtobject is mtobject_to_return:  # Même type objet initial et cible
+            if verbose:
+                print(f"----------- CASE type(mtobject) == mtobject_to_return == {type(mtobject)}")
+            subquery = Sidb.subquery_recursive(mtobject_to_return,
+                                               [mtobject_to_return.id], id_start,
+                                               f"IsIn{mtobject_to_return.__name__}")
+            if verbose:
+                print(f"Used in-key : IsIn{mtobject_to_return.__name__}")
+            q = {}
+            for nq, targetq in zip(["id", "object"], [mtobject_to_return.id, mtobject_to_return]):
+                q[nq] = select(targetq).join(subquery)
+                if scale is not None:
+                    q[nq] = q[nq].join(mtobject_to_return.properties)
+                    q[nq] = q[nq].where(Property.name_a == "Scale")
+                    q[nq] = q[nq].where(Property.value_literal == scale)
+                if not self_include:
+                    q[nq] = q[nq].where(mtobject_to_return.id != id_start)
+
+        elif (type(mtobject) is Territory) and (mtobject_to_return is Actor):
+            if verbose:
+                print("----------- CASE Actor in Territory")
+            q = {}
+            property1_alias = aliased(Property, name='property1_alias')
+            for nq, targetq in zip(["id", "object"], [mtobject_to_return.id, mtobject_to_return]):
+                mapid = self.get_territories_in(mtobject, return_type='qid')
+                q[nq] = select(targetq)
+                q[nq] = q[nq].join(property1_alias, mtobject_to_return.properties)
+                q[nq] = q[nq].where(property1_alias.name_a == "IsInTerritory")
+                q[nq] = q[nq].where(property1_alias.value_mtobject_id.in_(mapid))
+
+                if scale is not None:
+                    property2_alias = aliased(Property, name='property2_alias')
+                    q[nq] = q[nq].join(property2_alias, mtobject_to_return.properties)
+                    q[nq] = q[nq].where(property2_alias.name_a == "Scale")
+                    q[nq] = q[nq].where(property2_alias.value_literal == scale)
+        else:
+            raise TypeError("Distinct type are not defined yet [Initial_look_in = "
+                            f"{type(mtobject)}| return_type = {type(mtobject_to_return)}]")
+
+        returnval = self.compute_query_return_type(q, return_type)
+        self.compute_query_cache_properties(cache_properties, return_type, q['id'])
+        return returnval
+
+    def get_mtobjects_tap_on[T: (Territory, Actor, Product)](
+            self,
+            mtobject: (Territory | Actor | Product | int |
+                       Sequence[Territory] | Sequence[Actor] |
+                       Sequence[Product] | Sequence[int]),
+            mtobject_to_return: type[T],
+            scale: str | None = None,
+            self_include: bool = False,
+            cache_properties: list[str] = [],
+            return_type: Literal['list', 'object',
+                                 'id', 'queryid', 'qid',
+                                 'query', 'count'] = 'list'
+            ) -> (Sequence[T] | Sequence[int] | int |
+                  Select[tuple[T]] | Select[tuple[int]]):
+        if mtobject_to_return not in [Territory, Actor, Product]:
+            raise TypeError("'mtobject_to_return' has to be Actor, Territory or "
+                            f"Product, got '{mtobject_to_return}'.")
+
+        id_start: list[int] | tuple[int] = []
+        if isinstance(mtobject, (Territory, Actor, Product)):
+            id_start = (mtobject.id,)
+        elif isinstance(mtobject, int):
+            id_start = (mtobject,)
+        elif isinstance(mtobject, Sequence):
+            for o in mtobject:
+                id_start.append(o if isinstance(o, int) else o.id)
         else:
             raise TypeError(f"Unexpected 'mtobject' type : {type(mtobject)}")
 
@@ -2665,28 +4302,30 @@ class Sidb:
         self.compute_query_cache_properties(cache_properties, return_type, q['id'])
         return result
 
-    def get_mtobjects_gs(self,
-                         object_class: type[Gateflow | Stock],
-                         target: list[Territory | Actor] = [],
-                         flowtype: str | None = None,
-                         product: Product | Iterable[Product] | None = None,
-                         product_asc: bool = False,
-                         product_desc: bool = True,
-                         date_point: str | date | None = None,
-                         date_start: str | date | None = None,
-                         date_end: str | date | None = None,
-                         year: str | int | None = None,
-                         month: str | int | None = None,
-                         source_ref: str | None = None,
-                         filter_by: list[tuple[str, str]] = [],
-                         target_join_or: bool = True,
-                         map_id: Iterable[int] | int | Select = [],
-                         cache_properties: list[str] = [],
-                         return_type: Literal['list', 'object',
-                                              'id', 'queryid', 'qid',
-                                              'query', 'count'] = 'list',
-                         verbose: bool = False
-                         ) -> list[Gateflow] | list[Stock] | list[int] | int | Select:
+    def get_mtobjects_gs[T: (Gateflow, Stock)](
+            self,
+            object_class: type[T],
+            target: Iterable[Territory | Actor] | Territory | Actor = [],
+            flowtype: str | None = None,
+            product: Product | Sequence[Product] | None = None,
+            product_asc: bool = False,
+            product_desc: bool = True,
+            date_point: str | date | None = None,
+            date_start: str | date | None = None,
+            date_end: str | date | None = None,
+            year: str | int | None = None,
+            month: str | int | None = None,
+            source_ref: str | None = None,
+            filter_by: list[tuple[str, str]] = [],
+            target_join_or: bool = True,
+            map_id: Iterable[int] | int | Select | None = None,
+            cache_properties: list[str] = [],
+            return_type: Literal['list', 'object',
+                                 'id', 'queryid', 'qid',
+                                 'query', 'count'] = 'list',
+            verbose: bool = False
+            ) -> (Sequence[T] | Sequence[int] | int |
+                  Select[tuple[T]] | Select[tuple[int]]):
         """
         Fonction générique pour récupérer des gateflows ou des stocks
         """
@@ -2718,7 +4357,7 @@ class Sidb:
                                         and_(object_class.date_point <= date_end,
                                              object_class.date_point >= date_start)))
 
-            if flowtype is not None and object_class is Gateflow:
+            if flowtype is not None and issubclass(object_class, Gateflow):
                 flowtype = flowtype.lower()
                 q[nq] = q[nq].where(object_class.flowtype == flowtype)
             # Product search
@@ -2734,10 +4373,9 @@ class Sidb:
                         ))
                 if not products_search:
                     if isinstance(product, Product):
-                        product = {product.id}
-                    else:
-                        product = {p.id for p in product}
-                    products_search.append(object_class.product_id.in_(product))
+                        product = (product,)
+                    ids = [p.id for p in product]
+                    products_search.append(object_class.product_id.in_(ids))
                 q[nq] = q[nq].where(or_(*products_search))
             if target:
                 if isinstance(target, (Territory, Actor)):
@@ -2766,7 +4404,7 @@ class Sidb:
                 if value != '*':
                     q[nq] = q[nq].where(p.value_literal == value)
 
-            if map_id:
+            if map_id is not None:
                 if isinstance(map_id, int):
                     map_id = (map_id,)
                 q[nq] = q[nq].where(object_class.id.in_(map_id))
@@ -2782,11 +4420,13 @@ class Sidb:
             .where(Property.item_id == mtobject.id)
         ).all()
 
-    def get_one_mtobject_from_cache(self,
-                                    mtobject_type: str,
-                                    attribute_name: str,
-                                    attribute_value: str,
-                                    prefix: str = "") -> MTObject | None:
+    def get_one_mtobject_from_cache(
+            self,
+            mtobject_type: str,
+            attribute_name: str,
+            attribute_value: str,
+            prefix: str | None = None,
+            ) -> MTObject | None:
         """ ....
         Regarde le résultat d'une requête ce trouve dans le cache pour éviter
         de refaire la requête et gagner du temps. \n
@@ -2827,12 +4467,14 @@ class Sidb:
             raise AttributeError(f"Unexpected cache key '{attribute_name}'={attribute_value}")
         return temp_mtobject
 
-    def set_cache_mtobject_codename(self,
-                                    mtobject: MTObject,
-                                    attribute_name: str,
-                                    attribute_value: str,
-                                    use_alias: bool,
-                                    prefix: str = "") -> None:
+    def set_cache_mtobject_codename(
+            self,
+            mtobject: MTObject,
+            attribute_name: str,
+            attribute_value: str,
+            use_alias: bool,
+            prefix: str | None = None
+            ) -> None:
         """ Set mtobject in cache for Territory, Actor, Product
         """
         # Pour un produit dans le cache :
@@ -2857,15 +4499,15 @@ class Sidb:
 
     # Static functions
     @staticmethod
-    def get_mtobject_children(mtobject: Territory | Actor | Product,
-                              cache_properties: list[str] = [],
-                              return_type: Literal['qid', 'queryid',
-                                                   'query', 'id',
-                                                   'list', 'object',
-                                                   'count'] = 'list'
-                              ) -> (list[Territory] | list[Actor] |
-                                    list[Product] | list[int] |
-                                    Select | int):
+    def get_mtobject_children[T: (Territory, Actor, Product)](
+            mtobject: T,
+            cache_properties: list[str] = [],
+            return_type: Literal['qid', 'queryid',
+                                 'query', 'id',
+                                 'list', 'object',
+                                 'count'] = 'list'
+            ) -> (Sequence[T] | Sequence[int] | int |
+                  Select[tuple[T | int]]):
         """Récupère les enfants directs d'un objet.
 
         Parameters:
@@ -2905,15 +4547,15 @@ class Sidb:
         return result
 
     @staticmethod
-    def get_mtobject_parents(mtobject: Territory | Actor | Product,
-                             cache_properties: list[str] = [],
-                             return_type: Literal['qid', 'queryid',
-                                                  'query', 'id',
-                                                  'list', 'object',
-                                                  'count'] = 'list'
-                             ) -> (Sequence[Territory] | Sequence[Actor] |
-                                   Sequence[Product] | Sequence[int] |
-                                   Select | int):
+    def get_mtobject_parents[T: (Territory, Actor, Product)](
+            mtobject: T,
+            cache_properties: list[str] = [],
+            return_type: Literal['qid', 'queryid',
+                                 'query', 'id',
+                                 'list', 'object',
+                                 'count'] = 'list'
+            ) -> (Sequence[T] | Sequence[int] | int |
+                  Select[tuple[T | int]]):
         """Récupère les parents directs d'un objet.
 
         Parameters:
@@ -3014,11 +4656,10 @@ class Sidb:
     @staticmethod
     def subquery_recursive(object_type, list_fields, id_start, key):
         if isinstance(id_start, int):
-            subquery = select(*list_fields).where(object_type.id == id_start).cte(recursive=True)
-        elif isinstance(id_start, (list, set, tuple)):
-            subquery = select(*list_fields).where(object_type.id.in_(id_start)).cte(recursive=True)
+            id_start = (id_start,)
 
-        # partie centrale
+        subquery = select(*list_fields).where(object_type.id.in_(id_start)).cte(recursive=True)
+
         subquery = subquery.union(
                 select(*list_fields)
                 .where(Property.name_a == key)
@@ -3030,11 +4671,10 @@ class Sidb:
     @staticmethod
     def subquery_recursive_reverse(object_type, list_fields, id_start, key):
         if isinstance(id_start, int):
-            id_start = {id_start}
+            id_start = (id_start,)
 
         subquery = select(*list_fields).where(object_type.id.in_(id_start)).cte(recursive=True)
 
-        # partie centrale
         subquery = subquery.union(
                 select(*list_fields)
                 .where(Property.name_a == key)
@@ -3042,16 +4682,3 @@ class Sidb:
                 .where(Property.value_mtobject_id == object_type.id)
         )
         return subquery
-
-    @staticmethod
-    def get_mtobjecttype_from_classname(classname: str):
-        if type(classname) is not str:
-            raise AttributeError("Unknown classname type '%s', str expected" % classname)
-        if classname.lower() == 'actor':
-            return Actor
-        elif classname.lower() == 'territory':
-            return Territory
-        elif classname.lower() == 'product':
-            return Product
-        else:
-            raise AttributeError("'%s' type not supported yet #Todo")
