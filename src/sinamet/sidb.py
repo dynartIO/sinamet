@@ -336,7 +336,7 @@ class Sidb:
             q_id: La requète des identifiants des objets dont on veut les
                 propriétés.
         """
-        if return_type not in ["list", "object"]:
+        if return_type not in ("list", "object"):
             return
 
         s = {"Name", "Code"}
@@ -3584,7 +3584,7 @@ class Sidb:
             (Select): Requète des flux ou des identifiants.
         """
         # FutureDev Implementer target_(asc/desc).
-        if direction not in ["import", "export", "internal", "all"] and direction is not None:
+        if direction not in ("import", "export", "internal", "all", None):
             raise ValueError(f"Unknown direction = '{direction}'")
         if type(target) is list:
             raise ValueError("Target list is not configured yet")
@@ -4267,7 +4267,7 @@ class Sidb:
                                  'query', 'count'] = 'list'
             ) -> (Sequence[T] | Sequence[int] | int |
                   Select[tuple[T]] | Select[tuple[int]]):
-        if mtobject_to_return not in [Territory, Actor, Product]:
+        if not issubclass(mtobject_to_return, (Territory, Actor, Product)):
             raise TypeError("'mtobject_to_return' has to be Actor, Territory or "
                             f"Product, got '{mtobject_to_return}'.")
 
@@ -4441,7 +4441,7 @@ class Sidb:
         prefix = prefix + "/" if prefix else ''
 
         # Cas d'un code ou d'un nom précisé
-        if attribute_name[0:5] in ["Name@", "Code@"]:
+        if attribute_name[0:5] in ("Name@", "Code@"):
             temp_mtobject = self.get_cache(mtobject_type, prefix + attribute_name, attribute_value)
             if temp_mtobject is None:
                 temp_mtobject = self.get_cache(mtobject_type,
@@ -4450,7 +4450,7 @@ class Sidb:
                                                attribute_value)
 
         # Code ou nom, non précisé
-        elif attribute_name in ["Code", "Name"]:
+        elif attribute_name in ("Code", "Name"):
             temp_mtobject = self.get_cache(mtobject_type,
                                            prefix + attribute_name, attribute_value)
             if temp_mtobject is None:
@@ -4481,7 +4481,7 @@ class Sidb:
         # nom d'attribut = "Nomenclature/Code" ou "Nomenclature/Name"
         prefix = prefix + "/" if prefix else ''
 
-        if attribute_name in ["Code", "Name"]:
+        if attribute_name in ("Code", "Name"):
             if not use_alias:
                 self.set_cache(mtobject, prefix + attribute_name, attribute_value)
                 self.set_cache(mtobject, prefix + attribute_name + "_", attribute_value)
