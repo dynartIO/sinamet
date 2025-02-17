@@ -6,7 +6,7 @@ from contextlib import contextmanager
 
 from datetime import date
 
-from typing import Literal, Sequence, overload
+from typing import Any, Literal, Sequence, overload
 
 import warnings
 
@@ -252,7 +252,7 @@ class Sidb:
         return stats
 
     def get_properties(self, properties: Iterable[str] | str,
-                       map_id: Select | list[int] | None = None,
+                       map_id: Select[tuple[int]] | list[int] | None = None,
                        startlike: bool = False,
                        return_type: str = 'list') -> Sequence[Property]:
         """Charge et renvoie les propriétés correspondantes.
@@ -300,13 +300,14 @@ class Sidb:
         """
         return self.session.get(Property, id)
 
-    def compute_query_return_type(self,
-                                  qnq: dict[str, Select],
-                                  return_type: Literal['qid', 'queryid',
-                                                       'query', 'id',
-                                                       'list', 'object',
-                                                       'count']
-                                  ) -> Select | Sequence | int:
+    def compute_query_return_type[T](
+        self,
+        qnq: dict[str, Select[tuple[int]] | Select[tuple[T]]],
+        return_type: Literal['qid', 'queryid',
+                             'query', 'id',
+                             'list', 'object',
+                             'count']
+    ) -> Select[tuple[int]] | Select[tuple[T]] | Sequence[int] | Sequence[T] | int:
         match return_type:
             case 'qid' | 'queryid':
                 return qnq['id']
@@ -327,7 +328,7 @@ class Sidb:
     def compute_query_cache_properties(self,
                                        cache_properties: list[str] | str,
                                        return_type: str,
-                                       q_id: Select) -> None:
+                                       q_id: Select[tuple[int]]) -> None:
         """Charge en cache des propriétés.
 
         Parameters:
@@ -464,7 +465,7 @@ class Sidb:
     @overload
     def get_territory(
             self,
-            *args,
+            *args: str,
             like_value: bool = False,
             ignore_case: bool = False,
             ignore_accent: bool = False,
@@ -477,13 +478,13 @@ class Sidb:
                            'warn_first',
                            ] = 'warn_list',
             verbose: bool = False,
-            **kwargs
+            **kwargs: str
             ) -> (Territory | Sequence[Territory] | None): ...
 
     @overload
     def get_territory(
             self,
-            *args,
+            *args: str,
             like_value: bool = False,
             ignore_case: bool = False,
             ignore_accent: bool = False,
@@ -496,13 +497,13 @@ class Sidb:
                            'warn_first',
                            ] = 'warn_list',
             verbose: bool = False,
-            **kwargs
+            **kwargs: str
             ) -> (int | Sequence[int] | None): ...
 
     @overload
     def get_territory(
             self,
-            *args,
+            *args: str,
             like_value: bool = False,
             ignore_case: bool = False,
             ignore_accent: bool = False,
@@ -515,13 +516,13 @@ class Sidb:
                            'warn_first',
                            ] = 'warn_list',
             verbose: bool = False,
-            **kwargs
+            **kwargs: str
             ) -> Select[tuple[Territory]]: ...
 
     @overload
     def get_territory(
             self,
-            *args,
+            *args: str,
             like_value: bool = False,
             ignore_case: bool = False,
             ignore_accent: bool = False,
@@ -534,12 +535,12 @@ class Sidb:
                            'warn_first',
                            ] = 'warn_list',
             verbose: bool = False,
-            **kwargs
+            **kwargs: str
             ) -> Select[tuple[int]]: ...
 
     def get_territory(
             self,
-            *args,
+            *args: str,
             like_value: bool = False,
             ignore_case: bool = False,
             ignore_accent: bool = False,
@@ -557,7 +558,7 @@ class Sidb:
                            'warn_first',
                            ] = 'warn_list',
             verbose: bool = False,
-            **kwargs
+            **kwargs: str
             ) -> (Territory | int |
                   Sequence[Territory] | Sequence[int] |
                   Select[tuple[Territory]] | Select[tuple[int]] |
@@ -619,11 +620,11 @@ class Sidb:
     @overload
     def get_territories(
             self,
-            *args,
+            *args: str,
             like_value: bool = False,
             ignore_case: bool = False,
             ignore_accent: bool = False,
-            map_id: Iterable[int] | int | Select | None = None,
+            map_id: Iterable[int] | Select[tuple[int]] | None = None,
             return_type: Literal['list', 'object'] = 'list',
             cache_properties: list[str] = [],
             verbose: bool = False,
@@ -632,11 +633,11 @@ class Sidb:
     @overload
     def get_territories(
             self,
-            *args,
+            *args: str,
             like_value: bool = False,
             ignore_case: bool = False,
             ignore_accent: bool = False,
-            map_id: Iterable[int] | int | Select | None = None,
+            map_id: Iterable[int] | Select[tuple[int]] | None = None,
             return_type: Literal['id'],
             cache_properties: list[str] = [],
             verbose: bool = False,
@@ -645,11 +646,11 @@ class Sidb:
     @overload
     def get_territories(
             self,
-            *args,
+            *args: str,
             like_value: bool = False,
             ignore_case: bool = False,
             ignore_accent: bool = False,
-            map_id: Iterable[int] | int | Select | None = None,
+            map_id: Iterable[int] | Select[tuple[int]] | None = None,
             return_type: Literal['count'],
             cache_properties: list[str] = [],
             verbose: bool = False,
@@ -658,11 +659,11 @@ class Sidb:
     @overload
     def get_territories(
             self,
-            *args,
+            *args: str,
             like_value: bool = False,
             ignore_case: bool = False,
             ignore_accent: bool = False,
-            map_id: Iterable[int] | int | Select | None = None,
+            map_id: Iterable[int] | Select[tuple[int]] | None = None,
             return_type: Literal['query'],
             cache_properties: list[str] = [],
             verbose: bool = False,
@@ -671,11 +672,11 @@ class Sidb:
     @overload
     def get_territories(
             self,
-            *args,
+            *args: str,
             like_value: bool = False,
             ignore_case: bool = False,
             ignore_accent: bool = False,
-            map_id: Iterable[int] | int | Select | None = None,
+            map_id: Iterable[int] | Select[tuple[int]] | None = None,
             return_type: Literal['queryid', 'qid'],
             cache_properties: list[str] = [],
             verbose: bool = False,
@@ -683,11 +684,11 @@ class Sidb:
 
     def get_territories(
             self,
-            *args,
+            *args: str,
             like_value: bool = False,
             ignore_case: bool = False,
             ignore_accent: bool = False,
-            map_id: Iterable[int] | int | Select | None = None,
+            map_id: Iterable[int] | Select[tuple[int]] | None = None,
             return_type: Literal['list',
                                  'object',
                                  'id',
@@ -1098,7 +1099,7 @@ class Sidb:
     @overload
     def get_actor(
             self,
-            *args,
+            *args: str,
             like_value: bool = False,
             ignore_case: bool = False,
             ignore_accent: bool = False,
@@ -1111,13 +1112,13 @@ class Sidb:
                            'warn_first',
                            ] = 'warn_list',
             verbose: bool = False,
-            **kwargs
+            **kwargs: str
             ) -> (Actor | Sequence[Actor] | None): ...
 
     @overload
     def get_actor(
             self,
-            *args,
+            *args: str,
             like_value: bool = False,
             ignore_case: bool = False,
             ignore_accent: bool = False,
@@ -1130,13 +1131,13 @@ class Sidb:
                            'warn_first',
                            ] = 'warn_list',
             verbose: bool = False,
-            **kwargs
+            **kwargs: str
             ) -> (int | Sequence[int] | None): ...
 
     @overload
     def get_actor(
             self,
-            *args,
+            *args: str,
             like_value: bool = False,
             ignore_case: bool = False,
             ignore_accent: bool = False,
@@ -1149,13 +1150,13 @@ class Sidb:
                            'warn_first',
                            ] = 'warn_list',
             verbose: bool = False,
-            **kwargs
+            **kwargs: str
             ) -> Select[tuple[Actor]]: ...
 
     @overload
     def get_actor(
             self,
-            *args,
+            *args: str,
             like_value: bool = False,
             ignore_case: bool = False,
             ignore_accent: bool = False,
@@ -1168,12 +1169,12 @@ class Sidb:
                            'warn_first',
                            ] = 'warn_list',
             verbose: bool = False,
-            **kwargs
+            **kwargs: str
             ) -> Select[tuple[int]]: ...
 
     def get_actor(
             self,
-            *args,
+            *args: str,
             like_value: bool = False,
             ignore_case: bool = False,
             ignore_accent: bool = False,
@@ -1191,7 +1192,7 @@ class Sidb:
                            'warn_first',
                            ] = 'warn_list',
             verbose: bool = False,
-            **kwargs
+            **kwargs: str
             ) -> (Actor | int |
                   Sequence[Actor] | Sequence[int] |
                   Select[tuple[Actor]] | Select[tuple[int]] |
@@ -1254,11 +1255,11 @@ class Sidb:
     @overload
     def get_actors(
             self,
-            *args,
+            *args: str,
             like_value: bool = False,
             ignore_case: bool = False,
             ignore_accent: bool = False,
-            map_id: Iterable[int] | int | Select | None = None,
+            map_id: Iterable[int] | Select[tuple[int]] | None = None,
             return_type: Literal['list', 'object'] = 'list',
             cache_properties: list[str] = [],
             verbose: bool = False,
@@ -1267,11 +1268,11 @@ class Sidb:
     @overload
     def get_actors(
             self,
-            *args,
+            *args: str,
             like_value: bool = False,
             ignore_case: bool = False,
             ignore_accent: bool = False,
-            map_id: Iterable[int] | int | Select | None = None,
+            map_id: Iterable[int] | Select[tuple[int]] | None = None,
             return_type: Literal['id'],
             cache_properties: list[str] = [],
             verbose: bool = False,
@@ -1280,11 +1281,11 @@ class Sidb:
     @overload
     def get_actors(
             self,
-            *args,
+            *args: str,
             like_value: bool = False,
             ignore_case: bool = False,
             ignore_accent: bool = False,
-            map_id: Iterable[int] | int | Select | None = None,
+            map_id: Iterable[int] | Select[tuple[int]] | None = None,
             return_type: Literal['count'],
             cache_properties: list[str] = [],
             verbose: bool = False,
@@ -1293,11 +1294,11 @@ class Sidb:
     @overload
     def get_actors(
             self,
-            *args,
+            *args: str,
             like_value: bool = False,
             ignore_case: bool = False,
             ignore_accent: bool = False,
-            map_id: Iterable[int] | int | Select | None = None,
+            map_id: Iterable[int] | Select[tuple[int]] | None = None,
             return_type: Literal['query'],
             cache_properties: list[str] = [],
             verbose: bool = False,
@@ -1306,11 +1307,11 @@ class Sidb:
     @overload
     def get_actors(
             self,
-            *args,
+            *args: str,
             like_value: bool = False,
             ignore_case: bool = False,
             ignore_accent: bool = False,
-            map_id: Iterable[int] | int | Select | None = None,
+            map_id: Iterable[int] | Select[tuple[int]] | None = None,
             return_type: Literal['queryid', 'qid'],
             cache_properties: list[str] = [],
             verbose: bool = False,
@@ -1318,11 +1319,11 @@ class Sidb:
 
     def get_actors(
             self,
-            *args,
+            *args: str,
             like_value: bool = False,
             ignore_case: bool = False,
             ignore_accent: bool = False,
-            map_id: Iterable[int] | int | Select | None = None,
+            map_id: Iterable[int] | Select[tuple[int]] | None = None,
             return_type: Literal['list',
                                  'object',
                                  'id',
@@ -1381,7 +1382,7 @@ class Sidb:
     @overload
     def get_actors_in(
             self,
-            actor: Actor | Territory,
+            mtobject: Actor | Territory,
             return_type: Literal['list', 'object'] = 'list',
             scale: str | None = None,
             self_include: bool = True,
@@ -1392,7 +1393,7 @@ class Sidb:
     @overload
     def get_actors_in(
             self,
-            actor: Actor | Territory,
+            mtobject: Actor | Territory,
             return_type: Literal['id'],
             scale: str | None = None,
             self_include: bool = True,
@@ -1403,7 +1404,7 @@ class Sidb:
     @overload
     def get_actors_in(
             self,
-            actor: Actor | Territory,
+            mtobject: Actor | Territory,
             return_type: Literal['count'],
             scale: str | None = None,
             self_include: bool = True,
@@ -1414,7 +1415,7 @@ class Sidb:
     @overload
     def get_actors_in(
             self,
-            actor: Actor | Territory,
+            mtobject: Actor | Territory,
             return_type: Literal['query'],
             scale: str | None = None,
             self_include: bool = True,
@@ -1425,7 +1426,7 @@ class Sidb:
     @overload
     def get_actors_in(
             self,
-            actor: Actor | Territory,
+            mtobject: Actor | Territory,
             return_type: Literal['queryid', 'qid'],
             scale: str | None = None,
             self_include: bool = True,
@@ -1435,7 +1436,7 @@ class Sidb:
 
     def get_actors_in(
             self,
-            actor: Actor | Territory,
+            mtobject: Actor | Territory,
             return_type: Literal['list',
                                  'object',
                                  'id',
@@ -1475,7 +1476,7 @@ class Sidb:
         Raises:
             TypeError: Type de l'object non supporté.
         """
-        return self.get_mtobjects_tap_in(actor,
+        return self.get_mtobjects_tap_in(mtobject,
                                          Actor,
                                          scale=scale,
                                          self_include=self_include,
@@ -1590,7 +1591,7 @@ class Sidb:
                                  'count',
                                  ] = "list",
             verbose: bool = False
-            ) -> Sequence[Actor] | int | Select:
+            ) -> Sequence[Actor] | int | Select[tuple[Actor]] | Select[tuple[int]]:
         """Trouve les acteurs correspondants aux identifiants.
 
         Args:
@@ -1611,7 +1612,7 @@ class Sidb:
             (Select): Requète des acteurs ou des identifiants.
         """
         if isinstance(ids, int):
-            ids = {ids}
+            ids = (ids,)
 
         q = {}
         for nq, targetq in zip(["id", "object"], [Actor.id, Actor]):
@@ -1943,7 +1944,7 @@ class Sidb:
             like_value: bool = False,
             ignore_case: bool = False,
             ignore_accent: bool = False,
-            map_id: Iterable[int] | int | Select | None = None,
+            map_id: Iterable[int] | Select[tuple[int]] | None = None,
             return_type: Literal['list', 'object'] = 'list',
             cache_properties: list[str] = [],
             verbose: bool = False,
@@ -1957,7 +1958,7 @@ class Sidb:
             like_value: bool = False,
             ignore_case: bool = False,
             ignore_accent: bool = False,
-            map_id: Iterable[int] | int | Select | None = None,
+            map_id: Iterable[int] | Select[tuple[int]] | None = None,
             return_type: Literal['id'],
             cache_properties: list[str] = [],
             verbose: bool = False,
@@ -1971,7 +1972,7 @@ class Sidb:
             like_value: bool = False,
             ignore_case: bool = False,
             ignore_accent: bool = False,
-            map_id: Iterable[int] | int | Select | None = None,
+            map_id: Iterable[int] | Select[tuple[int]] | None = None,
             return_type: Literal['count'],
             cache_properties: list[str] = [],
             verbose: bool = False,
@@ -1985,7 +1986,7 @@ class Sidb:
             like_value: bool = False,
             ignore_case: bool = False,
             ignore_accent: bool = False,
-            map_id: Iterable[int] | int | Select | None = None,
+            map_id: Iterable[int] | Select[tuple[int]] | None = None,
             return_type: Literal['query'],
             cache_properties: list[str] = [],
             verbose: bool = False,
@@ -1999,7 +2000,7 @@ class Sidb:
             like_value: bool = False,
             ignore_case: bool = False,
             ignore_accent: bool = False,
-            map_id: Iterable[int] | int | Select | None = None,
+            map_id: Iterable[int] | Select[tuple[int]] | None = None,
             return_type: Literal['queryid', 'qid'],
             cache_properties: list[str] = [],
             verbose: bool = False,
@@ -2012,7 +2013,7 @@ class Sidb:
             like_value: bool = False,
             ignore_case: bool = False,
             ignore_accent: bool = False,
-            map_id: Iterable[int] | int | Select | None = None,
+            map_id: Iterable[int] | Select[tuple[int]] | None = None,
             return_type: Literal['list',
                                  'object',
                                  'id',
@@ -2536,7 +2537,7 @@ class Sidb:
             source_ref: str | None = None,
             filter_by: list[tuple[str, str]] = [],
             target_join_or: bool = True,
-            map_id: Iterable[int] | int | Select | None = None,
+            map_id: Iterable[int] | Select[tuple[int]] | None = None,
             return_type: Literal['list', 'object'] = 'list',
             cache_properties: list[str] = [],
             verbose: bool = False
@@ -2558,7 +2559,7 @@ class Sidb:
             source_ref: str | None = None,
             filter_by: list[tuple[str, str]] = [],
             target_join_or: bool = True,
-            map_id: Iterable[int] | int | Select | None = None,
+            map_id: Iterable[int] | Select[tuple[int]] | None = None,
             return_type: Literal['id'],
             cache_properties: list[str] = [],
             verbose: bool = False
@@ -2580,7 +2581,7 @@ class Sidb:
             source_ref: str | None = None,
             filter_by: list[tuple[str, str]] = [],
             target_join_or: bool = True,
-            map_id: Iterable[int] | int | Select | None = None,
+            map_id: Iterable[int] | Select[tuple[int]] | None = None,
             return_type: Literal['count'],
             cache_properties: list[str] = [],
             verbose: bool = False
@@ -2602,7 +2603,7 @@ class Sidb:
             source_ref: str | None = None,
             filter_by: list[tuple[str, str]] = [],
             target_join_or: bool = True,
-            map_id: Iterable[int] | int | Select | None = None,
+            map_id: Iterable[int] | Select[tuple[int]] | None = None,
             return_type: Literal['query'],
             cache_properties: list[str] = [],
             verbose: bool = False
@@ -2624,7 +2625,7 @@ class Sidb:
             source_ref: str | None = None,
             filter_by: list[tuple[str, str]] = [],
             target_join_or: bool = True,
-            map_id: Iterable[int] | int | Select | None = None,
+            map_id: Iterable[int] | Select[tuple[int]] | None = None,
             return_type: Literal['queryid', 'qid'],
             cache_properties: list[str] = [],
             verbose: bool = False
@@ -2645,7 +2646,7 @@ class Sidb:
             source_ref: str | None = None,
             filter_by: list[tuple[str, str]] = [],
             target_join_or: bool = True,
-            map_id: Iterable[int] | int | Select | None = None,
+            map_id: Iterable[int] | Select[tuple[int]] | None = None,
             return_type: Literal['list', 'object',
                                  'id', 'query',
                                  'queryid', 'qid',
@@ -2760,7 +2761,7 @@ class Sidb:
             source_ref: str | None = None,
             filter_by: list[tuple[str, str]] = [],
             target_join_or: bool = True,
-            map_id: Iterable[int] | int | Select | None = None,
+            map_id: Iterable[int] | Select[tuple[int]] | None = None,
             return_type: Literal['list', 'object'] = 'list',
             cache_properties: list[str] = [],
             verbose: bool = False
@@ -2787,7 +2788,7 @@ class Sidb:
             source_ref: str | None = None,
             filter_by: list[tuple[str, str]] = [],
             target_join_or: bool = True,
-            map_id: Iterable[int] | int | Select | None = None,
+            map_id: Iterable[int] | Select[tuple[int]] | None = None,
             return_type: Literal['id'],
             cache_properties: list[str] = [],
             verbose: bool = False
@@ -2814,7 +2815,7 @@ class Sidb:
             source_ref: str | None = None,
             filter_by: list[tuple[str, str]] = [],
             target_join_or: bool = True,
-            map_id: Iterable[int] | int | Select | None = None,
+            map_id: Iterable[int] | Select[tuple[int]] | None = None,
             return_type: Literal['count'],
             cache_properties: list[str] = [],
             verbose: bool = False
@@ -2841,7 +2842,7 @@ class Sidb:
             source_ref: str | None = None,
             filter_by: list[tuple[str, str]] = [],
             target_join_or: bool = True,
-            map_id: Iterable[int] | int | Select | None = None,
+            map_id: Iterable[int] | Select[tuple[int]] | None = None,
             return_type: Literal['query'],
             cache_properties: list[str] = [],
             verbose: bool = False
@@ -2868,7 +2869,7 @@ class Sidb:
             source_ref: str | None = None,
             filter_by: list[tuple[str, str]] = [],
             target_join_or: bool = True,
-            map_id: Iterable[int] | int | Select | None = None,
+            map_id: Iterable[int] | Select[tuple[int]] | None = None,
             return_type: Literal['queryid', 'qid'],
             cache_properties: list[str] = [],
             verbose: bool = False
@@ -2894,7 +2895,7 @@ class Sidb:
             source_ref: str | None = None,
             filter_by: list[tuple[str, str]] = [],
             target_join_or: bool = True,
-            map_id: Iterable[int] | int | Select | None = None,
+            map_id: Iterable[int] | Select[tuple[int]] | None = None,
             return_type: Literal['list', 'object',
                                  'id', 'query',
                                  'queryid', 'qid',
@@ -2959,7 +2960,7 @@ class Sidb:
             target: Iterable[Territory | Actor] | Territory | Actor = [],
             *,
             return_type: Literal['list', 'object'] = 'list',
-            **kwargs
+            **kwargs: Any
             ) -> Sequence[Gateflow]: ...
 
     @overload
@@ -2968,7 +2969,7 @@ class Sidb:
             target: Iterable[Territory | Actor] | Territory | Actor = [],
             *,
             return_type: Literal['id'],
-            **kwargs
+            **kwargs: Any
             ) -> Sequence[int]: ...
 
     @overload
@@ -2977,7 +2978,7 @@ class Sidb:
             target: Iterable[Territory | Actor] | Territory | Actor = [],
             *,
             return_type: Literal['count'],
-            **kwargs
+            **kwargs: Any
             ) -> int: ...
 
     @overload
@@ -2986,7 +2987,7 @@ class Sidb:
             target: Iterable[Territory | Actor] | Territory | Actor = [],
             *,
             return_type: Literal['query'],
-            **kwargs
+            **kwargs: Any
             ) -> Select[tuple[Gateflow]]: ...
 
     @overload
@@ -2995,7 +2996,7 @@ class Sidb:
             target: Iterable[Territory | Actor] | Territory | Actor = [],
             *,
             return_type: Literal['queryid', 'qid'],
-            **kwargs
+            **kwargs: Any
             ) -> Select[tuple[int]]: ...
 
     def get_inputs(
@@ -3006,7 +3007,7 @@ class Sidb:
                                  'id', 'query',
                                  'queryid', 'qid',
                                  'count'] = 'list',
-            **kwargs
+            **kwargs: Any
             ) -> (Sequence[Gateflow] | Sequence[int] | int |
                   Select[tuple[Gateflow]] | Select[tuple[int]]):
         """
@@ -3025,7 +3026,7 @@ class Sidb:
             target: Iterable[Territory | Actor] | Territory | Actor = [],
             *,
             return_type: Literal['list', 'object'] = 'list',
-            **kwargs
+            **kwargs: Any
             ) -> Sequence[Gateflow]: ...
 
     @overload
@@ -3034,7 +3035,7 @@ class Sidb:
             target: Iterable[Territory | Actor] | Territory | Actor = [],
             *,
             return_type: Literal['id'],
-            **kwargs
+            **kwargs: Any
             ) -> Sequence[int]: ...
 
     @overload
@@ -3043,7 +3044,7 @@ class Sidb:
             target: Iterable[Territory | Actor] | Territory | Actor = [],
             *,
             return_type: Literal['count'],
-            **kwargs
+            **kwargs: Any
             ) -> int: ...
 
     @overload
@@ -3052,7 +3053,7 @@ class Sidb:
             target: Iterable[Territory | Actor] | Territory | Actor = [],
             *,
             return_type: Literal['query'],
-            **kwargs
+            **kwargs: Any
             ) -> Select[tuple[Gateflow]]: ...
 
     @overload
@@ -3061,7 +3062,7 @@ class Sidb:
             target: Iterable[Territory | Actor] | Territory | Actor = [],
             *,
             return_type: Literal['queryid', 'qid'],
-            **kwargs
+            **kwargs: Any
             ) -> Select[tuple[int]]: ...
 
     def get_outputs(
@@ -3072,7 +3073,7 @@ class Sidb:
                                  'id', 'query',
                                  'queryid', 'qid',
                                  'count'] = 'list',
-            **kwargs
+            **kwargs: Any
             ) -> (Sequence[Gateflow] | Sequence[int] | int |
                   Select[tuple[Gateflow]] | Select[tuple[int]]):
         """
@@ -3091,7 +3092,7 @@ class Sidb:
             target: Iterable[Territory | Actor] | Territory | Actor = [],
             *,
             return_type: Literal['list', 'object'] = 'list',
-            **kwargs
+            **kwargs: Any
             ) -> Sequence[Gateflow]: ...
 
     @overload
@@ -3100,7 +3101,7 @@ class Sidb:
             target: Iterable[Territory | Actor] | Territory | Actor = [],
             *,
             return_type: Literal['id'],
-            **kwargs
+            **kwargs: Any
             ) -> Sequence[int]: ...
 
     @overload
@@ -3109,7 +3110,7 @@ class Sidb:
             target: Iterable[Territory | Actor] | Territory | Actor = [],
             *,
             return_type: Literal['count'],
-            **kwargs
+            **kwargs: Any
             ) -> int: ...
 
     @overload
@@ -3118,7 +3119,7 @@ class Sidb:
             target: Iterable[Territory | Actor] | Territory | Actor = [],
             *,
             return_type: Literal['query'],
-            **kwargs
+            **kwargs: Any
             ) -> Select[tuple[Gateflow]]: ...
 
     @overload
@@ -3127,7 +3128,7 @@ class Sidb:
             target: Iterable[Territory | Actor] | Territory | Actor = [],
             *,
             return_type: Literal['queryid', 'qid'],
-            **kwargs
+            **kwargs: Any
             ) -> Select[tuple[int]]: ...
 
     def get_consumptions(
@@ -3138,7 +3139,7 @@ class Sidb:
                                  'id', 'query',
                                  'queryid', 'qid',
                                  'count'] = 'list',
-            **kwargs
+            **kwargs: Any
             ) -> (Sequence[Gateflow] | Sequence[int] | int |
                   Select[tuple[Gateflow]] | Select[tuple[int]]):
         """
@@ -3157,7 +3158,7 @@ class Sidb:
             target: Iterable[Territory | Actor] | Territory | Actor = [],
             *,
             return_type: Literal['list', 'object'] = 'list',
-            **kwargs
+            **kwargs: Any
             ) -> Sequence[Gateflow]: ...
 
     @overload
@@ -3166,7 +3167,7 @@ class Sidb:
             target: Iterable[Territory | Actor] | Territory | Actor = [],
             *,
             return_type: Literal['id'],
-            **kwargs
+            **kwargs: Any
             ) -> Sequence[int]: ...
 
     @overload
@@ -3175,7 +3176,7 @@ class Sidb:
             target: Iterable[Territory | Actor] | Territory | Actor = [],
             *,
             return_type: Literal['count'],
-            **kwargs
+            **kwargs: Any
             ) -> int: ...
 
     @overload
@@ -3184,7 +3185,7 @@ class Sidb:
             target: Iterable[Territory | Actor] | Territory | Actor = [],
             *,
             return_type: Literal['query'],
-            **kwargs
+            **kwargs: Any
             ) -> Select[tuple[Gateflow]]: ...
 
     @overload
@@ -3193,7 +3194,7 @@ class Sidb:
             target: Iterable[Territory | Actor] | Territory | Actor = [],
             *,
             return_type: Literal['queryid', 'qid'],
-            **kwargs
+            **kwargs: Any
             ) -> Select[tuple[int]]: ...
 
     def get_productions(
@@ -3204,7 +3205,7 @@ class Sidb:
                                  'id', 'query',
                                  'queryid', 'qid',
                                  'count'] = 'list',
-            **kwargs
+            **kwargs: Any
             ) -> (Sequence[Gateflow] | Sequence[int] | int |
                   Select[tuple[Gateflow]] | Select[tuple[int]]):
         """
@@ -3223,7 +3224,7 @@ class Sidb:
             target: Iterable[Territory | Actor] | Territory | Actor = [],
             *,
             return_type: Literal['list', 'object'] = 'list',
-            **kwargs
+            **kwargs: Any
             ) -> Sequence[Gateflow]: ...
 
     @overload
@@ -3232,7 +3233,7 @@ class Sidb:
             target: Iterable[Territory | Actor] | Territory | Actor = [],
             *,
             return_type: Literal['id'],
-            **kwargs
+            **kwargs: Any
             ) -> Sequence[int]: ...
 
     @overload
@@ -3241,7 +3242,7 @@ class Sidb:
             target: Iterable[Territory | Actor] | Territory | Actor = [],
             *,
             return_type: Literal['count'],
-            **kwargs
+            **kwargs: Any
             ) -> int: ...
 
     @overload
@@ -3250,7 +3251,7 @@ class Sidb:
             target: Iterable[Territory | Actor] | Territory | Actor = [],
             *,
             return_type: Literal['query'],
-            **kwargs
+            **kwargs: Any
             ) -> Select[tuple[Gateflow]]: ...
 
     @overload
@@ -3259,7 +3260,7 @@ class Sidb:
             target: Iterable[Territory | Actor] | Territory | Actor = [],
             *,
             return_type: Literal['queryid', 'qid'],
-            **kwargs
+            **kwargs: Any
             ) -> Select[tuple[int]]: ...
 
     def get_extractions(
@@ -3270,7 +3271,7 @@ class Sidb:
                                  'id', 'query',
                                  'queryid', 'qid',
                                  'count'] = 'list',
-            **kwargs
+            **kwargs: Any
             ) -> (Sequence[Gateflow] | Sequence[int] | int |
                   Select[tuple[Gateflow]] | Select[tuple[int]]):
         """
@@ -3289,7 +3290,7 @@ class Sidb:
             target: Iterable[Territory | Actor] | Territory | Actor = [],
             *,
             return_type: Literal['list', 'object'] = 'list',
-            **kwargs
+            **kwargs: Any
             ) -> Sequence[Gateflow]: ...
 
     @overload
@@ -3298,7 +3299,7 @@ class Sidb:
             target: Iterable[Territory | Actor] | Territory | Actor = [],
             *,
             return_type: Literal['id'],
-            **kwargs
+            **kwargs: Any
             ) -> Sequence[int]: ...
 
     @overload
@@ -3307,7 +3308,7 @@ class Sidb:
             target: Iterable[Territory | Actor] | Territory | Actor = [],
             *,
             return_type: Literal['count'],
-            **kwargs
+            **kwargs: Any
             ) -> int: ...
 
     @overload
@@ -3316,7 +3317,7 @@ class Sidb:
             target: Iterable[Territory | Actor] | Territory | Actor = [],
             *,
             return_type: Literal['query'],
-            **kwargs
+            **kwargs: Any
             ) -> Select[tuple[Gateflow]]: ...
 
     @overload
@@ -3325,7 +3326,7 @@ class Sidb:
             target: Iterable[Territory | Actor] | Territory | Actor = [],
             *,
             return_type: Literal['queryid', 'qid'],
-            **kwargs
+            **kwargs: Any
             ) -> Select[tuple[int]]: ...
 
     def get_emissions(
@@ -3336,7 +3337,7 @@ class Sidb:
                                  'id', 'query',
                                  'queryid', 'qid',
                                  'count'] = 'list',
-            **kwargs
+            **kwargs: Any
             ) -> (Sequence[Gateflow] | Sequence[int] | int |
                   Select[tuple[Gateflow]] | Select[tuple[int]]):
         """
@@ -3413,7 +3414,7 @@ class Sidb:
             month: str | int | None = None,
             source_ref: str | None = None,
             filter_by: list[tuple[str, str]] = [],
-            map_id: Iterable[int] | int | Select = [],
+            map_id: Iterable[int] | Select[tuple[int]] | None = None,
             return_type: Literal['list', 'object'] = 'list',
             cache_properties: list[str] = [],
             ) -> Sequence[Pathflow]: ...
@@ -3438,7 +3439,7 @@ class Sidb:
             month: str | int | None = None,
             source_ref: str | None = None,
             filter_by: list[tuple[str, str]] = [],
-            map_id: Iterable[int] | int | Select = [],
+            map_id: Iterable[int] | Select[tuple[int]] | None = None,
             return_type: Literal['id'],
             cache_properties: list[str] = [],
             ) -> Sequence[int]: ...
@@ -3463,7 +3464,7 @@ class Sidb:
             month: str | int | None = None,
             source_ref: str | None = None,
             filter_by: list[tuple[str, str]] = [],
-            map_id: Iterable[int] | int | Select = [],
+            map_id: Iterable[int] | Select[tuple[int]] | None = None,
             return_type: Literal['count'],
             cache_properties: list[str] = [],
             ) -> int: ...
@@ -3488,7 +3489,7 @@ class Sidb:
             month: str | int | None = None,
             source_ref: str | None = None,
             filter_by: list[tuple[str, str]] = [],
-            map_id: Iterable[int] | int | Select = [],
+            map_id: Iterable[int] | Select[tuple[int]] | None = None,
             return_type: Literal['query'],
             cache_properties: list[str] = [],
             ) -> Select[tuple[Pathflow]]: ...
@@ -3513,7 +3514,7 @@ class Sidb:
             month: str | int | None = None,
             source_ref: str | None = None,
             filter_by: list[tuple[str, str]] = [],
-            map_id: Iterable[int] | int | Select = [],
+            map_id: Iterable[int] | Select[tuple[int]] | None = None,
             return_type: Literal['queryid', 'qid'],
             cache_properties: list[str] = [],
             ) -> Select[tuple[int]]: ...
@@ -3524,6 +3525,7 @@ class Sidb:
             direction: Literal['import', 'export',
                                'internal', 'all',
                                None] = None,
+            *,
             btarget: T | None = None,
             xtarget: T | None = None,
             product: Product | None = None,
@@ -3536,7 +3538,7 @@ class Sidb:
             month: str | int | None = None,
             source_ref: str | None = None,
             filter_by: list[tuple[str, str]] = [],
-            map_id: Iterable[int] | int | Select | None = None,
+            map_id: Iterable[int] | Select[tuple[int]] | None = None,
             return_type: Literal['list', 'object',
                                  'id', 'query',
                                  'queryid', 'qid',
@@ -3712,7 +3714,7 @@ class Sidb:
             target: T | None = None,
             *,
             return_type: Literal['list', 'object'] = 'list',
-            **kwargs
+            **kwargs: Any
             ) -> Sequence[Pathflow]: ...
 
     @overload
@@ -3721,7 +3723,7 @@ class Sidb:
             target: T | None = None,
             *,
             return_type: Literal['id'],
-            **kwargs
+            **kwargs: Any
             ) -> Sequence[int]: ...
 
     @overload
@@ -3730,7 +3732,7 @@ class Sidb:
             target: T | None = None,
             *,
             return_type: Literal['count'],
-            **kwargs
+            **kwargs: Any
             ) -> int: ...
 
     @overload
@@ -3739,7 +3741,7 @@ class Sidb:
             target: T | None = None,
             *,
             return_type: Literal['query'],
-            **kwargs
+            **kwargs: Any
             ) -> Select[tuple[Pathflow]]: ...
 
     @overload
@@ -3748,7 +3750,7 @@ class Sidb:
             target: T | None = None,
             *,
             return_type: Literal['queryid', 'qid'],
-            **kwargs
+            **kwargs: Any
             ) -> Select[tuple[int]]: ...
 
     def get_imports[T: (Territory, Actor)](
@@ -3759,7 +3761,7 @@ class Sidb:
                                  'id', 'query',
                                  'queryid', 'qid',
                                  'count'] = 'list',
-            **kwargs
+            **kwargs: Any
             ) -> (Sequence[Pathflow] | Sequence[int] | int |
                   Select[tuple[Pathflow]] | Select[tuple[int]]):
         """
@@ -3779,7 +3781,7 @@ class Sidb:
             target: T | None = None,
             *,
             return_type: Literal['list', 'object'] = 'list',
-            **kwargs
+            **kwargs: Any
             ) -> Sequence[Pathflow]: ...
 
     @overload
@@ -3788,7 +3790,7 @@ class Sidb:
             target: T | None = None,
             *,
             return_type: Literal['id'],
-            **kwargs
+            **kwargs: Any
             ) -> Sequence[int]: ...
 
     @overload
@@ -3797,7 +3799,7 @@ class Sidb:
             target: T | None = None,
             *,
             return_type: Literal['count'],
-            **kwargs
+            **kwargs: Any
             ) -> int: ...
 
     @overload
@@ -3806,7 +3808,7 @@ class Sidb:
             target: T | None = None,
             *,
             return_type: Literal['query'],
-            **kwargs
+            **kwargs: Any
             ) -> Select[tuple[Pathflow]]: ...
 
     @overload
@@ -3815,7 +3817,7 @@ class Sidb:
             target: T | None = None,
             *,
             return_type: Literal['queryid', 'qid'],
-            **kwargs
+            **kwargs: Any
             ) -> Select[tuple[int]]: ...
 
     def get_exports[T: (Territory, Actor)](
@@ -3826,7 +3828,7 @@ class Sidb:
                                  'id', 'query',
                                  'queryid', 'qid',
                                  'count'] = 'list',
-            **kwargs
+            **kwargs: Any
             ) -> (Sequence[Pathflow] | Sequence[int] | int |
                   Select[tuple[Pathflow]] | Select[tuple[int]]):
         """
@@ -3846,7 +3848,7 @@ class Sidb:
             target: T | None = None,
             *,
             return_type: Literal['list', 'object'] = 'list',
-            **kwargs
+            **kwargs: Any
             ) -> Sequence[Pathflow]: ...
 
     @overload
@@ -3855,7 +3857,7 @@ class Sidb:
             target: T | None = None,
             *,
             return_type: Literal['id'],
-            **kwargs
+            **kwargs: Any
             ) -> Sequence[int]: ...
 
     @overload
@@ -3864,7 +3866,7 @@ class Sidb:
             target: T | None = None,
             *,
             return_type: Literal['count'],
-            **kwargs
+            **kwargs: Any
             ) -> int: ...
 
     @overload
@@ -3873,7 +3875,7 @@ class Sidb:
             target: T | None = None,
             *,
             return_type: Literal['query'],
-            **kwargs
+            **kwargs: Any
             ) -> Select[tuple[Pathflow]]: ...
 
     @overload
@@ -3882,7 +3884,7 @@ class Sidb:
             target: T | None = None,
             *,
             return_type: Literal['queryid', 'qid'],
-            **kwargs
+            **kwargs: Any
             ) -> Select[tuple[int]]: ...
 
     def get_internals[T: (Territory, Actor)](
@@ -3893,7 +3895,7 @@ class Sidb:
                                  'id', 'query',
                                  'queryid', 'qid',
                                  'count'] = 'list',
-            **kwargs
+            **kwargs: Any
             ) -> (Sequence[Pathflow] | Sequence[int] | int |
                   Select[tuple[Pathflow]] | Select[tuple[int]]):
         """
@@ -3947,7 +3949,7 @@ class Sidb:
     def get_mtobject_tap[T: (Territory, Actor, Product)](
             self,
             mtobject_class: type[T],
-            *args,
+            *args: str,
             like_value: bool = False,
             ignore_case: bool = False,
             ignore_accent: bool = False,
@@ -3960,12 +3962,12 @@ class Sidb:
                            'list'] = 'warn_list',
             nomenclature: str | None = None,
             verbose: bool = False,
-            **kwargs
+            **kwargs: str
             ) -> (T | Sequence[T] | int | Sequence[int] |
                   Select[tuple[T]] | Select[tuple[int]] |
                   None):
 
-        if not issubclass(mtobject_class, (Actor, Territory, Product)):
+        if not issubclass(mtobject_class, (Actor, Territory, Product)):  # type: ignore
             raise TypeError(f"mtobject_class has to be Actor, Territory or Product, got {mtobject_class}")
         if return_type not in (_list := ("object", "id", "queryid", "qid", "query")):
             raise ValueError(f"return_type can only be one of {_list}, got {return_type}")
@@ -4062,11 +4064,11 @@ class Sidb:
     def get_mtobjects_tap[T: (Territory, Actor, Product)](
             self,
             mtobject_class: type[T],
-            *args,
+            *args: str,
             like_value: bool = False,
             ignore_case: bool = False,
             ignore_accent: bool = False,
-            map_id: Iterable[int] | int | Select | None = None,
+            map_id: Iterable[int] | Select[tuple[int]] | None = None,
             return_type: Literal['list', 'object',
                                  'id', 'queryid', 'qid',
                                  'query', 'count'] = 'list',
@@ -4075,7 +4077,7 @@ class Sidb:
             verbose: bool = False,
             ) -> (Sequence[T] | Sequence[int] | int |
                   Select[tuple[T]] | Select[tuple[int]]):
-        if not issubclass(mtobject_class, (Territory, Actor, Product)):
+        if not issubclass(mtobject_class, (Territory, Actor, Product)):  # type: ignore
             raise TypeError(f"mtobject_class has to be Actor, Territory or Product, got '{mtobject_class}'.")
         if return_type not in (_list := ("list", "object", "id", "queryid", "qid", "query", "count")):
             raise ValueError(f"return_type can only be one of {_list}, got '{return_type}'.")
@@ -4086,8 +4088,6 @@ class Sidb:
 
             # Add an id filter.
             if map_id is not None:
-                if isinstance(map_id, int):
-                    map_id = (map_id,)
                 q[nq] = q[nq].where(mtobject_class.id.in_(map_id))
 
             # Add a nomenclature filter.
@@ -4188,7 +4188,7 @@ class Sidb:
         if verbose:
             print(f"-------- GET MTOBJECT IN | {type(mtobject)=}")
 
-        if not issubclass(mtobject_to_return, (Territory, Actor, Product)):
+        if not issubclass(mtobject_to_return, (Territory, Actor, Product)):  # type: ignore
             raise TypeError("'%s' is unsupported type" % mtobject_to_return)
 
         if source_ref is not None:
@@ -4267,7 +4267,7 @@ class Sidb:
                                  'query', 'count'] = 'list'
             ) -> (Sequence[T] | Sequence[int] | int |
                   Select[tuple[T]] | Select[tuple[int]]):
-        if not issubclass(mtobject_to_return, (Territory, Actor, Product)):
+        if not issubclass(mtobject_to_return, (Territory, Actor, Product)):  # type: ignore
             raise TypeError("'mtobject_to_return' has to be Actor, Territory or "
                             f"Product, got '{mtobject_to_return}'.")
 
@@ -4276,7 +4276,7 @@ class Sidb:
             id_start = (mtobject.id,)
         elif isinstance(mtobject, int):
             id_start = (mtobject,)
-        elif isinstance(mtobject, Sequence):
+        elif isinstance(mtobject, Sequence):  # type: ignore
             for o in mtobject:
                 id_start.append(o if isinstance(o, int) else o.id)
         else:
@@ -4318,7 +4318,7 @@ class Sidb:
             source_ref: str | None = None,
             filter_by: list[tuple[str, str]] = [],
             target_join_or: bool = True,
-            map_id: Iterable[int] | int | Select | None = None,
+            map_id: Iterable[int] | Select[tuple[int]] | None = None,
             cache_properties: list[str] = [],
             return_type: Literal['list', 'object',
                                  'id', 'queryid', 'qid',
@@ -4405,8 +4405,6 @@ class Sidb:
                     q[nq] = q[nq].where(p.value_literal == value)
 
             if map_id is not None:
-                if isinstance(map_id, int):
-                    map_id = (map_id,)
                 q[nq] = q[nq].where(object_class.id.in_(map_id))
 
         result = self.compute_query_return_type(q, return_type)
@@ -4530,7 +4528,7 @@ class Sidb:
         # FutureDev : Implémenter profondeur.
         sidb = Sidb.get_sidb_from_object(mtobject)
 
-        if not isinstance(mtobject, (Territory, Actor, Product)):
+        if not isinstance(mtobject, (Territory, Actor, Product)):  # type: ignore
             raise TypeError(f'Incorrect object type, got {type(mtobject)}')
 
         object_class = type(mtobject)
