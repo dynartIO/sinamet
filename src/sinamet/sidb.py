@@ -4505,7 +4505,7 @@ class Sidb:
                                  'list', 'object',
                                  'count'] = 'list'
             ) -> (Sequence[T] | Sequence[int] | int |
-                  Select[tuple[T | int]]):
+                  Select[tuple[T]] | Select[tuple[int]]):
         """Récupère les enfants directs d'un objet.
 
         Parameters:
@@ -4553,7 +4553,7 @@ class Sidb:
                                  'list', 'object',
                                  'count'] = 'list'
             ) -> (Sequence[T] | Sequence[int] | int |
-                  Select[tuple[T | int]]):
+                  Select[tuple[T]] | Select[tuple[int]]):
         """Récupère les parents directs d'un objet.
 
         Parameters:
