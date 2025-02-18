@@ -355,7 +355,7 @@ class MTObject(DBObjectClassBase):
                            force_cache: bool = False,
                            verbose: bool = False) -> (list[str] | list[MTObject] |
                                                       list[Geometry] | list[Property] |
-                                                      list[tuple[str | MTObject | Geometry], str] |
+                                                      list[tuple[str | MTObject | Geometry, str]] |
                                                       dict[str, str | MTObject | Geometry] |
                                                       Profile):
         """Fonction qui renvoie les propriétés correspondantes aux arguments.
@@ -465,7 +465,7 @@ class MTObject(DBObjectClassBase):
                   force_cache: bool = False,
                   verbose: bool = False) -> (list[str] | list[MTObject] |
                                              list[Geometry] | list[Property] |
-                                             list[tuple[str | MTObject | Geometry], str] |
+                                             list[tuple[str | MTObject | Geometry, str]] |
                                              dict[str, str | MTObject | Geometry] |
                                              Profile):
         """Renvoie les codes recherchés.
@@ -491,7 +491,7 @@ class MTObject(DBObjectClassBase):
                   force_cache: bool = False,
                   verbose: bool = False) -> (list[str] | list[MTObject] |
                                              list[Geometry] | list[Property] |
-                                             list[tuple[str | MTObject | Geometry], str] |
+                                             list[tuple[str | MTObject | Geometry, str]] |
                                              dict[str, str | MTObject | Geometry] |
                                              Profile):
         """Renvoie les noms recherchés.
@@ -517,7 +517,7 @@ class MTObject(DBObjectClassBase):
                        force_cache: bool = False,
                        verbose: bool = False) -> (list[str] | list[MTObject] |
                                                   list[Geometry] | list[Property] |
-                                                  list[tuple[str | MTObject | Geometry], str] |
+                                                  list[tuple[str | MTObject | Geometry, str]] |
                                                   dict[str, str | MTObject | Geometry] |
                                                   Profile):
         """Renvoie les propriétés recherchées.
