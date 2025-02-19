@@ -229,7 +229,7 @@ class MTObject(DBObjectClassBase):
         if not prop_type and prop_name in key_list:
             properties = (self.cached_properties[prop_name], '_')
         if not properties[0] and key_list and (use_default or not prop_type):
-            key_a, key_b = key_list[0].split('@', 1)
+            key_a, *key_b = key_list[0].split('@', 1)
             properties = (self.cached_properties[key_list[0]], key_b)
         if verbose:
             print(f"{properties=}")
