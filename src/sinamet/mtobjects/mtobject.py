@@ -111,7 +111,7 @@ class MTObject(DBObjectClassBase):
         root_node = Node(self.get_name(force_cache=True), mtobject=self)
         node_dict = {self.id: root_node}
         lst_object_children = (Sidb.get_sidb_from_object(self)
-                               .get_products_in(self, "Product", cache_properties=["IsInProduct"]))
+                               .get_products_in(self, "list", cache_properties=["IsInProduct"]))
         if verbose:
             print(f"Got {len(lst_object_children)} objects.")
         for child in lst_object_children:
