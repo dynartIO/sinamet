@@ -846,7 +846,7 @@ class MTObject(DBObjectClassBase):
             one_map = mapper.get_dict_i(key)
             one_map["key"] = one_map["key"].replace("IsInTerritory", "")
             return_territory = (Sidb.get_sidb_from_object(self)
-                                .get_territory(one_map["key"], one_map["value"], raise_none=False))
+                                .get_territory(one_map["key"], one_map["value"]))
             if return_territory is None:
                 return "WRONG_DATA", "IsInTerritory", f"{one_map['key']}='{one_map['value']}'"
             self.create_property("IsInTerritory", return_territory, one_map["source_ref"])
@@ -874,7 +874,7 @@ class MTObject(DBObjectClassBase):
             one_map = mapper.get_dict_i(key)
             one_map["key"] = one_map["key"].replace("IsInActor", "")
             return_actor = (Sidb.get_sidb_from_object(self)
-                            .get_actor(one_map["key"], one_map["value"], raise_none=False))
+                            .get_actor(one_map["key"], one_map["value"]))
             if return_actor is None:
                 return "WRONG_DATA", "IsInActor", str(one_map)
             else:
@@ -905,8 +905,7 @@ class MTObject(DBObjectClassBase):
             one_map["key"] = one_map["key"].replace("IsInProduct", "")
             return_product = (Sidb.get_sidb_from_object(self)
                               .get_product(one_map["key"], one_map["value"],
-                                           nomenclature=mapper.get("Nomenclature"),
-                                           raise_none=False))
+                                           nomenclature=mapper.get("Nomenclature")))
             if return_product is None:
                 return "WRONG_DATA", "IsInProduct", f"{one_map['key']}='{one_map['value']}'"
             self.create_property("IsInProduct", return_product, one_map["source_ref"])
@@ -1015,7 +1014,7 @@ class MTObject(DBObjectClassBase):
                     naming_case = dici["key"].replace(direction + mtobjecttype, "")
                     object_t = (Sidb.get_sidb_from_object(self)
                                 .get_mtobject_tap(Actor if mtobjecttype == 'Actor' else Territory,
-                                                  naming_case, dici["value"], raise_none=False))
+                                                  naming_case, dici["value"]))
                     if object_t is None:
                         return "WRONG_DATA_INFO", dici["key"] + " ~ " + naming_case, dici["value"]
 
@@ -1067,8 +1066,7 @@ class MTObject(DBObjectClassBase):
                     if verbose:
                         print("LOOKING FOR : %s = %s" % (naming_case, dici["value"]))
                     object_t = (Sidb.get_sidb_from_object(self)
-                                .get_actor(naming_case, dici["value"],
-                                           raise_none=False))
+                                .get_actor(naming_case, dici["value"]))
                     srcref_t = dici["source_ref"]
                     if object_t is None:
                         return "WRONG_DATA_INFO", dici["key"], dici["value"]
@@ -1129,8 +1127,7 @@ class MTObject(DBObjectClassBase):
                     naming_case = dici["key"].replace("Product", "")
                     object_t = (Sidb.get_sidb_from_object(self)
                                 .get_product(naming_case, dici["value"],
-                                             nomenclature=nomencl,
-                                             raise_none=False))
+                                             nomenclature=nomencl))
                     if object_t is None:
                         return "WRONG_DATA_INFO", dici["key"], dici["value"]
                     srcref_t = dici["source_ref"]

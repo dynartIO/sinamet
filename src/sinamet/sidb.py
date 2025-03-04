@@ -300,6 +300,17 @@ class Sidb:
         """
         return self.session.get(Property, id)
 
+    @overload
+    def compute_query_return_type[T](self, qnq: dict[str, Select[tuple[int]] | Select[tuple[T]]], return_type: Literal['qid', 'queryid']) -> Select[tuple[int]]: ...
+    @overload
+    def compute_query_return_type[T](self, qnq: dict[str, Select[tuple[int]] | Select[tuple[T]]], return_type: Literal['query']) -> Select[tuple[T]]: ...
+    @overload
+    def compute_query_return_type[T](self, qnq: dict[str, Select[tuple[int]] | Select[tuple[T]]], return_type: Literal['id']) -> Sequence[int]: ...
+    @overload
+    def compute_query_return_type[T](self, qnq: dict[str, Select[tuple[int]] | Select[tuple[T]]], return_type: Literal['list', 'object']) -> Sequence[T]: ...
+    @overload
+    def compute_query_return_type[T](self, qnq: dict[str, Select[tuple[int]] | Select[tuple[T]]], return_type: Literal['count']) -> int: ...
+
     def compute_query_return_type[T](
         self,
         qnq: dict[str, Select[tuple[int]] | Select[tuple[T]]],
@@ -470,7 +481,7 @@ class Sidb:
             ignore_case: bool = False,
             ignore_accent: bool = False,
             return_type: Literal['object'] = 'object',
-            raise_none: bool = True,
+            if_none: str | None = None,
             multi: Literal['raise',
                            'first',
                            'list',
@@ -479,7 +490,7 @@ class Sidb:
                            ] = 'warn_list',
             verbose: bool = False,
             **kwargs: str
-            ) -> (Territory | Sequence[Territory] | None): ...
+            ) -> (Territory | Sequence[Territory] | str | None): ...
 
     @overload
     def get_territory(
@@ -489,7 +500,7 @@ class Sidb:
             ignore_case: bool = False,
             ignore_accent: bool = False,
             return_type: Literal['id'],
-            raise_none: bool = True,
+            if_none: str | None = None,
             multi: Literal['raise',
                            'first',
                            'list',
@@ -498,7 +509,7 @@ class Sidb:
                            ] = 'warn_list',
             verbose: bool = False,
             **kwargs: str
-            ) -> (int | Sequence[int] | None): ...
+            ) -> (int | Sequence[int] | str | None): ...
 
     @overload
     def get_territory(
@@ -508,7 +519,7 @@ class Sidb:
             ignore_case: bool = False,
             ignore_accent: bool = False,
             return_type: Literal['query'],
-            raise_none: bool = True,
+            if_none: str | None = None,
             multi: Literal['raise',
                            'first',
                            'list',
@@ -527,7 +538,7 @@ class Sidb:
             ignore_case: bool = False,
             ignore_accent: bool = False,
             return_type: Literal['queryid', 'qid'],
-            raise_none: bool = True,
+            if_none: str | None = None,
             multi: Literal['raise',
                            'first',
                            'list',
@@ -550,7 +561,7 @@ class Sidb:
                                  'queryid',
                                  'qid',
                                  ] = 'object',
-            raise_none: bool = True,
+            if_none: str | None = None,
             multi: Literal['raise',
                            'first',
                            'list',
@@ -562,7 +573,7 @@ class Sidb:
             ) -> (Territory | int |
                   Sequence[Territory] | Sequence[int] |
                   Select[tuple[Territory]] | Select[tuple[int]] |
-                  None):
+                  str | None):
         """Trouve un territoire.
 
         Examples:
@@ -583,7 +594,7 @@ class Sidb:
                 * `id`: L'identifiant de l'objet.
                 * `query`: La requète de l'objet.
                 * `queryid` ou `qid`: La requète de l'identifiant de l'object.
-            raise_none: Si True, lève une [`SidbNotFoundError`][errors.SidbNotFoundError] si aucun
+            if_none: Si True, lève une [`SidbNotFoundError`][errors.SidbNotFoundError] si aucun
                 élément ne correspond à la requète, renvoie `None` sinon.
             multi: Action à prendre quand plusieurs éléments correspondents à la requète
                 Les valeurs possibles sont:
@@ -612,7 +623,7 @@ class Sidb:
                                      ignore_case=ignore_case,
                                      ignore_accent=ignore_accent,
                                      return_type=return_type,
-                                     raise_none=raise_none,
+                                     if_none=if_none,
                                      multi=multi,
                                      verbose=verbose,
                                      **kwargs)
@@ -1053,7 +1064,7 @@ class Sidb:
             i_primary_keys = [i for i, pk in enumerate(mapper.primary_keys) if pk]
             for ipk in i_primary_keys:
                 mapper_ipk = mapper.get_dict_i(ipk)
-                territory = self.get_territory(mapper_ipk["key"], mapper_ipk["value"], raise_none=False)
+                territory = self.get_territory(mapper_ipk["key"], mapper_ipk["value"])
                 if territory is not None:
                     break
         else:
@@ -1061,7 +1072,7 @@ class Sidb:
             lst_i_keys += mapper.get_keys_index("Name", startswith=True)
             for ikey in lst_i_keys:
                 dict_key = mapper.get_dict_i(ikey)
-                territory = self.get_territory(dict_key["key"], dict_key["value"], raise_none=False)
+                territory = self.get_territory(dict_key["key"], dict_key["value"])
                 if territory is not None:
                     break
 
@@ -1104,7 +1115,7 @@ class Sidb:
             ignore_case: bool = False,
             ignore_accent: bool = False,
             return_type: Literal['object'] = 'object',
-            raise_none: bool = True,
+            if_none: str | None = None,
             multi: Literal['raise',
                            'first',
                            'list',
@@ -1113,7 +1124,7 @@ class Sidb:
                            ] = 'warn_list',
             verbose: bool = False,
             **kwargs: str
-            ) -> (Actor | Sequence[Actor] | None): ...
+            ) -> (Actor | Sequence[Actor] | str | None): ...
 
     @overload
     def get_actor(
@@ -1123,7 +1134,7 @@ class Sidb:
             ignore_case: bool = False,
             ignore_accent: bool = False,
             return_type: Literal['id'],
-            raise_none: bool = True,
+            if_none: str | None = None,
             multi: Literal['raise',
                            'first',
                            'list',
@@ -1132,7 +1143,7 @@ class Sidb:
                            ] = 'warn_list',
             verbose: bool = False,
             **kwargs: str
-            ) -> (int | Sequence[int] | None): ...
+            ) -> (int | Sequence[int] | str | None): ...
 
     @overload
     def get_actor(
@@ -1142,7 +1153,7 @@ class Sidb:
             ignore_case: bool = False,
             ignore_accent: bool = False,
             return_type: Literal['query'],
-            raise_none: bool = True,
+            if_none: str | None = None,
             multi: Literal['raise',
                            'first',
                            'list',
@@ -1161,7 +1172,7 @@ class Sidb:
             ignore_case: bool = False,
             ignore_accent: bool = False,
             return_type: Literal['queryid', 'qid'],
-            raise_none: bool = True,
+            if_none: str | None = None,
             multi: Literal['raise',
                            'first',
                            'list',
@@ -1184,7 +1195,7 @@ class Sidb:
                                  'queryid',
                                  'qid',
                                  ] = 'object',
-            raise_none: bool = True,
+            if_none: str | None = None,
             multi: Literal['raise',
                            'first',
                            'list',
@@ -1196,7 +1207,7 @@ class Sidb:
             ) -> (Actor | int |
                   Sequence[Actor] | Sequence[int] |
                   Select[tuple[Actor]] | Select[tuple[int]] |
-                  None):
+                  str | None):
         """Trouve un acteur.
 
         Examples:
@@ -1219,7 +1230,7 @@ class Sidb:
                 * `id`: L'identifiant de l'objet.
                 * `query`: La requète de l'objet.
                 * `queryid` ou `qid`: La requète de l'identifiant de l'object.
-            raise_none: Si True, lève une [`SidbNotFoundError`][errors.SidbNotFoundError] si aucun
+            if_none: Si True, lève une [`SidbNotFoundError`][errors.SidbNotFoundError] si aucun
                 élément ne correspond à la requète, renvoie `None` sinon.
             multi: Action à prendre quand plusieurs éléments correspondents à la requète
                 Les valeurs possibles sont:
@@ -1247,7 +1258,7 @@ class Sidb:
                                      ignore_case=ignore_case,
                                      ignore_accent=ignore_accent,
                                      return_type=return_type,
-                                     raise_none=raise_none,
+                                     if_none=if_none,
                                      multi=multi,
                                      verbose=verbose,
                                      **kwargs)
@@ -1731,7 +1742,7 @@ class Sidb:
             i_primary_keys = [i for i, pk in enumerate(mapper.primary_keys) if pk]
             for ipk in i_primary_keys:
                 mapper_ipk = mapper.get_dict_i(ipk)
-                actor = self.get_actor(mapper_ipk["key"], mapper_ipk["value"], raise_none=False)
+                actor = self.get_actor(mapper_ipk["key"], mapper_ipk["value"])
                 if actor is not None:
                     break
         else:
@@ -1742,7 +1753,7 @@ class Sidb:
                 if dict_key["value"] != dict_key["value"].strip():
                     print(f"WARNING : space at beginning / end in code {dict_key['key']}:"
                           f"'{dict_key['value']}' - this might be unwanted")
-                actor = self.get_actor(dict_key["key"], dict_key["value"], raise_none=False)
+                actor = self.get_actor(dict_key["key"], dict_key["value"])
                 if actor is not None:
                     break
 
@@ -1784,7 +1795,7 @@ class Sidb:
             ignore_case: bool = False,
             ignore_accent: bool = False,
             return_type: Literal['object'] = 'object',
-            raise_none: bool = True,
+            if_none: str | None = None,
             multi: Literal['raise',
                            'first',
                            'list',
@@ -1793,7 +1804,7 @@ class Sidb:
                            ] = 'warn_list',
             verbose: bool = False,
             **kwargs: str
-            ) -> (Product | Sequence[Product] | None): ...
+            ) -> (Product | Sequence[Product] | str | None): ...
 
     @overload
     def get_product(
@@ -1804,7 +1815,7 @@ class Sidb:
             ignore_case: bool = False,
             ignore_accent: bool = False,
             return_type: Literal['id'],
-            raise_none: bool = True,
+            if_none: str | None = None,
             multi: Literal['raise',
                            'first',
                            'list',
@@ -1813,7 +1824,7 @@ class Sidb:
                            ] = 'warn_list',
             verbose: bool = False,
             **kwargs: str
-            ) -> (int | Sequence[int] | None): ...
+            ) -> (int | Sequence[int] | str | None): ...
 
     @overload
     def get_product(
@@ -1824,7 +1835,7 @@ class Sidb:
             ignore_case: bool = False,
             ignore_accent: bool = False,
             return_type: Literal['query'],
-            raise_none: bool = True,
+            if_none: str | None = None,
             multi: Literal['raise',
                            'first',
                            'list',
@@ -1844,7 +1855,7 @@ class Sidb:
             ignore_case: bool = False,
             ignore_accent: bool = False,
             return_type: Literal['queryid', 'qid'],
-            raise_none: bool = True,
+            if_none: str | None = None,
             multi: Literal['raise',
                            'first',
                            'list',
@@ -1868,7 +1879,7 @@ class Sidb:
                                  'queryid',
                                  'qid',
                                  ] = 'object',
-            raise_none: bool = True,
+            if_none: str | None = None,
             multi: Literal['raise',
                            'first',
                            'list',
@@ -1880,7 +1891,7 @@ class Sidb:
             ) -> (Product | int |
                   Sequence[Product] | Sequence[int] |
                   Select[tuple[Product]] | Select[tuple[int]] |
-                  None):
+                  str | None):
         """Trouve un produit.
 
         Args:
@@ -1900,7 +1911,7 @@ class Sidb:
                 * `id`: L'identifiant de l'objet.
                 * `query`: La requète de l'objet.
                 * `queryid` ou `qid`: La requète de l'identifiant de l'object.
-            raise_none: Si True, lève une [`SidbNotFoundError`][errors.SidbNotFoundError] si aucun
+            if_none: Si True, lève une [`SidbNotFoundError`][errors.SidbNotFoundError] si aucun
                 élément ne correspond à la requète, renvoie `None` sinon.
             multi: Action à prendre quand plusieurs éléments correspondents à la requète
                 Les valeurs possibles sont:
@@ -1931,7 +1942,7 @@ class Sidb:
                                      ignore_case=ignore_case,
                                      ignore_accent=ignore_accent,
                                      return_type=return_type,
-                                     raise_none=raise_none,
+                                     if_none=if_none,
                                      multi=multi,
                                      verbose=verbose,
                                      **kwargs)
@@ -2409,8 +2420,7 @@ class Sidb:
         converted_products: list[Product] = []
         for result in filter(None, self.session.scalars(stmt).all()):
             p = self.get_product(code=result,
-                                 nomenclature=dest_nomenclature,
-                                 raise_none=False)
+                                 nomenclature=dest_nomenclature)
             if isinstance(p, Product):
                 converted_products.append(p)
             elif isinstance(p, Sequence):
@@ -2478,8 +2488,7 @@ class Sidb:
             for ipk in i_primary_keys:
                 mapper_ipk = mapper.get_dict_i(ipk)
                 product = self.get_product(mapper_ipk["key"], mapper_ipk["value"],
-                                           nomenclature=mapper.get("Nomenclature"),
-                                           raise_none=False)
+                                           nomenclature=mapper.get("Nomenclature"))
                 if product is not None:
                     break
         else:
@@ -2488,8 +2497,7 @@ class Sidb:
             for ikey in lst_i_keys:
                 dict_key = mapper.get_dict_i(ikey)
                 product = self.get_product(dict_key["key"], dict_key["value"],
-                                           nomenclature=mapper.get("Nomenclature"),
-                                           raise_none=False)
+                                           nomenclature=mapper.get("Nomenclature"))
                 if product is not None:
                     break
 
@@ -3956,7 +3964,7 @@ class Sidb:
             return_type: Literal['object', 'id',
                                  'queryid', 'qid',
                                  'query'] = 'object',
-            raise_none: bool = True,
+            if_none: str | None = None,
             multi: Literal['raise', 'warn_first',
                            'warn_list', 'first',
                            'list'] = 'warn_list',
@@ -3965,7 +3973,7 @@ class Sidb:
             **kwargs: str
             ) -> (T | Sequence[T] | int | Sequence[int] |
                   Select[tuple[T]] | Select[tuple[int]] |
-                  None):
+                  str | None):
 
         if not issubclass(mtobject_class, (Actor, Territory, Product)):  # type: ignore
             raise TypeError(f"mtobject_class has to be Actor, Territory or Product, got {mtobject_class}")
@@ -4035,9 +4043,12 @@ class Sidb:
 
         # Gestion des résultats selon leur nombre : 0, 1 ou +
         if not len(result):
-            if raise_none:
+            if if_none == 'raise':
                 raise SidbNotFoundError(f"No such object has been found in the database ({key}={value})")
-            return None
+            if if_none == 'warn':
+                warnings.warn(f'No corresponding object {key}=\'{value}\'.')
+                return None
+            return if_none
         if len(result) == 1:
             if key != "Id" and not like_value and not ignore_case and not ignore_accent:
                 self.set_cache_mtobject_codename(result[0], key, value, False, prefix=nomenclature)
