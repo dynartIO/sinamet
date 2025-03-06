@@ -460,7 +460,7 @@ class Sidb:
     def get_territory(
             self,
             *args: str,
-            like_value: bool = False,
+            match_pattern: bool = False,
             ignore_case: bool = False,
             ignore_accent: bool = False,
             return_type: Literal['object'] = 'object',
@@ -479,7 +479,7 @@ class Sidb:
     def get_territory(
             self,
             *args: str,
-            like_value: bool = False,
+            match_pattern: bool = False,
             ignore_case: bool = False,
             ignore_accent: bool = False,
             return_type: Literal['id'],
@@ -498,7 +498,7 @@ class Sidb:
     def get_territory(
             self,
             *args: str,
-            like_value: bool = False,
+            match_pattern: bool = False,
             ignore_case: bool = False,
             ignore_accent: bool = False,
             return_type: Literal['query'],
@@ -517,7 +517,7 @@ class Sidb:
     def get_territory(
             self,
             *args: str,
-            like_value: bool = False,
+            match_pattern: bool = False,
             ignore_case: bool = False,
             ignore_accent: bool = False,
             return_type: Literal['queryid', 'qid'],
@@ -535,7 +535,7 @@ class Sidb:
     def get_territory(
             self,
             *args: str,
-            like_value: bool = False,
+            match_pattern: bool = False,
             ignore_case: bool = False,
             ignore_accent: bool = False,
             return_type: Literal['object',
@@ -561,14 +561,15 @@ class Sidb:
 
         Examples:
             >>> territory = get_territory(code="16")
-            >>> territory = get_territory("Name", "Saint-%", like_value=True)
+            >>> territory = get_territory("Name", "Saint-%", match_pattern=True)
 
         Args:
             *args: Duo d'arguments "NomDeProprieté", "Valeur", ou chaîne-objet "Territory(Code=xxxxx)", ou vide si kwargs renseignés
             **kwargs: code=="xxxxx" ou code_insee="xxxxx" ou name="xxxxxx" ou name_fr="xxxxx"
-            like_value: Si True, la valeur est recherchée à travers
+            match_pattern: Si True, la valeur est recherchée par motif plutôt que par valeur exacte, via
                 l'[instruction LIKE de SQL](https://www.postgresql.org/docs/current/functions-matching.html#FUNCTIONS-LIKE)
-                (les charactères spéciaux `%` et `_` ne seront pas échappés).
+                Se référer à la documentation de postgresql pour plus de détails.
+                Les charactères spéciaux `%` et `_` ne sont pas échappés.
             ignore_case: Recherche ignorant la casse.
             ignore_accent: Recherche ignorant l'accentuation.
             return_type: Type de retour de la fonction. Valeurs possibles:
@@ -602,7 +603,7 @@ class Sidb:
         # :todo: Implémenter gestion des paramètres scale, is_in, is_like
         return self.get_mtobject_tap(Territory,
                                      *args,
-                                     like_value=like_value,
+                                     match_pattern=match_pattern,
                                      ignore_case=ignore_case,
                                      ignore_accent=ignore_accent,
                                      return_type=return_type,
@@ -617,7 +618,7 @@ class Sidb:
             property_name: str | None = None,
             property_value: str | None = None,
             /, *,
-            like_value: bool = False,
+            match_pattern: bool = False,
             ignore_case: bool = False,
             ignore_accent: bool = False,
             filter_ids: Iterable[int] | Select[tuple[int]] | None = None,
@@ -632,7 +633,7 @@ class Sidb:
             property_name: str | None = None,
             property_value: str | None = None,
             /, *,
-            like_value: bool = False,
+            match_pattern: bool = False,
             ignore_case: bool = False,
             ignore_accent: bool = False,
             filter_ids: Iterable[int] | Select[tuple[int]] | None = None,
@@ -647,7 +648,7 @@ class Sidb:
             property_name: str | None = None,
             property_value: str | None = None,
             /, *,
-            like_value: bool = False,
+            match_pattern: bool = False,
             ignore_case: bool = False,
             ignore_accent: bool = False,
             filter_ids: Iterable[int] | Select[tuple[int]] | None = None,
@@ -662,7 +663,7 @@ class Sidb:
             property_name: str | None = None,
             property_value: str | None = None,
             /, *,
-            like_value: bool = False,
+            match_pattern: bool = False,
             ignore_case: bool = False,
             ignore_accent: bool = False,
             filter_ids: Iterable[int] | Select[tuple[int]] | None = None,
@@ -677,7 +678,7 @@ class Sidb:
             property_name: str | None = None,
             property_value: str | None = None,
             /, *,
-            like_value: bool = False,
+            match_pattern: bool = False,
             ignore_case: bool = False,
             ignore_accent: bool = False,
             filter_ids: Iterable[int] | Select[tuple[int]] | None = None,
@@ -691,7 +692,7 @@ class Sidb:
             property_name: str | None = None,
             property_value: str | None = None,
             /, *,
-            like_value: bool = False,
+            match_pattern: bool = False,
             ignore_case: bool = False,
             ignore_accent: bool = False,
             filter_ids: Iterable[int] | Select[tuple[int]] | None = None,
@@ -711,9 +712,10 @@ class Sidb:
 
         Args:
             *args: Duo d'arguments "NomDeProprieté", "Valeur"
-            like_value: Si True, la valeur est recherchée à travers
+            match_pattern: Si True, la valeur est recherchée par motif plutôt que par valeur exacte, via
                 l'[instruction LIKE de SQL](https://www.postgresql.org/docs/current/functions-matching.html#FUNCTIONS-LIKE)
-                (les charactères spéciaux `%` et `_` ne seront pas échappés).
+                Se référer à la documentation de postgresql pour plus de détails.
+                Les charactères spéciaux `%` et `_` ne sont pas échappés.
             ignore_case: Recherche ignorant la casse.
             ignore_accent: Recherche ignorant l'accentuation.
             filter_ids: Filtre d'identifiants des objets.
@@ -740,7 +742,7 @@ class Sidb:
 
         return self.get_mtobjects_tap(Territory,
                                       property_name, property_value,
-                                      like_value=like_value,
+                                      match_pattern=match_pattern,
                                       ignore_case=ignore_case,
                                       ignore_accent=ignore_accent,
                                       filter_ids=filter_ids,
@@ -1130,7 +1132,7 @@ class Sidb:
     def get_actor(
             self,
             *args: str,
-            like_value: bool = False,
+            match_pattern: bool = False,
             ignore_case: bool = False,
             ignore_accent: bool = False,
             return_type: Literal['object'] = 'object',
@@ -1149,7 +1151,7 @@ class Sidb:
     def get_actor(
             self,
             *args: str,
-            like_value: bool = False,
+            match_pattern: bool = False,
             ignore_case: bool = False,
             ignore_accent: bool = False,
             return_type: Literal['id'],
@@ -1168,7 +1170,7 @@ class Sidb:
     def get_actor(
             self,
             *args: str,
-            like_value: bool = False,
+            match_pattern: bool = False,
             ignore_case: bool = False,
             ignore_accent: bool = False,
             return_type: Literal['query'],
@@ -1187,7 +1189,7 @@ class Sidb:
     def get_actor(
             self,
             *args: str,
-            like_value: bool = False,
+            match_pattern: bool = False,
             ignore_case: bool = False,
             ignore_accent: bool = False,
             return_type: Literal['queryid', 'qid'],
@@ -1205,7 +1207,7 @@ class Sidb:
     def get_actor(
             self,
             *args: str,
-            like_value: bool = False,
+            match_pattern: bool = False,
             ignore_case: bool = False,
             ignore_accent: bool = False,
             return_type: Literal['object',
@@ -1236,11 +1238,10 @@ class Sidb:
         Args:
             *args: Duo d'arguments "NomDeProprieté", "Valeur", ou chaîne-objet "Actor(Code=xxxxx)", ou vide si kwargs renseignés
             **kwargs: code=="xxxxx" ou code_siret="xxxxx" ou name="xxxxxx" ou name_fr="xxxxx"
-            like_value: Si True, la valeur est recherchée à travers
+            match_pattern: Si True, la valeur est recherchée par motif plutôt que par valeur exacte, via
                 l'[instruction LIKE de SQL](https://www.postgresql.org/docs/current/functions-matching.html#FUNCTIONS-LIKE)
-                (les charactères spéciaux `%` et `_` ne seront pas échappés).
-            like_value: Si True, compare la valeur passée avec LIKE à la place de l'égalité (=)
-                (les charactères spéciaux `%` et `_` ne seront pas échappés).
+                Se référer à la documentation de postgresql pour plus de détails.
+                Les charactères spéciaux `%` et `_` ne sont pas échappés.
             ignore_case: Recherche ignorant la casse.
             ignore_accent: Recherche ignorant l'accentuation.
             return_type: Type de retour de la fonction. Valeurs possibles:
@@ -1273,7 +1274,7 @@ class Sidb:
         """
         return self.get_mtobject_tap(Actor,
                                      *args,
-                                     like_value=like_value,
+                                     match_pattern=match_pattern,
                                      ignore_case=ignore_case,
                                      ignore_accent=ignore_accent,
                                      return_type=return_type,
@@ -1288,7 +1289,7 @@ class Sidb:
             property_name: str | None = None,
             property_value: str | None = None,
             /, *,
-            like_value: bool = False,
+            match_pattern: bool = False,
             ignore_case: bool = False,
             ignore_accent: bool = False,
             filter_ids: Iterable[int] | Select[tuple[int]] | None = None,
@@ -1303,7 +1304,7 @@ class Sidb:
             property_name: str | None = None,
             property_value: str | None = None,
             /, *,
-            like_value: bool = False,
+            match_pattern: bool = False,
             ignore_case: bool = False,
             ignore_accent: bool = False,
             filter_ids: Iterable[int] | Select[tuple[int]] | None = None,
@@ -1318,7 +1319,7 @@ class Sidb:
             property_name: str | None = None,
             property_value: str | None = None,
             /, *,
-            like_value: bool = False,
+            match_pattern: bool = False,
             ignore_case: bool = False,
             ignore_accent: bool = False,
             filter_ids: Iterable[int] | Select[tuple[int]] | None = None,
@@ -1333,7 +1334,7 @@ class Sidb:
             property_name: str | None = None,
             property_value: str | None = None,
             /, *,
-            like_value: bool = False,
+            match_pattern: bool = False,
             ignore_case: bool = False,
             ignore_accent: bool = False,
             filter_ids: Iterable[int] | Select[tuple[int]] | None = None,
@@ -1348,7 +1349,7 @@ class Sidb:
             property_name: str | None = None,
             property_value: str | None = None,
             /, *,
-            like_value: bool = False,
+            match_pattern: bool = False,
             ignore_case: bool = False,
             ignore_accent: bool = False,
             filter_ids: Iterable[int] | Select[tuple[int]] | None = None,
@@ -1362,7 +1363,7 @@ class Sidb:
             property_name: str | None = None,
             property_value: str | None = None,
             /, *,
-            like_value: bool = False,
+            match_pattern: bool = False,
             ignore_case: bool = False,
             ignore_accent: bool = False,
             filter_ids: Iterable[int] | Select[tuple[int]] | None = None,
@@ -1386,9 +1387,10 @@ class Sidb:
 
         Args:
             *args: Duo d'arguments "NomDeProprieté", "Valeur"
-            like_value: Si True, la valeur est recherchée à travers
+            match_pattern: Si True, la valeur est recherchée par motif plutôt que par valeur exacte, via
                 l'[instruction LIKE de SQL](https://www.postgresql.org/docs/current/functions-matching.html#FUNCTIONS-LIKE)
-                (les charactères spéciaux `%` et `_` ne seront pas échappés).
+                Se référer à la documentation de postgresql pour plus de détails.
+                Les charactères spéciaux `%` et `_` ne sont pas échappés.
             ignore_case: Recherche ignorant la casse.
             ignore_accent: Recherche ignorant l'accentuation.
             filter_ids: Filtre d'identifiants des objets.
@@ -1413,7 +1415,7 @@ class Sidb:
         """
         return self.get_mtobjects_tap(Actor,
                                       property_name, property_value,
-                                      like_value=like_value,
+                                      match_pattern=match_pattern,
                                       ignore_case=ignore_case,
                                       ignore_accent=ignore_accent,
                                       filter_ids=filter_ids,
@@ -1852,7 +1854,7 @@ class Sidb:
             self,
             *args: str,
             nomenclature: str | None = None,
-            like_value: bool = False,
+            match_pattern: bool = False,
             ignore_case: bool = False,
             ignore_accent: bool = False,
             return_type: Literal['object'] = 'object',
@@ -1872,7 +1874,7 @@ class Sidb:
             self,
             *args: str,
             nomenclature: str | None = None,
-            like_value: bool = False,
+            match_pattern: bool = False,
             ignore_case: bool = False,
             ignore_accent: bool = False,
             return_type: Literal['id'],
@@ -1892,7 +1894,7 @@ class Sidb:
             self,
             *args: str,
             nomenclature: str | None = None,
-            like_value: bool = False,
+            match_pattern: bool = False,
             ignore_case: bool = False,
             ignore_accent: bool = False,
             return_type: Literal['query'],
@@ -1912,7 +1914,7 @@ class Sidb:
             self,
             *args: str,
             nomenclature: str | None = None,
-            like_value: bool = False,
+            match_pattern: bool = False,
             ignore_case: bool = False,
             ignore_accent: bool = False,
             return_type: Literal['queryid', 'qid'],
@@ -1931,7 +1933,7 @@ class Sidb:
             self,
             *args: str,
             nomenclature: str | None = None,
-            like_value: bool = False,
+            match_pattern: bool = False,
             ignore_case: bool = False,
             ignore_accent: bool = False,
             return_type: Literal['object',
@@ -1958,12 +1960,11 @@ class Sidb:
         Args:
             *args: Duo d'arguments "NomDeProprieté", "Valeur", ou chaîne-objet "Product(Code=xxxxx)", ou vide si kwargs renseignés
             **kwargs: code=="xxxxx" ou name="xxxxxx" ou name_fr="xxxxx"
-            like_value: Si True, la valeur est recherchée à travers
-                l'[instruction LIKE de SQL](https://www.postgresql.org/docs/current/functions-matching.html#FUNCTIONS-LIKE)
-                (les charactères spéciaux `%` et `_` ne seront pas échappés).
             nomenclature: Nom de la nomenclature du produit recherché.
-            like_value: Si True, compare la valeur passée avec LIKE à la place de l'égalité (=)
-                (les charactères spéciaux `%` et `_` ne seront pas échappés).
+            match_pattern: Si True, la valeur est recherchée par motif plutôt que par valeur exacte, via
+                l'[instruction LIKE de SQL](https://www.postgresql.org/docs/current/functions-matching.html#FUNCTIONS-LIKE)
+                Se référer à la documentation de postgresql pour plus de détails.
+                Les charactères spéciaux `%` et `_` ne sont pas échappés.
             ignore_case: Recherche ignorant la casse.
             ignore_accent: Recherche ignorant l'accentuation.
             return_type: Type de retour de la fonction. Valeurs possibles:
@@ -1999,7 +2000,7 @@ class Sidb:
         return self.get_mtobject_tap(Product,
                                      *args,
                                      nomenclature=nomenclature,
-                                     like_value=like_value,
+                                     match_pattern=match_pattern,
                                      ignore_case=ignore_case,
                                      ignore_accent=ignore_accent,
                                      return_type=return_type,
@@ -2015,7 +2016,7 @@ class Sidb:
             property_value: str | None = None,
             /, *,
             nomenclature: str | None = None,
-            like_value: bool = False,
+            match_pattern: bool = False,
             ignore_case: bool = False,
             ignore_accent: bool = False,
             filter_ids: Iterable[int] | Select[tuple[int]] | None = None,
@@ -2031,7 +2032,7 @@ class Sidb:
             property_value: str | None = None,
             /, *,
             nomenclature: str | None = None,
-            like_value: bool = False,
+            match_pattern: bool = False,
             ignore_case: bool = False,
             ignore_accent: bool = False,
             filter_ids: Iterable[int] | Select[tuple[int]] | None = None,
@@ -2047,7 +2048,7 @@ class Sidb:
             property_value: str | None = None,
             /, *,
             nomenclature: str | None = None,
-            like_value: bool = False,
+            match_pattern: bool = False,
             ignore_case: bool = False,
             ignore_accent: bool = False,
             filter_ids: Iterable[int] | Select[tuple[int]] | None = None,
@@ -2063,7 +2064,7 @@ class Sidb:
             property_value: str | None = None,
             /, *,
             nomenclature: str | None = None,
-            like_value: bool = False,
+            match_pattern: bool = False,
             ignore_case: bool = False,
             ignore_accent: bool = False,
             filter_ids: Iterable[int] | Select[tuple[int]] | None = None,
@@ -2079,7 +2080,7 @@ class Sidb:
             property_value: str | None = None,
             /, *,
             nomenclature: str | None = None,
-            like_value: bool = False,
+            match_pattern: bool = False,
             ignore_case: bool = False,
             ignore_accent: bool = False,
             filter_ids: Iterable[int] | Select[tuple[int]] | None = None,
@@ -2094,7 +2095,7 @@ class Sidb:
             property_value: str | None = None,
             /, *,
             nomenclature: str | None = None,
-            like_value: bool = False,
+            match_pattern: bool = False,
             ignore_case: bool = False,
             ignore_accent: bool = False,
             filter_ids: Iterable[int] | Select[tuple[int]] | None = None,
@@ -2114,9 +2115,10 @@ class Sidb:
 
         Args:
             *args: Duo d'arguments "NomDeProprieté", "Valeur"
-            like_value: Si True, la valeur est recherchée à travers
+            match_pattern: Si True, la valeur est recherchée par motif plutôt que par valeur exacte, via
                 l'[instruction LIKE de SQL](https://www.postgresql.org/docs/current/functions-matching.html#FUNCTIONS-LIKE)
-                (les charactères spéciaux `%` et `_` ne seront pas échappés).
+                Se référer à la documentation de postgresql pour plus de détails.
+                Les charactères spéciaux `%` et `_` ne sont pas échappés.
             ignore_case: Recherche ignorant la casse.
             ignore_accent: Recherche ignorant l'accentuation.
             filter_ids: Filtre d'identifiants des objets.
@@ -2143,7 +2145,7 @@ class Sidb:
         """
         return self.get_mtobjects_tap(Product,
                                       property_name, property_value,
-                                      like_value=like_value,
+                                      match_pattern=match_pattern,
                                       ignore_case=ignore_case,
                                       ignore_accent=ignore_accent,
                                       filter_ids=filter_ids,
@@ -4122,7 +4124,7 @@ class Sidb:
             self,
             mtobject_class: type[T],
             *args: str,
-            like_value: bool = False,
+            match_pattern: bool = False,
             ignore_case: bool = False,
             ignore_accent: bool = False,
             return_type: Literal['object', 'id',
@@ -4151,7 +4153,7 @@ class Sidb:
             print(f'key = {key}, value = {value}')
 
         # Recherche dans le cache si recherche sur clé exacte uniquement
-        if key != "Id" and not like_value and not ignore_case and not ignore_accent:
+        if key != "Id" and not match_pattern and not ignore_case and not ignore_accent:
             if verbose:
                 print("Looking for object in cache ...")
             cached_object = self.get_one_mtobject_from_cache(mtobject_class.__name__,
@@ -4177,7 +4179,7 @@ class Sidb:
                 value = func.unaccent(value) if ignore_accent else value
                 value = func.lower(value) if ignore_case else value
 
-                if like_value:
+                if match_pattern:
                     q[nq] = q[nq].where(prop.like(value))
                 else:
                     q[nq] = q[nq].where(prop == value)
@@ -4213,7 +4215,7 @@ class Sidb:
                 warnings.warn(f'No corresponding object {key}=\'{value}\'.')
             return None
         if len(result) == 1:
-            if key != "Id" and not like_value and not ignore_case and not ignore_accent:
+            if key != "Id" and not match_pattern and not ignore_case and not ignore_accent:
                 self.set_cache_mtobject_codename(result[0], key, value, False, prefix=nomenclature)
             self.cache_mtobject_properties(result[0])
             return result[0]
@@ -4241,7 +4243,7 @@ class Sidb:
             property_name: str | None = None,
             property_value: str | None = None,
             /, *,
-            like_value: bool = False,
+            match_pattern: bool = False,
             ignore_case: bool = False,
             ignore_accent: bool = False,
             filter_ids: Iterable[int] | Select[tuple[int]] | None = None,
@@ -4284,7 +4286,7 @@ class Sidb:
                 prop = func.lower(prop) if ignore_case else prop
                 value = func.unaccent(property_value) if ignore_accent else property_value
                 value = func.lower(value) if ignore_case else value
-                if like_value:
+                if match_pattern:
                     q[nq] = q[nq].where(prop.like(value))
                 else:
                     q[nq] = q[nq].where(prop == value)
