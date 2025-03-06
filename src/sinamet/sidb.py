@@ -253,7 +253,6 @@ class Sidb:
 
     def get_properties(self, properties: Iterable[str] | str,
                        filter_ids: Select[tuple[int]] | list[int] | None = None,
-                       startlike: bool = False,
                        return_type: str = 'list') -> Sequence[Property]:
         """Charge et renvoie les propriétés correspondantes.
 
@@ -261,15 +260,11 @@ class Sidb:
             properties: Les noms des propriétés à charger.
             filter_ids: Si renseigné, charge uniquement les propriétés liées aux objets
                 dont l'id correspond.
-            startlike: Pas implémenté.
             return_type: Pas implémenté.
 
         Returns:
             La liste des propriétés correspondantes.
         """
-        if startlike:
-            raise ValueError('Not implemented yet.')
-
         if isinstance(properties, str):
             properties = (properties,)
         q = select(Property)
