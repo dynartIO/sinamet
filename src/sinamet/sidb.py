@@ -2637,8 +2637,8 @@ class Sidb:
                       Select[tuple[int]] | Sequence[Select[tuple[int]]] |
                       None) = None,
             *,
-            product_asc: bool = False,
-            product_desc: bool = True,
+            include_parent_products: bool = False,
+            include_children_products: bool = True,
             date_point: str | date | None = None,
             date_start: str | date | None = None,
             date_end: str | date | None = None,
@@ -2662,8 +2662,8 @@ class Sidb:
                       Select[tuple[int]] | Sequence[Select[tuple[int]]] |
                       None) = None,
             *,
-            product_asc: bool = False,
-            product_desc: bool = True,
+            include_parent_products: bool = False,
+            include_children_products: bool = True,
             date_point: str | date | None = None,
             date_start: str | date | None = None,
             date_end: str | date | None = None,
@@ -2687,8 +2687,8 @@ class Sidb:
                       Select[tuple[int]] | Sequence[Select[tuple[int]]] |
                       None) = None,
             *,
-            product_asc: bool = False,
-            product_desc: bool = True,
+            include_parent_products: bool = False,
+            include_children_products: bool = True,
             date_point: str | date | None = None,
             date_start: str | date | None = None,
             date_end: str | date | None = None,
@@ -2712,8 +2712,8 @@ class Sidb:
                       Select[tuple[int]] | Sequence[Select[tuple[int]]] |
                       None) = None,
             *,
-            product_asc: bool = False,
-            product_desc: bool = True,
+            include_parent_products: bool = False,
+            include_children_products: bool = True,
             date_point: str | date | None = None,
             date_start: str | date | None = None,
             date_end: str | date | None = None,
@@ -2737,8 +2737,8 @@ class Sidb:
                       Select[tuple[int]] | Sequence[Select[tuple[int]]] |
                       None) = None,
             *,
-            product_asc: bool = False,
-            product_desc: bool = True,
+            include_parent_products: bool = False,
+            include_children_products: bool = True,
             date_point: str | date | None = None,
             date_start: str | date | None = None,
             date_end: str | date | None = None,
@@ -2761,8 +2761,8 @@ class Sidb:
                       Select[tuple[int]] | Sequence[Select[tuple[int]]] |
                       None) = None,
             *,
-            product_asc: bool = False,
-            product_desc: bool = True,
+            include_parent_products: bool = False,
+            include_children_products: bool = True,
             date_point: str | date | None = None,
             date_start: str | date | None = None,
             date_end: str | date | None = None,
@@ -2785,9 +2785,9 @@ class Sidb:
         Parameters:
             target: Le territoire et/ou l'acteur lié(s) aux stocks.
             product: Le produit lié aux stocks.
-            product_asc: Effectue une recherche ascendante sur le produit,
+            include_parent_products: Effectue une recherche ascendante sur le produit,
                 recherche le produit et ses parents.
-            product_desc: Effectue une recherche descendante sur le produit,
+            include_children_products: Effectue une recherche descendante sur le produit,
                 recherche le produit et ses enfants.
             date_point: La date ponctuelle des stocks.
             date_start: La date de départ des stocks.
@@ -2818,8 +2818,8 @@ class Sidb:
         """
         # Note: FutureDev Implementer target_(asc/desc).
         return self.get_mtobjects_gs(Stock, target=target, product=product,
-                                     product_asc=product_asc,
-                                     product_desc=product_desc, date_point=date_point,
+                                     include_parent_products=include_parent_products,
+                                     include_children_products=include_children_products, date_point=date_point,
                                      date_start=date_start, date_end=date_end,
                                      year=year, month=month, source_ref=source_ref,
                                      filter_by=filter_by,
@@ -2879,8 +2879,8 @@ class Sidb:
                       Select[tuple[int]] | Sequence[Select[tuple[int]]] |
                       None) = None,
             *,
-            product_asc: bool = False,
-            product_desc: bool = True,
+            include_parent_products: bool = False,
+            include_children_products: bool = True,
             date_point: str | date | None = None,
             date_start: str | date | None = None,
             date_end: str | date | None = None,
@@ -2909,8 +2909,8 @@ class Sidb:
                       Select[tuple[int]] | Sequence[Select[tuple[int]]] |
                       None) = None,
             *,
-            product_asc: bool = False,
-            product_desc: bool = True,
+            include_parent_products: bool = False,
+            include_children_products: bool = True,
             date_point: str | date | None = None,
             date_start: str | date | None = None,
             date_end: str | date | None = None,
@@ -2939,8 +2939,8 @@ class Sidb:
                       Select[tuple[int]] | Sequence[Select[tuple[int]]] |
                       None) = None,
             *,
-            product_asc: bool = False,
-            product_desc: bool = True,
+            include_parent_products: bool = False,
+            include_children_products: bool = True,
             date_point: str | date | None = None,
             date_start: str | date | None = None,
             date_end: str | date | None = None,
@@ -2969,8 +2969,8 @@ class Sidb:
                       Select[tuple[int]] | Sequence[Select[tuple[int]]] |
                       None) = None,
             *,
-            product_asc: bool = False,
-            product_desc: bool = True,
+            include_parent_products: bool = False,
+            include_children_products: bool = True,
             date_point: str | date | None = None,
             date_start: str | date | None = None,
             date_end: str | date | None = None,
@@ -2999,8 +2999,8 @@ class Sidb:
                       Select[tuple[int]] | Sequence[Select[tuple[int]]] |
                       None) = None,
             *,
-            product_asc: bool = False,
-            product_desc: bool = True,
+            include_parent_products: bool = False,
+            include_children_products: bool = True,
             date_point: str | date | None = None,
             date_start: str | date | None = None,
             date_end: str | date | None = None,
@@ -3028,8 +3028,8 @@ class Sidb:
                       Select[tuple[int]] | Sequence[Select[tuple[int]]] |
                       None) = None,
             *,
-            product_asc: bool = False,
-            product_desc: bool = True,
+            include_parent_products: bool = False,
+            include_children_products: bool = True,
             date_point: str | date | None = None,
             date_start: str | date | None = None,
             date_end: str | date | None = None,
@@ -3054,9 +3054,9 @@ class Sidb:
             flowtype: Type de flux, peut être `input`, `output`, `consumption`,
                 `production`, `extraction` ou `emission`.
             product: Le produit lié aux flux.
-            product_asc: Effectue une recherche ascendante sur le produit,
+            include_parent_products: Effectue une recherche ascendante sur le produit,
                 recherche le produit et ses parents.
-            product_desc: Effectue une recherche descendante sur le produit,
+            include_children_products: Effectue une recherche descendante sur le produit,
                 recherche le produit et ses enfants.
             date_point: La date ponctuelle des flux.
             date_start: La date de départ des flux.
@@ -3087,8 +3087,8 @@ class Sidb:
         """
         # Note: FutureDev - Implementer target_(asc / desc).
         return self.get_mtobjects_gs(Gateflow, target=target, flowtype=flowtype,
-                                     product=product, product_asc=product_asc,
-                                     product_desc=product_desc, date_point=date_point,
+                                     product=product, include_parent_products=include_parent_products,
+                                     include_children_products=include_children_products, date_point=date_point,
                                      date_start=date_start, date_end=date_end,
                                      year=year, month=month, source_ref=source_ref,
                                      filter_by=filter_by,
@@ -3551,8 +3551,8 @@ class Sidb:
                       int | Sequence[int] |
                       Select[tuple[int]] | Sequence[Select[tuple[int]]] |
                       None) = None,
-            product_asc: bool = False,
-            product_desc: bool = True,
+            include_parent_products: bool = False,
+            include_children_products: bool = True,
             date_point: date | str | None = None,
             date_start: date | str | None = None,
             date_end: date | str | None = None,
@@ -3579,8 +3579,8 @@ class Sidb:
                       int | Sequence[int] |
                       Select[tuple[int]] | Sequence[Select[tuple[int]]] |
                       None) = None,
-            product_asc: bool = False,
-            product_desc: bool = True,
+            include_parent_products: bool = False,
+            include_children_products: bool = True,
             date_point: date | str | None = None,
             date_start: date | str | None = None,
             date_end: date | str | None = None,
@@ -3607,8 +3607,8 @@ class Sidb:
                       int | Sequence[int] |
                       Select[tuple[int]] | Sequence[Select[tuple[int]]] |
                       None) = None,
-            product_asc: bool = False,
-            product_desc: bool = True,
+            include_parent_products: bool = False,
+            include_children_products: bool = True,
             date_point: date | str | None = None,
             date_start: date | str | None = None,
             date_end: date | str | None = None,
@@ -3635,8 +3635,8 @@ class Sidb:
                       int | Sequence[int] |
                       Select[tuple[int]] | Sequence[Select[tuple[int]]] |
                       None) = None,
-            product_asc: bool = False,
-            product_desc: bool = True,
+            include_parent_products: bool = False,
+            include_children_products: bool = True,
             date_point: date | str | None = None,
             date_start: date | str | None = None,
             date_end: date | str | None = None,
@@ -3663,8 +3663,8 @@ class Sidb:
                       int | Sequence[int] |
                       Select[tuple[int]] | Sequence[Select[tuple[int]]] |
                       None) = None,
-            product_asc: bool = False,
-            product_desc: bool = True,
+            include_parent_products: bool = False,
+            include_children_products: bool = True,
             date_point: date | str | None = None,
             date_start: date | str | None = None,
             date_end: date | str | None = None,
@@ -3690,8 +3690,8 @@ class Sidb:
                       int | Sequence[int] |
                       Select[tuple[int]] | Sequence[Select[tuple[int]]] |
                       None) = None,
-            product_asc: bool = False,
-            product_desc: bool = True,
+            include_parent_products: bool = False,
+            include_children_products: bool = True,
             date_point: date | str | None = None,
             date_start: date | str | None = None,
             date_end: date | str | None = None,
@@ -3718,9 +3718,9 @@ class Sidb:
             xtarget: Territoire ou acteur complémentaire à exclure
                 (origine pour les imports, destination pour les exports).
             product: Le produit lié aux flux.
-            product_asc: Effectue une recherche ascendante sur le produit
+            include_parent_products: Effectue une recherche ascendante sur le produit
                 (recherche le produit et ses parents).
-            product_desc: Effectue une recherche descendante sur le produit
+            include_children_products: Effectue une recherche descendante sur le produit
                 (recherche le produit et ses enfants).
             date_point: La date ponctuelle des flux.
             date_start: La date de départ des flux.
@@ -3778,11 +3778,11 @@ class Sidb:
 
             if isinstance(product, (int, Select)) or product:
                 products_search = []
-                if product_desc:
+                if include_children_products:
                     products_search.append(Pathflow.product_id.in_(
                         self.get_products_in(product, return_type="qid")
                         ))
-                if product_asc:
+                if include_parent_products:
                     products_search.append(Pathflow.product_id.in_(
                         self.get_products_on(product, return_type="qid")
                         ))
@@ -4496,8 +4496,8 @@ class Sidb:
                       int | Sequence[int] |
                       Select[tuple[int]] | Sequence[Select[tuple[int]]] |
                       None) = None,
-            product_asc: bool = False,
-            product_desc: bool = True,
+            include_parent_products: bool = False,
+            include_children_products: bool = True,
             date_point: str | date | None = None,
             date_start: str | date | None = None,
             date_end: str | date | None = None,
@@ -4551,11 +4551,11 @@ class Sidb:
             # Product search
             if isinstance(product, (int, Select)) or product:
                 products_search = []
-                if product_desc:
+                if include_children_products:
                     products_search.append(object_class.product_id.in_(
                         self.get_products_in(product, return_type="qid")
                         ))
-                if product_asc:
+                if include_parent_products:
                     products_search.append(object_class.product_id.in_(
                         self.get_products_on(product, return_type="qid")
                         ))
