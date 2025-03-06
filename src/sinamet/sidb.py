@@ -3545,8 +3545,8 @@ class Sidb:
                                'internal', 'all',
                                None] = None,
             *,
-            btarget: T | None = None,
-            xtarget: T | None = None,
+            related_target: T | None = None,
+            exclude_related_target: T | None = None,
             product: (Product | Sequence[Product] |
                       int | Sequence[int] |
                       Select[tuple[int]] | Sequence[Select[tuple[int]]] |
@@ -3573,8 +3573,8 @@ class Sidb:
                                'internal', 'all',
                                None] = None,
             *,
-            btarget: T | None = None,
-            xtarget: T | None = None,
+            related_target: T | None = None,
+            exclude_related_target: T | None = None,
             product: (Product | Sequence[Product] |
                       int | Sequence[int] |
                       Select[tuple[int]] | Sequence[Select[tuple[int]]] |
@@ -3601,8 +3601,8 @@ class Sidb:
                                'internal', 'all',
                                None] = None,
             *,
-            btarget: T | None = None,
-            xtarget: T | None = None,
+            related_target: T | None = None,
+            exclude_related_target: T | None = None,
             product: (Product | Sequence[Product] |
                       int | Sequence[int] |
                       Select[tuple[int]] | Sequence[Select[tuple[int]]] |
@@ -3629,8 +3629,8 @@ class Sidb:
                                'internal', 'all',
                                None] = None,
             *,
-            btarget: T | None = None,
-            xtarget: T | None = None,
+            related_target: T | None = None,
+            exclude_related_target: T | None = None,
             product: (Product | Sequence[Product] |
                       int | Sequence[int] |
                       Select[tuple[int]] | Sequence[Select[tuple[int]]] |
@@ -3657,8 +3657,8 @@ class Sidb:
                                'internal', 'all',
                                None] = None,
             *,
-            btarget: T | None = None,
-            xtarget: T | None = None,
+            related_target: T | None = None,
+            exclude_related_target: T | None = None,
             product: (Product | Sequence[Product] |
                       int | Sequence[int] |
                       Select[tuple[int]] | Sequence[Select[tuple[int]]] |
@@ -3684,8 +3684,8 @@ class Sidb:
                                'internal', 'all',
                                None] = None,
             *,
-            btarget: T | None = None,
-            xtarget: T | None = None,
+            related_target: T | None = None,
+            exclude_related_target: T | None = None,
             product: (Product | Sequence[Product] |
                       int | Sequence[int] |
                       Select[tuple[int]] | Sequence[Select[tuple[int]]] |
@@ -3713,9 +3713,9 @@ class Sidb:
             target: Le territoire ou l'acteur lié aux flux.
             direction: La direction des flux, peut être `import`, `export`,
                 `internal` ou `all`.
-            btarget: Territoire ou acteur complémentaire spécifique
+            related_target: Territoire ou acteur complémentaire spécifique
                 (origine pour les imports, destination pour les exports)
-            xtarget: Territoire ou acteur complémentaire à exclure
+            exclude_related_target: Territoire ou acteur complémentaire à exclure
                 (origine pour les imports, destination pour les exports).
             product: Le produit lié aux flux.
             include_parent_products: Effectue une recherche ascendante sur le produit
@@ -3751,9 +3751,9 @@ class Sidb:
             raise ValueError(f"Unknown direction = '{direction}'")
         if type(target) is list:
             raise ValueError("Target list is not configured yet")
-        if (xtarget is not None) or (btarget is not None):
+        if (exclude_related_target is not None) or (related_target is not None):
             if (direction == "internal") or (direction == "all"):
-                raise ValueError(f"xtarget or btarget should be None for '{direction}' direction flow")
+                raise ValueError(f"exclude_related_target or related_target should be None for '{direction}' direction flow")
         if product is None:
             print("WARNING: Product = None is not advised")
 
@@ -3804,18 +3804,18 @@ class Sidb:
 
             if isinstance(target, Territory):
                 # ToDo : Implement Actors continuation
-                # Vérify xtarget type
-                if xtarget is not None and type(xtarget) is not Territory:
-                    raise TypeError(f"xtarget '{xtarget}' is not a Territory")
-                if btarget is not None and type(btarget) is not Territory:
-                    raise TypeError(f"btarget '{btarget}' is not a Territory")
+                # Vérify exclude_related_target type
+                if exclude_related_target is not None and type(exclude_related_target) is not Territory:
+                    raise TypeError(f"exclude_related_target '{exclude_related_target}' is not a Territory")
+                if related_target is not None and type(related_target) is not Territory:
+                    raise TypeError(f"related_target '{related_target}' is not a Territory")
                 if direction == "import":
                     q[nq] = q[nq].where(and_(~Pathflow.emitter_territory_id.in_(self.get_territories_in(target, return_type="qid")),
                                              Pathflow.receiver_territory_id.in_(self.get_territories_in(target, return_type="qid"))))
-                    if xtarget is not None:
-                        q[nq] = q[nq].where(~Pathflow.emitter_territory_id.in_(self.get_territories_in(xtarget, return_type="qid")))
-                    if btarget is not None:
-                        q[nq] = q[nq].where(Pathflow.emitter_territory_id.in_(self.get_territories_in(btarget, return_type="qid")))
+                    if exclude_related_target is not None:
+                        q[nq] = q[nq].where(~Pathflow.emitter_territory_id.in_(self.get_territories_in(exclude_related_target, return_type="qid")))
+                    if related_target is not None:
+                        q[nq] = q[nq].where(Pathflow.emitter_territory_id.in_(self.get_territories_in(related_target, return_type="qid")))
                 elif direction == "internal":
                     q[nq] = q[nq].where(and_(or_(Pathflow.emitter_territory_id.in_(self.get_territories_in(target, return_type="qid")),
                                                  Pathflow.emitter_actor_id.in_(self.get_actors_in(target, return_type="qid"))),
@@ -3824,38 +3824,38 @@ class Sidb:
                 elif direction == "export":
                     q[nq] = q[nq].where(and_(Pathflow.emitter_territory_id.in_(self.get_territories_in(target, return_type="qid")),
                                              ~Pathflow.receiver_territory_id.in_(self.get_territories_in(target, return_type="qid"))))
-                    if xtarget is not None:
-                        q[nq] = q[nq].where(~Pathflow.receiver_territory_id.in_(self.get_territories_in(xtarget, return_type="qid")))
-                    if btarget is not None:
-                        q[nq] = q[nq].where(Pathflow.receiver_territory_id.in_(self.get_territories_in(btarget, return_type="qid")))
+                    if exclude_related_target is not None:
+                        q[nq] = q[nq].where(~Pathflow.receiver_territory_id.in_(self.get_territories_in(exclude_related_target, return_type="qid")))
+                    if related_target is not None:
+                        q[nq] = q[nq].where(Pathflow.receiver_territory_id.in_(self.get_territories_in(related_target, return_type="qid")))
                 elif direction == "all":
                     q[nq] = q[nq].where(or_(Pathflow.emitter_territory_id.in_(self.get_territories_in(target, return_type="qid")),
                                             Pathflow.receiver_territory_id.in_(self.get_territories_in(target, return_type="qid"))))
                 # x- and b-target
             elif isinstance(target, Actor):
                 # ToDo : Implement Actors continuation
-                # Vérify xtarget type
-                if xtarget is not None and type(xtarget) is not Actor:
-                    raise TypeError("xtarget '%s' is not an Actor" % xtarget)
-                if btarget is not None and type(btarget) is not Actor:
-                    raise TypeError("btarget '%s' is not an Actor" % btarget)
+                # Vérify exclude_related_target type
+                if exclude_related_target is not None and type(exclude_related_target) is not Actor:
+                    raise TypeError("exclude_related_target '%s' is not an Actor" % exclude_related_target)
+                if related_target is not None and type(related_target) is not Actor:
+                    raise TypeError("related_target '%s' is not an Actor" % related_target)
                 if direction == "import":
                     q[nq] = q[nq].where(and_(~Pathflow.emitter_actor_id.in_(self.get_actors_in(target, return_type="qid")),
                                              Pathflow.receiver_actor_id.in_(self.get_actors_in(target, return_type="qid"))))
-                    if xtarget is not None:
-                        q[nq] = q[nq].where(~Pathflow.emitter_actor_id.in_(self.get_actors_in(xtarget, return_type="qid")))
-                    if btarget is not None:
-                        q[nq] = q[nq].where(Pathflow.emitter_actor_id.in_(self.get_actors_in(btarget, return_type="qid")))
+                    if exclude_related_target is not None:
+                        q[nq] = q[nq].where(~Pathflow.emitter_actor_id.in_(self.get_actors_in(exclude_related_target, return_type="qid")))
+                    if related_target is not None:
+                        q[nq] = q[nq].where(Pathflow.emitter_actor_id.in_(self.get_actors_in(related_target, return_type="qid")))
                 elif direction == "internal":
                     q[nq] = q[nq].where(and_(Pathflow.emitter_actor_id.in_(self.get_actors_in(target, return_type="qid")),
                                              Pathflow.receiver_actor_id.in_(self.get_actors_in(target, return_type="qid"))))
                 elif direction == "export":
                     q[nq] = q[nq].where(and_(Pathflow.emitter_actor_id.in_(self.get_actors_in(target, return_type="qid")),
                                              ~Pathflow.receiver_actor_id.in_(self.get_actors_in(target, return_type="qid"))))
-                    if xtarget is not None:
-                        q[nq] = q[nq].where(~Pathflow.receiver_actor_id.in_(self.get_actors_in(xtarget, return_type="qid")))
-                    if btarget is not None:
-                        q[nq] = q[nq].where(Pathflow.receiver_actor_id.in_(self.get_actors_in(btarget, return_type="qid")))
+                    if exclude_related_target is not None:
+                        q[nq] = q[nq].where(~Pathflow.receiver_actor_id.in_(self.get_actors_in(exclude_related_target, return_type="qid")))
+                    if related_target is not None:
+                        q[nq] = q[nq].where(Pathflow.receiver_actor_id.in_(self.get_actors_in(related_target, return_type="qid")))
                 elif direction == "all":
                     q[nq] = q[nq].where(or_(Pathflow.emitter_actor_id.in_(self.get_actors_in(target, return_type="qid")),
                                             Pathflow.receiver_actor_id.in_(self.get_actors_in(target, return_type="qid"))))
