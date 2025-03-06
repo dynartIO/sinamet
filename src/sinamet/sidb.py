@@ -252,14 +252,14 @@ class Sidb:
         return stats
 
     def get_properties(self, properties: Iterable[str] | str,
-                       map_id: Select[tuple[int]] | list[int] | None = None,
+                       filter_ids: Select[tuple[int]] | list[int] | None = None,
                        startlike: bool = False,
                        return_type: str = 'list') -> Sequence[Property]:
         """Charge et renvoie les propriétés correspondantes.
 
         Parameters:
             properties: Les noms des propriétés à charger.
-            map_id: Si renseigné, charge uniquement les propriétés liées aux objets
+            filter_ids: Si renseigné, charge uniquement les propriétés liées aux objets
                 dont l'id correspond.
             startlike: Pas implémenté.
             return_type: Pas implémenté.
@@ -283,8 +283,8 @@ class Sidb:
                 mysqllst.append(Property.name_a == mytabname[0])
         q = q.where(or_(*mysqllst))
 
-        if map_id is not None:
-            result = self.session.scalars(q.where(Property.item_id.in_(map_id)))
+        if filter_ids is not None:
+            result = self.session.scalars(q.where(Property.item_id.in_(filter_ids)))
         else:
             result = self.session.scalars(q)
         return result.all()
@@ -356,7 +356,7 @@ class Sidb:
             s.add(cache_properties)
         else:
             s.update(cache_properties)
-        self.get_properties(list(s), map_id=q_id)
+        self.get_properties(list(s), filter_ids=q_id)
 
     def get_distinct_property_values(self, prop_name: str) -> Sequence[str | None]:
         """
@@ -635,7 +635,7 @@ class Sidb:
             like_value: bool = False,
             ignore_case: bool = False,
             ignore_accent: bool = False,
-            map_id: Iterable[int] | Select[tuple[int]] | None = None,
+            filter_ids: Iterable[int] | Select[tuple[int]] | None = None,
             return_type: Literal['list', 'object'] = 'list',
             cache_properties: list[str] = [],
             verbose: bool = False,
@@ -648,7 +648,7 @@ class Sidb:
             like_value: bool = False,
             ignore_case: bool = False,
             ignore_accent: bool = False,
-            map_id: Iterable[int] | Select[tuple[int]] | None = None,
+            filter_ids: Iterable[int] | Select[tuple[int]] | None = None,
             return_type: Literal['id'],
             cache_properties: list[str] = [],
             verbose: bool = False,
@@ -661,7 +661,7 @@ class Sidb:
             like_value: bool = False,
             ignore_case: bool = False,
             ignore_accent: bool = False,
-            map_id: Iterable[int] | Select[tuple[int]] | None = None,
+            filter_ids: Iterable[int] | Select[tuple[int]] | None = None,
             return_type: Literal['count'],
             cache_properties: list[str] = [],
             verbose: bool = False,
@@ -674,7 +674,7 @@ class Sidb:
             like_value: bool = False,
             ignore_case: bool = False,
             ignore_accent: bool = False,
-            map_id: Iterable[int] | Select[tuple[int]] | None = None,
+            filter_ids: Iterable[int] | Select[tuple[int]] | None = None,
             return_type: Literal['query'],
             cache_properties: list[str] = [],
             verbose: bool = False,
@@ -687,7 +687,7 @@ class Sidb:
             like_value: bool = False,
             ignore_case: bool = False,
             ignore_accent: bool = False,
-            map_id: Iterable[int] | Select[tuple[int]] | None = None,
+            filter_ids: Iterable[int] | Select[tuple[int]] | None = None,
             return_type: Literal['queryid', 'qid'],
             cache_properties: list[str] = [],
             verbose: bool = False,
@@ -699,7 +699,7 @@ class Sidb:
             like_value: bool = False,
             ignore_case: bool = False,
             ignore_accent: bool = False,
-            map_id: Iterable[int] | Select[tuple[int]] | None = None,
+            filter_ids: Iterable[int] | Select[tuple[int]] | None = None,
             return_type: Literal['list',
                                  'object',
                                  'id',
@@ -721,7 +721,7 @@ class Sidb:
                 (les charactères spéciaux `%` et `_` ne seront pas échappés).
             ignore_case: Recherche ignorant la casse.
             ignore_accent: Recherche ignorant l'accentuation.
-            map_id: Filtre d'identifiants des objets.
+            filter_ids: Filtre d'identifiants des objets.
             return_type: Type de retour de la fonction. Valeurs possibles:
 
                 * `list` ou `object`: La liste des objets `Territory`.
@@ -748,7 +748,7 @@ class Sidb:
                                       like_value=like_value,
                                       ignore_case=ignore_case,
                                       ignore_accent=ignore_accent,
-                                      map_id=map_id,
+                                      filter_ids=filter_ids,
                                       return_type=return_type,
                                       cache_properties=cache_properties,
                                       verbose=verbose)
@@ -1294,7 +1294,7 @@ class Sidb:
             like_value: bool = False,
             ignore_case: bool = False,
             ignore_accent: bool = False,
-            map_id: Iterable[int] | Select[tuple[int]] | None = None,
+            filter_ids: Iterable[int] | Select[tuple[int]] | None = None,
             return_type: Literal['list', 'object'] = 'list',
             cache_properties: list[str] = [],
             verbose: bool = False,
@@ -1307,7 +1307,7 @@ class Sidb:
             like_value: bool = False,
             ignore_case: bool = False,
             ignore_accent: bool = False,
-            map_id: Iterable[int] | Select[tuple[int]] | None = None,
+            filter_ids: Iterable[int] | Select[tuple[int]] | None = None,
             return_type: Literal['id'],
             cache_properties: list[str] = [],
             verbose: bool = False,
@@ -1320,7 +1320,7 @@ class Sidb:
             like_value: bool = False,
             ignore_case: bool = False,
             ignore_accent: bool = False,
-            map_id: Iterable[int] | Select[tuple[int]] | None = None,
+            filter_ids: Iterable[int] | Select[tuple[int]] | None = None,
             return_type: Literal['count'],
             cache_properties: list[str] = [],
             verbose: bool = False,
@@ -1333,7 +1333,7 @@ class Sidb:
             like_value: bool = False,
             ignore_case: bool = False,
             ignore_accent: bool = False,
-            map_id: Iterable[int] | Select[tuple[int]] | None = None,
+            filter_ids: Iterable[int] | Select[tuple[int]] | None = None,
             return_type: Literal['query'],
             cache_properties: list[str] = [],
             verbose: bool = False,
@@ -1346,7 +1346,7 @@ class Sidb:
             like_value: bool = False,
             ignore_case: bool = False,
             ignore_accent: bool = False,
-            map_id: Iterable[int] | Select[tuple[int]] | None = None,
+            filter_ids: Iterable[int] | Select[tuple[int]] | None = None,
             return_type: Literal['queryid', 'qid'],
             cache_properties: list[str] = [],
             verbose: bool = False,
@@ -1358,7 +1358,7 @@ class Sidb:
             like_value: bool = False,
             ignore_case: bool = False,
             ignore_accent: bool = False,
-            map_id: Iterable[int] | Select[tuple[int]] | None = None,
+            filter_ids: Iterable[int] | Select[tuple[int]] | None = None,
             return_type: Literal['list',
                                  'object',
                                  'id',
@@ -1384,7 +1384,7 @@ class Sidb:
                 (les charactères spéciaux `%` et `_` ne seront pas échappés).
             ignore_case: Recherche ignorant la casse.
             ignore_accent: Recherche ignorant l'accentuation.
-            map_id: Filtre d'identifiants des objets.
+            filter_ids: Filtre d'identifiants des objets.
             return_type: Type de retour de la fonction. Valeurs possibles:
 
                 * `list` ou `object`: La liste des objets `Actor`.
@@ -1409,7 +1409,7 @@ class Sidb:
                                       like_value=like_value,
                                       ignore_case=ignore_case,
                                       ignore_accent=ignore_accent,
-                                      map_id=map_id,
+                                      filter_ids=filter_ids,
                                       return_type=return_type,
                                       cache_properties=cache_properties,
                                       verbose=verbose)
@@ -2009,7 +2009,7 @@ class Sidb:
             like_value: bool = False,
             ignore_case: bool = False,
             ignore_accent: bool = False,
-            map_id: Iterable[int] | Select[tuple[int]] | None = None,
+            filter_ids: Iterable[int] | Select[tuple[int]] | None = None,
             return_type: Literal['list', 'object'] = 'list',
             cache_properties: list[str] = [],
             verbose: bool = False,
@@ -2023,7 +2023,7 @@ class Sidb:
             like_value: bool = False,
             ignore_case: bool = False,
             ignore_accent: bool = False,
-            map_id: Iterable[int] | Select[tuple[int]] | None = None,
+            filter_ids: Iterable[int] | Select[tuple[int]] | None = None,
             return_type: Literal['id'],
             cache_properties: list[str] = [],
             verbose: bool = False,
@@ -2037,7 +2037,7 @@ class Sidb:
             like_value: bool = False,
             ignore_case: bool = False,
             ignore_accent: bool = False,
-            map_id: Iterable[int] | Select[tuple[int]] | None = None,
+            filter_ids: Iterable[int] | Select[tuple[int]] | None = None,
             return_type: Literal['count'],
             cache_properties: list[str] = [],
             verbose: bool = False,
@@ -2051,7 +2051,7 @@ class Sidb:
             like_value: bool = False,
             ignore_case: bool = False,
             ignore_accent: bool = False,
-            map_id: Iterable[int] | Select[tuple[int]] | None = None,
+            filter_ids: Iterable[int] | Select[tuple[int]] | None = None,
             return_type: Literal['query'],
             cache_properties: list[str] = [],
             verbose: bool = False,
@@ -2065,7 +2065,7 @@ class Sidb:
             like_value: bool = False,
             ignore_case: bool = False,
             ignore_accent: bool = False,
-            map_id: Iterable[int] | Select[tuple[int]] | None = None,
+            filter_ids: Iterable[int] | Select[tuple[int]] | None = None,
             return_type: Literal['queryid', 'qid'],
             cache_properties: list[str] = [],
             verbose: bool = False,
@@ -2078,7 +2078,7 @@ class Sidb:
             like_value: bool = False,
             ignore_case: bool = False,
             ignore_accent: bool = False,
-            map_id: Iterable[int] | Select[tuple[int]] | None = None,
+            filter_ids: Iterable[int] | Select[tuple[int]] | None = None,
             return_type: Literal['list',
                                  'object',
                                  'id',
@@ -2100,7 +2100,7 @@ class Sidb:
                 (les charactères spéciaux `%` et `_` ne seront pas échappés).
             ignore_case: Recherche ignorant la casse.
             ignore_accent: Recherche ignorant l'accentuation.
-            map_id: Filtre d'identifiants des objets.
+            filter_ids: Filtre d'identifiants des objets.
             return_type: Type de retour de la fonction. Valeurs possibles:
 
                 * `list` ou `object`: La liste des objets `Product`.
@@ -2127,7 +2127,7 @@ class Sidb:
                                       like_value=like_value,
                                       ignore_case=ignore_case,
                                       ignore_accent=ignore_accent,
-                                      map_id=map_id,
+                                      filter_ids=filter_ids,
                                       return_type=return_type,
                                       cache_properties=cache_properties,
                                       nomenclature=nomenclature,
@@ -2626,7 +2626,7 @@ class Sidb:
             source_ref: str | None = None,
             filter_by: list[tuple[str, str]] = [],
             target_join_or: bool = True,
-            map_id: Iterable[int] | Select[tuple[int]] | None = None,
+            filter_ids: Iterable[int] | Select[tuple[int]] | None = None,
             return_type: Literal['list', 'object'] = 'list',
             cache_properties: list[str] = [],
             verbose: bool = False
@@ -2651,7 +2651,7 @@ class Sidb:
             source_ref: str | None = None,
             filter_by: list[tuple[str, str]] = [],
             target_join_or: bool = True,
-            map_id: Iterable[int] | Select[tuple[int]] | None = None,
+            filter_ids: Iterable[int] | Select[tuple[int]] | None = None,
             return_type: Literal['id'],
             cache_properties: list[str] = [],
             verbose: bool = False
@@ -2676,7 +2676,7 @@ class Sidb:
             source_ref: str | None = None,
             filter_by: list[tuple[str, str]] = [],
             target_join_or: bool = True,
-            map_id: Iterable[int] | Select[tuple[int]] | None = None,
+            filter_ids: Iterable[int] | Select[tuple[int]] | None = None,
             return_type: Literal['count'],
             cache_properties: list[str] = [],
             verbose: bool = False
@@ -2701,7 +2701,7 @@ class Sidb:
             source_ref: str | None = None,
             filter_by: list[tuple[str, str]] = [],
             target_join_or: bool = True,
-            map_id: Iterable[int] | Select[tuple[int]] | None = None,
+            filter_ids: Iterable[int] | Select[tuple[int]] | None = None,
             return_type: Literal['query'],
             cache_properties: list[str] = [],
             verbose: bool = False
@@ -2726,7 +2726,7 @@ class Sidb:
             source_ref: str | None = None,
             filter_by: list[tuple[str, str]] = [],
             target_join_or: bool = True,
-            map_id: Iterable[int] | Select[tuple[int]] | None = None,
+            filter_ids: Iterable[int] | Select[tuple[int]] | None = None,
             return_type: Literal['queryid', 'qid'],
             cache_properties: list[str] = [],
             verbose: bool = False
@@ -2750,7 +2750,7 @@ class Sidb:
             source_ref: str | None = None,
             filter_by: list[tuple[str, str]] = [],
             target_join_or: bool = True,
-            map_id: Iterable[int] | Select[tuple[int]] | None = None,
+            filter_ids: Iterable[int] | Select[tuple[int]] | None = None,
             return_type: Literal['list', 'object',
                                  'id', 'query',
                                  'queryid', 'qid',
@@ -2778,7 +2778,7 @@ class Sidb:
                 stocks (ex. [("Label", "Bio")]).
             target_join_or: Si `True`, compare les `target` en utilisant un ou binaire,
                 sinon compare en utilisant un et binaire.
-            map_id: Filtre d'identifiants des objets.
+            filter_ids: Filtre d'identifiants des objets.
             cache_properties: Liste des propriétés à mettre en cache.
             return_type: Type de retour de la fonction. Valeurs possibles:
 
@@ -2803,7 +2803,7 @@ class Sidb:
                                      year=year, month=month, source_ref=source_ref,
                                      filter_by=filter_by,
                                      target_join_or=target_join_or,
-                                     map_id=map_id,
+                                     filter_ids=filter_ids,
                                      cache_properties=cache_properties,
                                      return_type=return_type, verbose=verbose)
 
@@ -2868,7 +2868,7 @@ class Sidb:
             source_ref: str | None = None,
             filter_by: list[tuple[str, str]] = [],
             target_join_or: bool = True,
-            map_id: Iterable[int] | Select[tuple[int]] | None = None,
+            filter_ids: Iterable[int] | Select[tuple[int]] | None = None,
             return_type: Literal['list', 'object'] = 'list',
             cache_properties: list[str] = [],
             verbose: bool = False
@@ -2898,7 +2898,7 @@ class Sidb:
             source_ref: str | None = None,
             filter_by: list[tuple[str, str]] = [],
             target_join_or: bool = True,
-            map_id: Iterable[int] | Select[tuple[int]] | None = None,
+            filter_ids: Iterable[int] | Select[tuple[int]] | None = None,
             return_type: Literal['id'],
             cache_properties: list[str] = [],
             verbose: bool = False
@@ -2928,7 +2928,7 @@ class Sidb:
             source_ref: str | None = None,
             filter_by: list[tuple[str, str]] = [],
             target_join_or: bool = True,
-            map_id: Iterable[int] | Select[tuple[int]] | None = None,
+            filter_ids: Iterable[int] | Select[tuple[int]] | None = None,
             return_type: Literal['count'],
             cache_properties: list[str] = [],
             verbose: bool = False
@@ -2958,7 +2958,7 @@ class Sidb:
             source_ref: str | None = None,
             filter_by: list[tuple[str, str]] = [],
             target_join_or: bool = True,
-            map_id: Iterable[int] | Select[tuple[int]] | None = None,
+            filter_ids: Iterable[int] | Select[tuple[int]] | None = None,
             return_type: Literal['query'],
             cache_properties: list[str] = [],
             verbose: bool = False
@@ -2988,7 +2988,7 @@ class Sidb:
             source_ref: str | None = None,
             filter_by: list[tuple[str, str]] = [],
             target_join_or: bool = True,
-            map_id: Iterable[int] | Select[tuple[int]] | None = None,
+            filter_ids: Iterable[int] | Select[tuple[int]] | None = None,
             return_type: Literal['queryid', 'qid'],
             cache_properties: list[str] = [],
             verbose: bool = False
@@ -3017,7 +3017,7 @@ class Sidb:
             source_ref: str | None = None,
             filter_by: list[tuple[str, str]] = [],
             target_join_or: bool = True,
-            map_id: Iterable[int] | Select[tuple[int]] | None = None,
+            filter_ids: Iterable[int] | Select[tuple[int]] | None = None,
             return_type: Literal['list', 'object',
                                  'id', 'query',
                                  'queryid', 'qid',
@@ -3047,7 +3047,7 @@ class Sidb:
                 flux (ex. [("Label", "Bio")]).
             target_join_or: Si `True`, compare les `target` en utilisant un ou binaire,
                 sinon compare en utilisant un et binaire.
-            map_id: Filtre d'identifiants des objets.
+            filter_ids: Filtre d'identifiants des objets.
             cache_properties: Liste des propriétés à mettre en cache.
             return_type: Type de retour de la fonction. Valeurs possibles:
 
@@ -3072,7 +3072,7 @@ class Sidb:
                                      year=year, month=month, source_ref=source_ref,
                                      filter_by=filter_by,
                                      target_join_or=target_join_or,
-                                     map_id=map_id,
+                                     filter_ids=filter_ids,
                                      cache_properties=cache_properties,
                                      return_type=return_type, verbose=verbose)
 
@@ -3539,7 +3539,7 @@ class Sidb:
             month: str | int | None = None,
             source_ref: str | None = None,
             filter_by: list[tuple[str, str]] = [],
-            map_id: Iterable[int] | Select[tuple[int]] | None = None,
+            filter_ids: Iterable[int] | Select[tuple[int]] | None = None,
             return_type: Literal['list', 'object'] = 'list',
             cache_properties: list[str] = [],
             ) -> Sequence[Pathflow]: ...
@@ -3567,7 +3567,7 @@ class Sidb:
             month: str | int | None = None,
             source_ref: str | None = None,
             filter_by: list[tuple[str, str]] = [],
-            map_id: Iterable[int] | Select[tuple[int]] | None = None,
+            filter_ids: Iterable[int] | Select[tuple[int]] | None = None,
             return_type: Literal['id'],
             cache_properties: list[str] = [],
             ) -> Sequence[int]: ...
@@ -3595,7 +3595,7 @@ class Sidb:
             month: str | int | None = None,
             source_ref: str | None = None,
             filter_by: list[tuple[str, str]] = [],
-            map_id: Iterable[int] | Select[tuple[int]] | None = None,
+            filter_ids: Iterable[int] | Select[tuple[int]] | None = None,
             return_type: Literal['count'],
             cache_properties: list[str] = [],
             ) -> int: ...
@@ -3623,7 +3623,7 @@ class Sidb:
             month: str | int | None = None,
             source_ref: str | None = None,
             filter_by: list[tuple[str, str]] = [],
-            map_id: Iterable[int] | Select[tuple[int]] | None = None,
+            filter_ids: Iterable[int] | Select[tuple[int]] | None = None,
             return_type: Literal['query'],
             cache_properties: list[str] = [],
             ) -> Select[tuple[Pathflow]]: ...
@@ -3651,7 +3651,7 @@ class Sidb:
             month: str | int | None = None,
             source_ref: str | None = None,
             filter_by: list[tuple[str, str]] = [],
-            map_id: Iterable[int] | Select[tuple[int]] | None = None,
+            filter_ids: Iterable[int] | Select[tuple[int]] | None = None,
             return_type: Literal['queryid', 'qid'],
             cache_properties: list[str] = [],
             ) -> Select[tuple[int]]: ...
@@ -3678,7 +3678,7 @@ class Sidb:
             month: str | int | None = None,
             source_ref: str | None = None,
             filter_by: list[tuple[str, str]] = [],
-            map_id: Iterable[int] | Select[tuple[int]] | None = None,
+            filter_ids: Iterable[int] | Select[tuple[int]] | None = None,
             return_type: Literal['list', 'object',
                                  'id', 'query',
                                  'queryid', 'qid',
@@ -3709,7 +3709,7 @@ class Sidb:
             source_ref: La source de référence des flux.
             filter_by: Liste de propriétés supplémentaires pour le filtrage des
                 flux (ex. [("Label", "Bio")]).
-            map_id: Filtre d'identifiants des objets.
+            filter_ids: Filtre d'identifiants des objets.
             return_type: Type de retour de la fonction. Valeurs possibles:
 
                 * `list` ou `object`: La liste des flux `Pathflow`.
@@ -3852,10 +3852,10 @@ class Sidb:
                 if value != '*':
                     q[nq] = q[nq].where(p.value_literal == value)
 
-            if map_id is not None:
-                if (isinstance(map_id, int)):
-                    map_id = (map_id,)
-                q[nq] = q[nq].where(Pathflow.id.in_(map_id))
+            if filter_ids is not None:
+                if (isinstance(filter_ids, int)):
+                    filter_ids = (filter_ids,)
+                q[nq] = q[nq].where(Pathflow.id.in_(filter_ids))
 
         returnval = self.compute_query_return_type(q, return_type)
         self.compute_query_cache_properties(cache_properties, return_type, q['id'])
@@ -4203,7 +4203,7 @@ class Sidb:
                 raise SidbMultiFoundError("Several corresponding objects.")
             case "warn_list":
                 warnings.warn(f"Several corresponding objects ({key}={value}), returning all")
-                self.get_properties(["Name", "Code"], map_id=q["id"])
+                self.get_properties(["Name", "Code"], filter_ids=q["id"])
                 return result
             case "warn_first":
                 warnings.warn(f"Several corresponding objects ({key}={value}), returning first")
@@ -4213,7 +4213,7 @@ class Sidb:
                 self.cache_mtobject_properties(result[0])
                 return result[0]
             case "list":
-                self.get_properties(["Name", "Code"], map_id=q["id"])
+                self.get_properties(["Name", "Code"], filter_ids=q["id"])
                 return result
 
     def get_mtobjects_tap[T: (Territory, Actor, Product)](
@@ -4223,7 +4223,7 @@ class Sidb:
             like_value: bool = False,
             ignore_case: bool = False,
             ignore_accent: bool = False,
-            map_id: Iterable[int] | Select[tuple[int]] | None = None,
+            filter_ids: Iterable[int] | Select[tuple[int]] | None = None,
             return_type: Literal['list', 'object',
                                  'id', 'queryid', 'qid',
                                  'query', 'count'] = 'list',
@@ -4242,8 +4242,8 @@ class Sidb:
             q[nq] = select(targetq)
 
             # Add an id filter.
-            if map_id is not None:
-                q[nq] = q[nq].where(mtobject_class.id.in_(map_id))
+            if filter_ids is not None:
+                q[nq] = q[nq].where(mtobject_class.id.in_(filter_ids))
 
             # Add a nomenclature filter.
             if mtobject_class is Product and nomenclature:
@@ -4485,7 +4485,7 @@ class Sidb:
             source_ref: str | None = None,
             filter_by: list[tuple[str, str]] = [],
             target_join_or: bool = True,
-            map_id: Iterable[int] | Select[tuple[int]] | None = None,
+            filter_ids: Iterable[int] | Select[tuple[int]] | None = None,
             cache_properties: list[str] = [],
             return_type: Literal['list', 'object',
                                  'id', 'queryid', 'qid',
@@ -4580,8 +4580,8 @@ class Sidb:
                 if value != '*':
                     q[nq] = q[nq].where(p.value_literal == value)
 
-            if map_id is not None:
-                q[nq] = q[nq].where(object_class.id.in_(map_id))
+            if filter_ids is not None:
+                q[nq] = q[nq].where(object_class.id.in_(filter_ids))
 
         result = self.compute_query_return_type(q, return_type)
         self.compute_query_cache_properties(cache_properties, return_type, q['id'])
