@@ -2661,7 +2661,7 @@ class Sidb:
             month: str | int | None = None,
             source_ref: str | None = None,
             filter_by: list[tuple[str, str]] = [],
-            target_join_or: bool = True,
+            combine_targets: bool = True,
             filter_ids: Iterable[int] | Select[tuple[int]] | None = None,
             return_type: Literal['list', 'object'] = 'list',
             cache_properties: list[str] = [],
@@ -2686,7 +2686,7 @@ class Sidb:
             month: str | int | None = None,
             source_ref: str | None = None,
             filter_by: list[tuple[str, str]] = [],
-            target_join_or: bool = True,
+            combine_targets: bool = True,
             filter_ids: Iterable[int] | Select[tuple[int]] | None = None,
             return_type: Literal['id'],
             cache_properties: list[str] = [],
@@ -2711,7 +2711,7 @@ class Sidb:
             month: str | int | None = None,
             source_ref: str | None = None,
             filter_by: list[tuple[str, str]] = [],
-            target_join_or: bool = True,
+            combine_targets: bool = True,
             filter_ids: Iterable[int] | Select[tuple[int]] | None = None,
             return_type: Literal['count'],
             cache_properties: list[str] = [],
@@ -2736,7 +2736,7 @@ class Sidb:
             month: str | int | None = None,
             source_ref: str | None = None,
             filter_by: list[tuple[str, str]] = [],
-            target_join_or: bool = True,
+            combine_targets: bool = True,
             filter_ids: Iterable[int] | Select[tuple[int]] | None = None,
             return_type: Literal['query'],
             cache_properties: list[str] = [],
@@ -2761,7 +2761,7 @@ class Sidb:
             month: str | int | None = None,
             source_ref: str | None = None,
             filter_by: list[tuple[str, str]] = [],
-            target_join_or: bool = True,
+            combine_targets: bool = True,
             filter_ids: Iterable[int] | Select[tuple[int]] | None = None,
             return_type: Literal['queryid', 'qid'],
             cache_properties: list[str] = [],
@@ -2785,7 +2785,7 @@ class Sidb:
             month: str | int | None = None,
             source_ref: str | None = None,
             filter_by: list[tuple[str, str]] = [],
-            target_join_or: bool = True,
+            combine_targets: bool = True,
             filter_ids: Iterable[int] | Select[tuple[int]] | None = None,
             return_type: Literal['list', 'object',
                                  'id', 'query',
@@ -2812,7 +2812,7 @@ class Sidb:
             source_ref: La source de référence des stocks.
             filter_by: Liste de propriétés supplémentaires pour le filtrage des
                 stocks (ex. [("Label", "Bio")]).
-            target_join_or: Si `True`, compare les `target` en utilisant un ou binaire,
+            combine_targets: Si `True`, compare les `target` en utilisant un ou binaire,
                 sinon compare en utilisant un et binaire.
             filter_ids: Filtre d'identifiants des objets.
             cache_properties: Liste des propriétés à mettre en cache.
@@ -2838,7 +2838,7 @@ class Sidb:
                                      date_start=date_start, date_end=date_end,
                                      year=year, month=month, source_ref=source_ref,
                                      filter_by=filter_by,
-                                     target_join_or=target_join_or,
+                                     combine_targets=combine_targets,
                                      filter_ids=filter_ids,
                                      cache_properties=cache_properties,
                                      return_type=return_type, verbose=verbose)
@@ -2903,7 +2903,7 @@ class Sidb:
             month: str | int | None = None,
             source_ref: str | None = None,
             filter_by: list[tuple[str, str]] = [],
-            target_join_or: bool = True,
+            combine_targets: bool = True,
             filter_ids: Iterable[int] | Select[tuple[int]] | None = None,
             return_type: Literal['list', 'object'] = 'list',
             cache_properties: list[str] = [],
@@ -2933,7 +2933,7 @@ class Sidb:
             month: str | int | None = None,
             source_ref: str | None = None,
             filter_by: list[tuple[str, str]] = [],
-            target_join_or: bool = True,
+            combine_targets: bool = True,
             filter_ids: Iterable[int] | Select[tuple[int]] | None = None,
             return_type: Literal['id'],
             cache_properties: list[str] = [],
@@ -2963,7 +2963,7 @@ class Sidb:
             month: str | int | None = None,
             source_ref: str | None = None,
             filter_by: list[tuple[str, str]] = [],
-            target_join_or: bool = True,
+            combine_targets: bool = True,
             filter_ids: Iterable[int] | Select[tuple[int]] | None = None,
             return_type: Literal['count'],
             cache_properties: list[str] = [],
@@ -2993,7 +2993,7 @@ class Sidb:
             month: str | int | None = None,
             source_ref: str | None = None,
             filter_by: list[tuple[str, str]] = [],
-            target_join_or: bool = True,
+            combine_targets: bool = True,
             filter_ids: Iterable[int] | Select[tuple[int]] | None = None,
             return_type: Literal['query'],
             cache_properties: list[str] = [],
@@ -3023,7 +3023,7 @@ class Sidb:
             month: str | int | None = None,
             source_ref: str | None = None,
             filter_by: list[tuple[str, str]] = [],
-            target_join_or: bool = True,
+            combine_targets: bool = True,
             filter_ids: Iterable[int] | Select[tuple[int]] | None = None,
             return_type: Literal['queryid', 'qid'],
             cache_properties: list[str] = [],
@@ -3052,7 +3052,7 @@ class Sidb:
             month: str | int | None = None,
             source_ref: str | None = None,
             filter_by: list[tuple[str, str]] = [],
-            target_join_or: bool = True,
+            combine_targets: bool = True,
             filter_ids: Iterable[int] | Select[tuple[int]] | None = None,
             return_type: Literal['list', 'object',
                                  'id', 'query',
@@ -3081,7 +3081,7 @@ class Sidb:
             source_ref: La source de référence des flux.
             filter_by: Liste de propriétés supplémentaires pour le filtrage des
                 flux (ex. [("Label", "Bio")]).
-            target_join_or: Si `True`, compare les `target` en utilisant un ou binaire,
+            combine_targets: Si `True`, compare les `target` en utilisant un ou binaire,
                 sinon compare en utilisant un et binaire.
             filter_ids: Filtre d'identifiants des objets.
             cache_properties: Liste des propriétés à mettre en cache.
@@ -3107,7 +3107,7 @@ class Sidb:
                                      date_start=date_start, date_end=date_end,
                                      year=year, month=month, source_ref=source_ref,
                                      filter_by=filter_by,
-                                     target_join_or=target_join_or,
+                                     combine_targets=combine_targets,
                                      filter_ids=filter_ids,
                                      cache_properties=cache_properties,
                                      return_type=return_type, verbose=verbose)
@@ -4520,7 +4520,7 @@ class Sidb:
             month: str | int | None = None,
             source_ref: str | None = None,
             filter_by: list[tuple[str, str]] = [],
-            target_join_or: bool = True,
+            combine_targets: bool = True,
             filter_ids: Iterable[int] | Select[tuple[int]] | None = None,
             cache_properties: list[str] = [],
             return_type: Literal['list', 'object',
@@ -4601,7 +4601,7 @@ class Sidb:
                         target_search.append(object_class.actor_id.in_(self.get_actors_in(tg, return_type="qid")))
                     else:
                         raise TypeError(f"Unknown target type : '{type(tg)}' --> {tg}")
-                if target_join_or:
+                if combine_targets:
                     q[nq] = q[nq].where(or_(*target_search))
                 else:
                     q[nq] = q[nq].where(and_(*target_search))
