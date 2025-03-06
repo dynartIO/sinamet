@@ -758,7 +758,7 @@ class Sidb:
                         Select[tuple[int]] | Sequence[Select[tuple[int]]]),
             return_type: Literal['list', 'object'] = 'list',
             scale: str | None = None,
-            self_include: bool = True,
+            include_self: bool = True,
             cache_properties: list[str] = [],
             verbose: bool = False
             ) -> Sequence[Territory]: ...
@@ -771,7 +771,7 @@ class Sidb:
                         Select[tuple[int]] | Sequence[Select[tuple[int]]]),
             return_type: Literal['id'],
             scale: str | None = None,
-            self_include: bool = True,
+            include_self: bool = True,
             cache_properties: list[str] = [],
             verbose: bool = False
             ) -> Sequence[int]: ...
@@ -784,7 +784,7 @@ class Sidb:
                         Select[tuple[int]] | Sequence[Select[tuple[int]]]),
             return_type: Literal['count'],
             scale: str | None = None,
-            self_include: bool = True,
+            include_self: bool = True,
             cache_properties: list[str] = [],
             verbose: bool = False
             ) -> int: ...
@@ -797,7 +797,7 @@ class Sidb:
                         Select[tuple[int]] | Sequence[Select[tuple[int]]]),
             return_type: Literal['query'],
             scale: str | None = None,
-            self_include: bool = True,
+            include_self: bool = True,
             cache_properties: list[str] = [],
             verbose: bool = False
             ) -> Select[tuple[Territory]]: ...
@@ -810,7 +810,7 @@ class Sidb:
                         Select[tuple[int]] | Sequence[Select[tuple[int]]]),
             return_type: Literal['queryid', 'qid'],
             scale: str | None = None,
-            self_include: bool = True,
+            include_self: bool = True,
             cache_properties: list[str] = [],
             verbose: bool = False
             ) -> Select[tuple[int]]: ...
@@ -829,7 +829,7 @@ class Sidb:
                                  'count',
                                  ] = 'list',
             scale: str | None = None,
-            self_include: bool = True,
+            include_self: bool = True,
             cache_properties: list[str] = [],
             verbose: bool = False
             ) -> (Sequence[Territory] | Sequence[int] | int |
@@ -839,7 +839,7 @@ class Sidb:
         Args:
             territory: L'object `Territory` contenant les territoires voulus.
             scale: Échelle de recherche.
-            self_include: Inclure ou non l'élément passé en paramètre.
+            include_self: Inclure ou non l'élément passé en paramètre.
             cache_properties: Liste des propriétés à mettre en cache.
             return_type: Type de retour de la fonction. Valeurs possibles:
 
@@ -859,7 +859,7 @@ class Sidb:
         return self.get_mtobjects_tap_in(territory,
                                          Territory,
                                          scale=scale,
-                                         self_include=self_include,
+                                         include_self=include_self,
                                          cache_properties=cache_properties,
                                          return_type=return_type,
                                          verbose=verbose)
@@ -872,7 +872,7 @@ class Sidb:
                         Select[tuple[int]] | Sequence[Select[tuple[int]]]),
             return_type: Literal['list', 'object'] = 'list',
             scale: str | None = None,
-            self_include: bool = True,
+            include_self: bool = True,
             cache_properties: list[str] = [],
             ) -> Sequence[Territory]: ...
 
@@ -884,7 +884,7 @@ class Sidb:
                         Select[tuple[int]] | Sequence[Select[tuple[int]]]),
             return_type: Literal['id'],
             scale: str | None = None,
-            self_include: bool = True,
+            include_self: bool = True,
             cache_properties: list[str] = [],
             ) -> Sequence[int]: ...
 
@@ -896,7 +896,7 @@ class Sidb:
                         Select[tuple[int]] | Sequence[Select[tuple[int]]]),
             return_type: Literal['count'],
             scale: str | None = None,
-            self_include: bool = True,
+            include_self: bool = True,
             cache_properties: list[str] = [],
             ) -> int: ...
 
@@ -908,7 +908,7 @@ class Sidb:
                         Select[tuple[int]] | Sequence[Select[tuple[int]]]),
             return_type: Literal['query'],
             scale: str | None = None,
-            self_include: bool = True,
+            include_self: bool = True,
             cache_properties: list[str] = [],
             ) -> Select[tuple[Territory]]: ...
 
@@ -920,7 +920,7 @@ class Sidb:
                         Select[tuple[int]] | Sequence[Select[tuple[int]]]),
             return_type: Literal['queryid', 'qid'],
             scale: str | None = None,
-            self_include: bool = True,
+            include_self: bool = True,
             cache_properties: list[str] = [],
             ) -> Select[tuple[int]]: ...
 
@@ -938,7 +938,7 @@ class Sidb:
                                  'count',
                                  ] = 'list',
             scale: str | None = None,
-            self_include: bool = True,
+            include_self: bool = True,
             cache_properties: list[str] = [],
             ) -> (Sequence[Territory] | Sequence[int] | int |
                   Select[tuple[Territory]] | Select[tuple[int]]):
@@ -948,7 +948,7 @@ class Sidb:
             territory: L'object `Territory` contenu dans les territoires
                 recherchés.
             scale: L'échelle des territoires recherchés (commune, pays...).
-            self_include: Si True, inclu le territoire d'origine dans le résultat.
+            include_self: Si True, inclu le territoire d'origine dans le résultat.
             cache_properties: Liste des propriétés à mettre en cache,
                 en plus des noms et des codes.
             return_type: Type de retour de la fonction. Valeurs possibles:
@@ -968,7 +968,7 @@ class Sidb:
         return self.get_mtobjects_tap_on(territory,
                                          Territory,
                                          scale=scale,
-                                         self_include=self_include,
+                                         include_self=include_self,
                                          cache_properties=cache_properties,
                                          return_type=return_type)
 
@@ -1432,7 +1432,7 @@ class Sidb:
                        Select[tuple[int]] | Sequence[Select[tuple[int]]]),
             return_type: Literal['list', 'object'] = 'list',
             scale: str | None = None,
-            self_include: bool = True,
+            include_self: bool = True,
             cache_properties: list[str] = [],
             verbose: bool = False
             ) -> Sequence[Actor]: ...
@@ -1446,7 +1446,7 @@ class Sidb:
                        Select[tuple[int]] | Sequence[Select[tuple[int]]]),
             return_type: Literal['id'],
             scale: str | None = None,
-            self_include: bool = True,
+            include_self: bool = True,
             cache_properties: list[str] = [],
             verbose: bool = False
             ) -> Sequence[int]: ...
@@ -1460,7 +1460,7 @@ class Sidb:
                        Select[tuple[int]] | Sequence[Select[tuple[int]]]),
             return_type: Literal['count'],
             scale: str | None = None,
-            self_include: bool = True,
+            include_self: bool = True,
             cache_properties: list[str] = [],
             verbose: bool = False
             ) -> int: ...
@@ -1474,7 +1474,7 @@ class Sidb:
                        Select[tuple[int]] | Sequence[Select[tuple[int]]]),
             return_type: Literal['query'],
             scale: str | None = None,
-            self_include: bool = True,
+            include_self: bool = True,
             cache_properties: list[str] = [],
             verbose: bool = False
             ) -> Select[tuple[Actor]]: ...
@@ -1488,7 +1488,7 @@ class Sidb:
                        Select[tuple[int]] | Sequence[Select[tuple[int]]]),
             return_type: Literal['queryid', 'qid'],
             scale: str | None = None,
-            self_include: bool = True,
+            include_self: bool = True,
             cache_properties: list[str] = [],
             verbose: bool = False
             ) -> Select[tuple[int]]: ...
@@ -1508,7 +1508,7 @@ class Sidb:
                                  'count',
                                  ] = 'list',
             scale: str | None = None,
-            self_include: bool = True,
+            include_self: bool = True,
             cache_properties: list[str] = [],
             verbose: bool = False
             ) -> (Sequence[Actor] | Sequence[int] | int |
@@ -1518,7 +1518,7 @@ class Sidb:
         Args:
             actor: L'object `Actor` ou `Territory` contenant des acteurs.
             scale: Échelle de recherche.
-            self_include: Inclure ou non l'élément passé en paramètre.
+            include_self: Inclure ou non l'élément passé en paramètre.
             cache_properties: Liste des propriétés à mettre en cache.
             return_type: Type de retour de la fonction. Valeurs possibles:
 
@@ -1541,7 +1541,7 @@ class Sidb:
         return self.get_mtobjects_tap_in(mtobject,
                                          Actor,
                                          scale=scale,
-                                         self_include=self_include,
+                                         include_self=include_self,
                                          cache_properties=cache_properties,
                                          return_type=return_type,
                                          verbose=verbose)
@@ -1554,7 +1554,7 @@ class Sidb:
                     Select[tuple[int]] | Sequence[Select[tuple[int]]]),
             return_type: Literal['list', 'object'] = 'list',
             scale: str | None = None,
-            self_include: bool = True,
+            include_self: bool = True,
             cache_properties: list[str] = [],
             ) -> Sequence[Actor]: ...
 
@@ -1566,7 +1566,7 @@ class Sidb:
                     Select[tuple[int]] | Sequence[Select[tuple[int]]]),
             return_type: Literal['id'],
             scale: str | None = None,
-            self_include: bool = True,
+            include_self: bool = True,
             cache_properties: list[str] = [],
             ) -> Sequence[int]: ...
 
@@ -1578,7 +1578,7 @@ class Sidb:
                     Select[tuple[int]] | Sequence[Select[tuple[int]]]),
             return_type: Literal['count'],
             scale: str | None = None,
-            self_include: bool = True,
+            include_self: bool = True,
             cache_properties: list[str] = [],
             ) -> int: ...
 
@@ -1590,7 +1590,7 @@ class Sidb:
                     Select[tuple[int]] | Sequence[Select[tuple[int]]]),
             return_type: Literal['query'],
             scale: str | None = None,
-            self_include: bool = True,
+            include_self: bool = True,
             cache_properties: list[str] = [],
             ) -> Select[tuple[Actor]]: ...
 
@@ -1602,7 +1602,7 @@ class Sidb:
                     Select[tuple[int]] | Sequence[Select[tuple[int]]]),
             return_type: Literal['queryid', 'qid'],
             scale: str | None = None,
-            self_include: bool = True,
+            include_self: bool = True,
             cache_properties: list[str] = [],
             ) -> Select[tuple[int]]: ...
 
@@ -1620,7 +1620,7 @@ class Sidb:
                                  'count',
                                  ] = 'list',
             scale: str | None = None,
-            self_include: bool = True,
+            include_self: bool = True,
             cache_properties: list[str] = [],
             ) -> (Sequence[Actor] | Sequence[int] | int |
                   Select[tuple[Actor]] | Select[tuple[int]]):
@@ -1629,7 +1629,7 @@ class Sidb:
         Args:
             actor: L'object `Actor` contenu dans les acteurs recherchés.
             scale: Échelle de recherche.
-            self_include: Inclure ou non l'élément passé en paramètre.
+            include_self: Inclure ou non l'élément passé en paramètre.
             cache_properties: Liste des propriétés à mettre en cache,
                 en plus des noms et des codes.
             return_type: Type de retour de la fonction. Valeurs possibles:
@@ -1649,7 +1649,7 @@ class Sidb:
         return self.get_mtobjects_tap_on(actor,
                                          Actor,
                                          scale=scale,
-                                         self_include=self_include,
+                                         include_self=include_self,
                                          cache_properties=cache_properties,
                                          return_type=return_type)
 
@@ -2198,7 +2198,7 @@ class Sidb:
                       int | Sequence[int] |
                       Select[tuple[int]] | Sequence[Select[tuple[int]]]),
             return_type: Literal['list', 'object'] = 'list',
-            self_include: bool = True,
+            include_self: bool = True,
             cache_properties: list[str] = [],
             verbose: bool = False
             ) -> Sequence[Product]: ...
@@ -2210,7 +2210,7 @@ class Sidb:
                       int | Sequence[int] |
                       Select[tuple[int]] | Sequence[Select[tuple[int]]]),
             return_type: Literal['id'],
-            self_include: bool = True,
+            include_self: bool = True,
             cache_properties: list[str] = [],
             verbose: bool = False
             ) -> Sequence[int]: ...
@@ -2222,7 +2222,7 @@ class Sidb:
                       int | Sequence[int] |
                       Select[tuple[int]] | Sequence[Select[tuple[int]]]),
             return_type: Literal['count'],
-            self_include: bool = True,
+            include_self: bool = True,
             cache_properties: list[str] = [],
             verbose: bool = False
             ) -> int: ...
@@ -2234,7 +2234,7 @@ class Sidb:
                       int | Sequence[int] |
                       Select[tuple[int]] | Sequence[Select[tuple[int]]]),
             return_type: Literal['query'],
-            self_include: bool = True,
+            include_self: bool = True,
             cache_properties: list[str] = [],
             verbose: bool = False
             ) -> Select[tuple[Product]]: ...
@@ -2246,7 +2246,7 @@ class Sidb:
                       int | Sequence[int] |
                       Select[tuple[int]] | Sequence[Select[tuple[int]]]),
             return_type: Literal['queryid', 'qid'],
-            self_include: bool = True,
+            include_self: bool = True,
             cache_properties: list[str] = [],
             verbose: bool = False
             ) -> Select[tuple[int]]: ...
@@ -2264,7 +2264,7 @@ class Sidb:
                                  'qid',
                                  'count',
                                  ] = 'list',
-            self_include: bool = True,
+            include_self: bool = True,
             cache_properties: list[str] = [],
             verbose: bool = False
             ) -> (Sequence[Product] | Sequence[int] | int |
@@ -2273,7 +2273,7 @@ class Sidb:
 
         Args:
             product: L'object `Product` contenant des produits.
-            self_include: Inclure ou non l'élément passé en paramètre.
+            include_self: Inclure ou non l'élément passé en paramètre.
             cache_properties: Liste des propriétés à mettre en cache,
                 en plus des noms et des codes.
             return_type: Type de retour de la fonction. Valeurs possibles:
@@ -2293,7 +2293,7 @@ class Sidb:
         """
         return self.get_mtobjects_tap_in(product,
                                          Product,
-                                         self_include=self_include,
+                                         include_self=include_self,
                                          cache_properties=cache_properties,
                                          return_type=return_type,
                                          verbose=verbose)
@@ -2305,7 +2305,7 @@ class Sidb:
                       int | Sequence[int] |
                       Select[tuple[int]] | Sequence[Select[tuple[int]]]),
             return_type: Literal['list', 'object'] = 'list',
-            self_include: bool = True,
+            include_self: bool = True,
             cache_properties: list[str] = [],
             ) -> Sequence[Product]: ...
 
@@ -2316,7 +2316,7 @@ class Sidb:
                       int | Sequence[int] |
                       Select[tuple[int]] | Sequence[Select[tuple[int]]]),
             return_type: Literal['id'],
-            self_include: bool = True,
+            include_self: bool = True,
             cache_properties: list[str] = [],
             ) -> Sequence[int]: ...
 
@@ -2327,7 +2327,7 @@ class Sidb:
                       int | Sequence[int] |
                       Select[tuple[int]] | Sequence[Select[tuple[int]]]),
             return_type: Literal['count'],
-            self_include: bool = True,
+            include_self: bool = True,
             cache_properties: list[str] = [],
             ) -> int: ...
 
@@ -2338,7 +2338,7 @@ class Sidb:
                       int | Sequence[int] |
                       Select[tuple[int]] | Sequence[Select[tuple[int]]]),
             return_type: Literal['query'],
-            self_include: bool = True,
+            include_self: bool = True,
             cache_properties: list[str] = [],
             ) -> Select[tuple[Product]]: ...
 
@@ -2349,7 +2349,7 @@ class Sidb:
                       int | Sequence[int] |
                       Select[tuple[int]] | Sequence[Select[tuple[int]]]),
             return_type: Literal['queryid', 'qid'],
-            self_include: bool = True,
+            include_self: bool = True,
             cache_properties: list[str] = [],
             ) -> Select[tuple[int]]: ...
 
@@ -2366,7 +2366,7 @@ class Sidb:
                                  'qid',
                                  'count',
                                  ] = 'list',
-            self_include: bool = True,
+            include_self: bool = True,
             cache_properties: list[str] = [],
             ) -> (Sequence[Product] | Sequence[int] | int |
                   Select[tuple[Product]] | Select[tuple[int]]):
@@ -2374,7 +2374,7 @@ class Sidb:
 
         Args:
             product: L'object `Product` inclus dans d'autres produits.
-            self_include: Inclure ou non l'élément passé en paramètre.
+            include_self: Inclure ou non l'élément passé en paramètre.
             cache_properties: Liste des propriétés à mettre en cache,
                 en plus des noms et des codes.
             return_type: Type de retour de la fonction. Valeurs possibles:
@@ -2392,7 +2392,7 @@ class Sidb:
             (Select): Requète des objets ou des identifiants.
         """
         return self.get_mtobjects_tap_on(product, Product,
-                                         self_include=self_include,
+                                         include_self=include_self,
                                          cache_properties=cache_properties,
                                          return_type=return_type)
 
@@ -4354,7 +4354,7 @@ class Sidb:
             mtobject_to_return: type[T],
             scale: str | None = None,
             source_ref: str | None = None,
-            self_include: bool = False,
+            include_self: bool = False,
             cache_properties: list[str] = [],
             return_type: Literal['list', 'object',
                                  'id', 'queryid', 'qid',
@@ -4408,7 +4408,7 @@ class Sidb:
                     q[nq] = q[nq].join(mtobject_to_return.properties)
                     q[nq] = q[nq].where(Property.name_a == "Scale")
                     q[nq] = q[nq].where(Property.value_literal == scale)
-                if not self_include:
+                if not include_self:
                     q[nq] = q[nq].where(mtobject_to_return.id != id_start)
 
         elif (type(mtobject) is Territory) and (mtobject_to_return is Actor):
@@ -4444,7 +4444,7 @@ class Sidb:
                        Select[tuple[int]] | Sequence[Select[tuple[int]]]),
             mtobject_to_return: type[T],
             scale: str | None = None,
-            self_include: bool = False,
+            include_self: bool = False,
             cache_properties: list[str] = [],
             return_type: Literal['list', 'object',
                                  'id', 'queryid', 'qid',
@@ -4477,7 +4477,7 @@ class Sidb:
                 q[nq] = (q[nq].join(mtobject_to_return.properties)
                          .where(Property.name_a == "Scale")
                          .where(Property.value_literal == scale))
-            if not self_include:
+            if not include_self:
                 if isinstance(id_start, int):
                     q[nq] = q[nq].where(mtobject_to_return.id != id_start)
                 else:

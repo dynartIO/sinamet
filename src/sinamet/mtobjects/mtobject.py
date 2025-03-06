@@ -589,7 +589,7 @@ class MTObject(DBObjectClassBase):
                 temp += child.get_children(depth=depth-1)
             return temp
 
-    def is_in(self, mtobject: MTObject, force_cache: bool = False, self_include=True) -> bool:
+    def is_in(self, mtobject: MTObject, force_cache: bool = False, include_self=True) -> bool:
         """Détermine si un autre objet est contenu dans cet objet.
 
         Parameters:
@@ -605,7 +605,7 @@ class MTObject(DBObjectClassBase):
         if type(self) is not type(mtobject):
             raise TypeError("Different object types not implemented yet.")
 
-        if (self == mtobject) and self_include:
+        if (self == mtobject) and include_self:
             return True
 
         # Checking cache before querying
@@ -622,12 +622,12 @@ class MTObject(DBObjectClassBase):
         # Nothing found in cache: querying...
         parents_id = (Sidb.get_sidb_from_object(self)
                       .get_mtobjects_tap_on(self, type(self),
-                                            self_include=False,
+                                            include_self=False,
                                             return_type="id"))
         return mtobject.id in parents_id
 
     def get_actors_in(self, scale: str | None = None,
-                      self_include: bool = True,
+                      include_self: bool = True,
                       cache_properties: list[str] = [],
                       return_type: Literal['list', 'object', 'id',
                                            'queryid', 'qid', 'query',
@@ -637,7 +637,7 @@ class MTObject(DBObjectClassBase):
 
         Parameters:
             scale: L'échelle des acteurs recherchés.
-            self_include: Si `True` et si `self` est un acteur, l'inclure dans la
+            include_self: Si `True` et si `self` est un acteur, l'inclure dans la
                 liste renvoyée.
             cache_properties: Liste des propriétés à mettre en cache,
                 en plus des noms et des codes.
@@ -658,7 +658,7 @@ class MTObject(DBObjectClassBase):
         """
         from sinamet.sidb import Sidb
         return (Sidb.get_sidb_from_object(self)
-                .get_actors_in(self, scale=scale, self_include=self_include,
+                .get_actors_in(self, scale=scale, include_self=include_self,
                                cache_properties=cache_properties,
                                return_type=return_type, verbose=verbose))
 
