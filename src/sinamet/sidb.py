@@ -756,7 +756,9 @@ class Sidb:
     @overload
     def get_territories_in(
             self,
-            territory: Territory | Sequence[Territory],
+            territory: (Territory | Sequence[Territory] |
+                        int | Sequence[int] |
+                        Select[tuple[int]] | Sequence[Select[tuple[int]]]),
             return_type: Literal['list', 'object'] = 'list',
             scale: str | None = None,
             self_include: bool = True,
@@ -767,7 +769,9 @@ class Sidb:
     @overload
     def get_territories_in(
             self,
-            territory: Territory | Sequence[Territory],
+            territory: (Territory | Sequence[Territory] |
+                        int | Sequence[int] |
+                        Select[tuple[int]] | Sequence[Select[tuple[int]]]),
             return_type: Literal['id'],
             scale: str | None = None,
             self_include: bool = True,
@@ -778,7 +782,9 @@ class Sidb:
     @overload
     def get_territories_in(
             self,
-            territory: Territory | Sequence[Territory],
+            territory: (Territory | Sequence[Territory] |
+                        int | Sequence[int] |
+                        Select[tuple[int]] | Sequence[Select[tuple[int]]]),
             return_type: Literal['count'],
             scale: str | None = None,
             self_include: bool = True,
@@ -789,7 +795,9 @@ class Sidb:
     @overload
     def get_territories_in(
             self,
-            territory: Territory | Sequence[Territory],
+            territory: (Territory | Sequence[Territory] |
+                        int | Sequence[int] |
+                        Select[tuple[int]] | Sequence[Select[tuple[int]]]),
             return_type: Literal['query'],
             scale: str | None = None,
             self_include: bool = True,
@@ -800,7 +808,9 @@ class Sidb:
     @overload
     def get_territories_in(
             self,
-            territory: Territory | Sequence[Territory],
+            territory: (Territory | Sequence[Territory] |
+                        int | Sequence[int] |
+                        Select[tuple[int]] | Sequence[Select[tuple[int]]]),
             return_type: Literal['queryid', 'qid'],
             scale: str | None = None,
             self_include: bool = True,
@@ -810,7 +820,9 @@ class Sidb:
 
     def get_territories_in(
             self,
-            territory: Territory | Sequence[Territory],
+            territory: (Territory | Sequence[Territory] |
+                        int | Sequence[int] |
+                        Select[tuple[int]] | Sequence[Select[tuple[int]]]),
             return_type: Literal['list',
                                  'object',
                                  'id',
@@ -858,7 +870,9 @@ class Sidb:
     @overload
     def get_territories_on(
             self,
-            territory: Territory | Sequence[Territory],
+            territory: (Territory | Sequence[Territory] |
+                        int | Sequence[int] |
+                        Select[tuple[int]] | Sequence[Select[tuple[int]]]),
             return_type: Literal['list', 'object'] = 'list',
             scale: str | None = None,
             self_include: bool = True,
@@ -868,7 +882,9 @@ class Sidb:
     @overload
     def get_territories_on(
             self,
-            territory: Territory | Sequence[Territory],
+            territory: (Territory | Sequence[Territory] |
+                        int | Sequence[int] |
+                        Select[tuple[int]] | Sequence[Select[tuple[int]]]),
             return_type: Literal['id'],
             scale: str | None = None,
             self_include: bool = True,
@@ -878,7 +894,9 @@ class Sidb:
     @overload
     def get_territories_on(
             self,
-            territory: Territory | Sequence[Territory],
+            territory: (Territory | Sequence[Territory] |
+                        int | Sequence[int] |
+                        Select[tuple[int]] | Sequence[Select[tuple[int]]]),
             return_type: Literal['count'],
             scale: str | None = None,
             self_include: bool = True,
@@ -888,7 +906,9 @@ class Sidb:
     @overload
     def get_territories_on(
             self,
-            territory: Territory | Sequence[Territory],
+            territory: (Territory | Sequence[Territory] |
+                        int | Sequence[int] |
+                        Select[tuple[int]] | Sequence[Select[tuple[int]]]),
             return_type: Literal['query'],
             scale: str | None = None,
             self_include: bool = True,
@@ -898,7 +918,9 @@ class Sidb:
     @overload
     def get_territories_on(
             self,
-            territory: Territory | Sequence[Territory],
+            territory: (Territory | Sequence[Territory] |
+                        int | Sequence[int] |
+                        Select[tuple[int]] | Sequence[Select[tuple[int]]]),
             return_type: Literal['queryid', 'qid'],
             scale: str | None = None,
             self_include: bool = True,
@@ -907,7 +929,9 @@ class Sidb:
 
     def get_territories_on(
             self,
-            territory: Territory | Sequence[Territory],
+            territory: (Territory | Sequence[Territory] |
+                        int | Sequence[int] |
+                        Select[tuple[int]] | Sequence[Select[tuple[int]]]),
             return_type: Literal['list',
                                  'object',
                                  'id',
@@ -1393,7 +1417,10 @@ class Sidb:
     @overload
     def get_actors_in(
             self,
-            mtobject: Actor | Territory,
+            mtobject: (Actor | Sequence[Actor] |
+                       Territory | Sequence[Territory] |
+                       int | Sequence[int] |
+                       Select[tuple[int]] | Sequence[Select[tuple[int]]]),
             return_type: Literal['list', 'object'] = 'list',
             scale: str | None = None,
             self_include: bool = True,
@@ -1404,7 +1431,10 @@ class Sidb:
     @overload
     def get_actors_in(
             self,
-            mtobject: Actor | Territory,
+            mtobject: (Actor | Sequence[Actor] |
+                       Territory | Sequence[Territory] |
+                       int | Sequence[int] |
+                       Select[tuple[int]] | Sequence[Select[tuple[int]]]),
             return_type: Literal['id'],
             scale: str | None = None,
             self_include: bool = True,
@@ -1415,7 +1445,10 @@ class Sidb:
     @overload
     def get_actors_in(
             self,
-            mtobject: Actor | Territory,
+            mtobject: (Actor | Sequence[Actor] |
+                       Territory | Sequence[Territory] |
+                       int | Sequence[int] |
+                       Select[tuple[int]] | Sequence[Select[tuple[int]]]),
             return_type: Literal['count'],
             scale: str | None = None,
             self_include: bool = True,
@@ -1426,7 +1459,10 @@ class Sidb:
     @overload
     def get_actors_in(
             self,
-            mtobject: Actor | Territory,
+            mtobject: (Actor | Sequence[Actor] |
+                       Territory | Sequence[Territory] |
+                       int | Sequence[int] |
+                       Select[tuple[int]] | Sequence[Select[tuple[int]]]),
             return_type: Literal['query'],
             scale: str | None = None,
             self_include: bool = True,
@@ -1437,7 +1473,10 @@ class Sidb:
     @overload
     def get_actors_in(
             self,
-            mtobject: Actor | Territory,
+            mtobject: (Actor | Sequence[Actor] |
+                       Territory | Sequence[Territory] |
+                       int | Sequence[int] |
+                       Select[tuple[int]] | Sequence[Select[tuple[int]]]),
             return_type: Literal['queryid', 'qid'],
             scale: str | None = None,
             self_include: bool = True,
@@ -1447,7 +1486,10 @@ class Sidb:
 
     def get_actors_in(
             self,
-            mtobject: Actor | Territory,
+            mtobject: (Actor | Sequence[Actor] |
+                       Territory | Sequence[Territory] |
+                       int | Sequence[int] |
+                       Select[tuple[int]] | Sequence[Select[tuple[int]]]),
             return_type: Literal['list',
                                  'object',
                                  'id',
@@ -1498,7 +1540,9 @@ class Sidb:
     @overload
     def get_actors_on(
             self,
-            actor: Actor | Sequence[Actor],
+            actor: (Actor | Sequence[Actor] |
+                    int | Sequence[int] |
+                    Select[tuple[int]] | Sequence[Select[tuple[int]]]),
             return_type: Literal['list', 'object'] = 'list',
             scale: str | None = None,
             self_include: bool = True,
@@ -1508,7 +1552,9 @@ class Sidb:
     @overload
     def get_actors_on(
             self,
-            actor: Actor | Sequence[Actor],
+            actor: (Actor | Sequence[Actor] |
+                    int | Sequence[int] |
+                    Select[tuple[int]] | Sequence[Select[tuple[int]]]),
             return_type: Literal['id'],
             scale: str | None = None,
             self_include: bool = True,
@@ -1518,7 +1564,9 @@ class Sidb:
     @overload
     def get_actors_on(
             self,
-            actor: Actor | Sequence[Actor],
+            actor: (Actor | Sequence[Actor] |
+                    int | Sequence[int] |
+                    Select[tuple[int]] | Sequence[Select[tuple[int]]]),
             return_type: Literal['count'],
             scale: str | None = None,
             self_include: bool = True,
@@ -1528,7 +1576,9 @@ class Sidb:
     @overload
     def get_actors_on(
             self,
-            actor: Actor | Sequence[Actor],
+            actor: (Actor | Sequence[Actor] |
+                    int | Sequence[int] |
+                    Select[tuple[int]] | Sequence[Select[tuple[int]]]),
             return_type: Literal['query'],
             scale: str | None = None,
             self_include: bool = True,
@@ -1538,7 +1588,9 @@ class Sidb:
     @overload
     def get_actors_on(
             self,
-            actor: Actor | Sequence[Actor],
+            actor: (Actor | Sequence[Actor] |
+                    int | Sequence[int] |
+                    Select[tuple[int]] | Sequence[Select[tuple[int]]]),
             return_type: Literal['queryid', 'qid'],
             scale: str | None = None,
             self_include: bool = True,
@@ -1547,7 +1599,9 @@ class Sidb:
 
     def get_actors_on(
             self,
-            actor: Actor | Sequence[Actor],
+            actor: (Actor | Sequence[Actor] |
+                    int | Sequence[int] |
+                    Select[tuple[int]] | Sequence[Select[tuple[int]]]),
             return_type: Literal['list',
                                  'object',
                                  'id',
@@ -2119,7 +2173,9 @@ class Sidb:
     @overload
     def get_products_in(
             self,
-            product: Product | Sequence[Product],
+            product: (Product | Sequence[Product] |
+                      int | Sequence[int] |
+                      Select[tuple[int]] | Sequence[Select[tuple[int]]]),
             return_type: Literal['list', 'object'] = 'list',
             self_include: bool = True,
             cache_properties: list[str] = [],
@@ -2129,7 +2185,9 @@ class Sidb:
     @overload
     def get_products_in(
             self,
-            product: Product | Sequence[Product],
+            product: (Product | Sequence[Product] |
+                      int | Sequence[int] |
+                      Select[tuple[int]] | Sequence[Select[tuple[int]]]),
             return_type: Literal['id'],
             self_include: bool = True,
             cache_properties: list[str] = [],
@@ -2139,7 +2197,9 @@ class Sidb:
     @overload
     def get_products_in(
             self,
-            product: Product | Sequence[Product],
+            product: (Product | Sequence[Product] |
+                      int | Sequence[int] |
+                      Select[tuple[int]] | Sequence[Select[tuple[int]]]),
             return_type: Literal['count'],
             self_include: bool = True,
             cache_properties: list[str] = [],
@@ -2149,7 +2209,9 @@ class Sidb:
     @overload
     def get_products_in(
             self,
-            product: Product | Sequence[Product],
+            product: (Product | Sequence[Product] |
+                      int | Sequence[int] |
+                      Select[tuple[int]] | Sequence[Select[tuple[int]]]),
             return_type: Literal['query'],
             self_include: bool = True,
             cache_properties: list[str] = [],
@@ -2159,7 +2221,9 @@ class Sidb:
     @overload
     def get_products_in(
             self,
-            product: Product | Sequence[Product],
+            product: (Product | Sequence[Product] |
+                      int | Sequence[int] |
+                      Select[tuple[int]] | Sequence[Select[tuple[int]]]),
             return_type: Literal['queryid', 'qid'],
             self_include: bool = True,
             cache_properties: list[str] = [],
@@ -2168,7 +2232,9 @@ class Sidb:
 
     def get_products_in(
             self,
-            product: Product | Sequence[Product],
+            product: (Product | Sequence[Product] |
+                      int | Sequence[int] |
+                      Select[tuple[int]] | Sequence[Select[tuple[int]]]),
             return_type: Literal['list',
                                  'object',
                                  'id',
@@ -2214,7 +2280,9 @@ class Sidb:
     @overload
     def get_products_on(
             self,
-            product: Product | Sequence[Product],
+            product: (Product | Sequence[Product] |
+                      int | Sequence[int] |
+                      Select[tuple[int]] | Sequence[Select[tuple[int]]]),
             return_type: Literal['list', 'object'] = 'list',
             self_include: bool = True,
             cache_properties: list[str] = [],
@@ -2223,7 +2291,9 @@ class Sidb:
     @overload
     def get_products_on(
             self,
-            product: Product | Sequence[Product],
+            product: (Product | Sequence[Product] |
+                      int | Sequence[int] |
+                      Select[tuple[int]] | Sequence[Select[tuple[int]]]),
             return_type: Literal['id'],
             self_include: bool = True,
             cache_properties: list[str] = [],
@@ -2232,7 +2302,9 @@ class Sidb:
     @overload
     def get_products_on(
             self,
-            product: Product | Sequence[Product],
+            product: (Product | Sequence[Product] |
+                      int | Sequence[int] |
+                      Select[tuple[int]] | Sequence[Select[tuple[int]]]),
             return_type: Literal['count'],
             self_include: bool = True,
             cache_properties: list[str] = [],
@@ -2241,7 +2313,9 @@ class Sidb:
     @overload
     def get_products_on(
             self,
-            product: Product | Sequence[Product],
+            product: (Product | Sequence[Product] |
+                      int | Sequence[int] |
+                      Select[tuple[int]] | Sequence[Select[tuple[int]]]),
             return_type: Literal['query'],
             self_include: bool = True,
             cache_properties: list[str] = [],
@@ -2250,7 +2324,9 @@ class Sidb:
     @overload
     def get_products_on(
             self,
-            product: Product | Sequence[Product],
+            product: (Product | Sequence[Product] |
+                      int | Sequence[int] |
+                      Select[tuple[int]] | Sequence[Select[tuple[int]]]),
             return_type: Literal['queryid', 'qid'],
             self_include: bool = True,
             cache_properties: list[str] = [],
@@ -2258,7 +2334,9 @@ class Sidb:
 
     def get_products_on(
             self,
-            product: Product | Sequence[Product],
+            product: (Product | Sequence[Product] |
+                      int | Sequence[int] |
+                      Select[tuple[int]] | Sequence[Select[tuple[int]]]),
             return_type: Literal['list',
                                  'object',
                                  'id',
@@ -2533,7 +2611,10 @@ class Sidb:
     def get_stocks(
             self,
             target: Iterable[Territory | Actor] | Territory | Actor = [],
-            product: Product | None = None,
+            product: (Product | Sequence[Product] |
+                      int | Sequence[int] |
+                      Select[tuple[int]] | Sequence[Select[tuple[int]]] |
+                      None) = None,
             *,
             product_asc: bool = False,
             product_desc: bool = True,
@@ -2555,7 +2636,10 @@ class Sidb:
     def get_stocks(
             self,
             target: Iterable[Territory | Actor] | Territory | Actor = [],
-            product: Product | None = None,
+            product: (Product | Sequence[Product] |
+                      int | Sequence[int] |
+                      Select[tuple[int]] | Sequence[Select[tuple[int]]] |
+                      None) = None,
             *,
             product_asc: bool = False,
             product_desc: bool = True,
@@ -2577,7 +2661,10 @@ class Sidb:
     def get_stocks(
             self,
             target: Iterable[Territory | Actor] | Territory | Actor = [],
-            product: Product | None = None,
+            product: (Product | Sequence[Product] |
+                      int | Sequence[int] |
+                      Select[tuple[int]] | Sequence[Select[tuple[int]]] |
+                      None) = None,
             *,
             product_asc: bool = False,
             product_desc: bool = True,
@@ -2599,7 +2686,10 @@ class Sidb:
     def get_stocks(
             self,
             target: Iterable[Territory | Actor] | Territory | Actor = [],
-            product: Product | None = None,
+            product: (Product | Sequence[Product] |
+                      int | Sequence[int] |
+                      Select[tuple[int]] | Sequence[Select[tuple[int]]] |
+                      None) = None,
             *,
             product_asc: bool = False,
             product_desc: bool = True,
@@ -2621,7 +2711,10 @@ class Sidb:
     def get_stocks(
             self,
             target: Iterable[Territory | Actor] | Territory | Actor = [],
-            product: Product | None = None,
+            product: (Product | Sequence[Product] |
+                      int | Sequence[int] |
+                      Select[tuple[int]] | Sequence[Select[tuple[int]]] |
+                      None) = None,
             *,
             product_asc: bool = False,
             product_desc: bool = True,
@@ -2642,7 +2735,10 @@ class Sidb:
     def get_stocks(
             self,
             target: Iterable[Territory | Actor] | Territory | Actor = [],
-            product: Product | None = None,
+            product: (Product | Sequence[Product] |
+                      int | Sequence[int] |
+                      Select[tuple[int]] | Sequence[Select[tuple[int]]] |
+                      None) = None,
             *,
             product_asc: bool = False,
             product_desc: bool = True,
@@ -2757,7 +2853,10 @@ class Sidb:
                               'production',
                               'extraction',
                               'emission', None] = None,
-            product: Product | None = None,
+            product: (Product | Sequence[Product] |
+                      int | Sequence[int] |
+                      Select[tuple[int]] | Sequence[Select[tuple[int]]] |
+                      None) = None,
             *,
             product_asc: bool = False,
             product_desc: bool = True,
@@ -2784,7 +2883,10 @@ class Sidb:
                               'production',
                               'extraction',
                               'emission', None] = None,
-            product: Product | None = None,
+            product: (Product | Sequence[Product] |
+                      int | Sequence[int] |
+                      Select[tuple[int]] | Sequence[Select[tuple[int]]] |
+                      None) = None,
             *,
             product_asc: bool = False,
             product_desc: bool = True,
@@ -2811,7 +2913,10 @@ class Sidb:
                               'production',
                               'extraction',
                               'emission', None] = None,
-            product: Product | None = None,
+            product: (Product | Sequence[Product] |
+                      int | Sequence[int] |
+                      Select[tuple[int]] | Sequence[Select[tuple[int]]] |
+                      None) = None,
             *,
             product_asc: bool = False,
             product_desc: bool = True,
@@ -2838,7 +2943,10 @@ class Sidb:
                               'production',
                               'extraction',
                               'emission', None] = None,
-            product: Product | None = None,
+            product: (Product | Sequence[Product] |
+                      int | Sequence[int] |
+                      Select[tuple[int]] | Sequence[Select[tuple[int]]] |
+                      None) = None,
             *,
             product_asc: bool = False,
             product_desc: bool = True,
@@ -2865,7 +2973,10 @@ class Sidb:
                               'production',
                               'extraction',
                               'emission', None] = None,
-            product: Product | None = None,
+            product: (Product | Sequence[Product] |
+                      int | Sequence[int] |
+                      Select[tuple[int]] | Sequence[Select[tuple[int]]] |
+                      None) = None,
             *,
             product_asc: bool = False,
             product_desc: bool = True,
@@ -2891,7 +3002,10 @@ class Sidb:
                               'production',
                               'extraction',
                               'emission', None] = None,
-            product: Product | None = None,
+            product: (Product | Sequence[Product] |
+                      int | Sequence[int] |
+                      Select[tuple[int]] | Sequence[Select[tuple[int]]] |
+                      None) = None,
             *,
             product_asc: bool = False,
             product_desc: bool = True,
@@ -3412,7 +3526,10 @@ class Sidb:
             *,
             btarget: T | None = None,
             xtarget: T | None = None,
-            product: Product | None = None,
+            product: (Product | Sequence[Product] |
+                      int | Sequence[int] |
+                      Select[tuple[int]] | Sequence[Select[tuple[int]]] |
+                      None) = None,
             product_asc: bool = False,
             product_desc: bool = True,
             date_point: date | str | None = None,
@@ -3437,7 +3554,10 @@ class Sidb:
             *,
             btarget: T | None = None,
             xtarget: T | None = None,
-            product: Product | None = None,
+            product: (Product | Sequence[Product] |
+                      int | Sequence[int] |
+                      Select[tuple[int]] | Sequence[Select[tuple[int]]] |
+                      None) = None,
             product_asc: bool = False,
             product_desc: bool = True,
             date_point: date | str | None = None,
@@ -3462,7 +3582,10 @@ class Sidb:
             *,
             btarget: T | None = None,
             xtarget: T | None = None,
-            product: Product | None = None,
+            product: (Product | Sequence[Product] |
+                      int | Sequence[int] |
+                      Select[tuple[int]] | Sequence[Select[tuple[int]]] |
+                      None) = None,
             product_asc: bool = False,
             product_desc: bool = True,
             date_point: date | str | None = None,
@@ -3487,7 +3610,10 @@ class Sidb:
             *,
             btarget: T | None = None,
             xtarget: T | None = None,
-            product: Product | None = None,
+            product: (Product | Sequence[Product] |
+                      int | Sequence[int] |
+                      Select[tuple[int]] | Sequence[Select[tuple[int]]] |
+                      None) = None,
             product_asc: bool = False,
             product_desc: bool = True,
             date_point: date | str | None = None,
@@ -3512,7 +3638,10 @@ class Sidb:
             *,
             btarget: T | None = None,
             xtarget: T | None = None,
-            product: Product | None = None,
+            product: (Product | Sequence[Product] |
+                      int | Sequence[int] |
+                      Select[tuple[int]] | Sequence[Select[tuple[int]]] |
+                      None) = None,
             product_asc: bool = False,
             product_desc: bool = True,
             date_point: date | str | None = None,
@@ -3536,7 +3665,10 @@ class Sidb:
             *,
             btarget: T | None = None,
             xtarget: T | None = None,
-            product: Product | None = None,
+            product: (Product | Sequence[Product] |
+                      int | Sequence[int] |
+                      Select[tuple[int]] | Sequence[Select[tuple[int]]] |
+                      None) = None,
             product_asc: bool = False,
             product_desc: bool = True,
             date_point: date | str | None = None,
@@ -3622,7 +3754,8 @@ class Sidb:
                                              Pathflow.date_end >= date_start),
                                         and_(Pathflow.date_point <= date_end,
                                              Pathflow.date_point >= date_start)))
-            if product is not None:
+
+            if isinstance(product, (int, Select)) or product:
                 products_search = []
                 if product_desc:
                     products_search.append(Pathflow.product_id.in_(
@@ -3633,7 +3766,19 @@ class Sidb:
                         self.get_products_on(product, return_type="qid")
                         ))
                 if not products_search:
-                    products_search.append(Pathflow.product_id == product.id)
+                    if isinstance(product, int):
+                        ids = (product,)
+                    elif isinstance(product, Select):
+                        ids = product
+                    elif isinstance(product, Product):
+                        ids = (product.id,)
+                    elif isinstance(product[0], Product):
+                        ids = [p.id for p in product]
+                    elif isinstance(product[0], int):
+                        ids = product
+                    else:
+                        ids = union(*product)
+                    products_search.append(Pathflow.product_id.in_(ids))
                 q[nq] = q[nq].where(or_(*products_search))
 
             if isinstance(target, Territory):
@@ -4274,7 +4419,8 @@ class Sidb:
             self,
             mtobject: (Territory | Actor | Product | int |
                        Sequence[Territory] | Sequence[Actor] |
-                       Sequence[Product] | Sequence[int]),
+                       Sequence[Product] | Sequence[int] |
+                       Select[tuple[int]] | Sequence[Select[tuple[int]]]),
             mtobject_to_return: type[T],
             scale: str | None = None,
             self_include: bool = False,
@@ -4288,14 +4434,15 @@ class Sidb:
             raise TypeError("'mtobject_to_return' has to be Actor, Territory or "
                             f"Product, got '{mtobject_to_return}'.")
 
-        id_start: list[int] | tuple[int] = []
         if isinstance(mtobject, (Territory, Actor, Product)):
-            id_start = (mtobject.id,)
-        elif isinstance(mtobject, int):
-            id_start = (mtobject,)
+            id_start = mtobject.id
+        elif isinstance(mtobject, (int, Select)):
+            id_start = mtobject
         elif isinstance(mtobject, Sequence):  # type: ignore
-            for o in mtobject:
-                id_start.append(o if isinstance(o, int) else o.id)
+            if isinstance(mtobject[0], Select):
+                id_start = union(*mtobject)
+            else:
+                id_start = [o if isinstance(o, int) else o.id for o in mtobject]
         else:
             raise TypeError(f"Unexpected 'mtobject' type : {type(mtobject)}")
 
@@ -4324,7 +4471,10 @@ class Sidb:
             object_class: type[T],
             target: Iterable[Territory | Actor] | Territory | Actor = [],
             flowtype: str | None = None,
-            product: Product | Sequence[Product] | None = None,
+            product: (Product | Sequence[Product] |
+                      int | Sequence[int] |
+                      Select[tuple[int]] | Sequence[Select[tuple[int]]] |
+                      None) = None,
             product_asc: bool = False,
             product_desc: bool = True,
             date_point: str | date | None = None,
@@ -4378,7 +4528,7 @@ class Sidb:
                 flowtype = flowtype.lower()
                 q[nq] = q[nq].where(object_class.flowtype == flowtype)
             # Product search
-            if product:
+            if isinstance(product, (int, Select)) or product:
                 products_search = []
                 if product_desc:
                     products_search.append(object_class.product_id.in_(
@@ -4389,9 +4539,18 @@ class Sidb:
                         self.get_products_on(product, return_type="qid")
                         ))
                 if not products_search:
-                    if isinstance(product, Product):
-                        product = (product,)
-                    ids = [p.id for p in product]
+                    if isinstance(product, int):
+                        ids = (product,)
+                    elif isinstance(product, Select):
+                        ids = product
+                    elif isinstance(product, Product):
+                        ids = (product.id,)
+                    elif isinstance(product[0], Product):
+                        ids = [p.id for p in product]
+                    elif isinstance(product[0], int):
+                        ids = product
+                    else:
+                        ids = union(*product)
                     products_search.append(object_class.product_id.in_(ids))
                 q[nq] = q[nq].where(or_(*products_search))
             if target:
