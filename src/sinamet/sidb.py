@@ -3557,7 +3557,7 @@ class Sidb:
         """Trouve des flux de chemin (Pathflow).
 
         Parameters:
-            target: Le territoire et/ou l'acteur lié(s) aux flux.
+            target: Le territoire ou l'acteur lié aux flux.
             direction: La direction des flux, peut être `import`, `export`,
                 `internal` ou `all`.
             btarget: Territoire ou acteur complémentaire spécifique
