@@ -631,7 +631,9 @@ class Sidb:
     @overload
     def get_territories(
             self,
-            *args: str,
+            property_name: str | None = None,
+            property_value: str | None = None,
+            /, *,
             like_value: bool = False,
             ignore_case: bool = False,
             ignore_accent: bool = False,
@@ -644,7 +646,9 @@ class Sidb:
     @overload
     def get_territories(
             self,
-            *args: str,
+            property_name: str | None = None,
+            property_value: str | None = None,
+            /, *,
             like_value: bool = False,
             ignore_case: bool = False,
             ignore_accent: bool = False,
@@ -657,7 +661,9 @@ class Sidb:
     @overload
     def get_territories(
             self,
-            *args: str,
+            property_name: str | None = None,
+            property_value: str | None = None,
+            /, *,
             like_value: bool = False,
             ignore_case: bool = False,
             ignore_accent: bool = False,
@@ -670,7 +676,9 @@ class Sidb:
     @overload
     def get_territories(
             self,
-            *args: str,
+            property_name: str | None = None,
+            property_value: str | None = None,
+            /, *,
             like_value: bool = False,
             ignore_case: bool = False,
             ignore_accent: bool = False,
@@ -683,7 +691,9 @@ class Sidb:
     @overload
     def get_territories(
             self,
-            *args: str,
+            property_name: str | None = None,
+            property_value: str | None = None,
+            /, *,
             like_value: bool = False,
             ignore_case: bool = False,
             ignore_accent: bool = False,
@@ -695,7 +705,9 @@ class Sidb:
 
     def get_territories(
             self,
-            *args: str,
+            property_name: str | None = None,
+            property_value: str | None = None,
+            /, *,
             like_value: bool = False,
             ignore_case: bool = False,
             ignore_accent: bool = False,
@@ -744,7 +756,7 @@ class Sidb:
         # FutureDev: Ajouter l'option "source_ref" pour selectionner les source_ref
 
         return self.get_mtobjects_tap(Territory,
-                                      *args,
+                                      property_name, property_value,
                                       like_value=like_value,
                                       ignore_case=ignore_case,
                                       ignore_accent=ignore_accent,
@@ -1290,7 +1302,9 @@ class Sidb:
     @overload
     def get_actors(
             self,
-            *args: str,
+            property_name: str | None = None,
+            property_value: str | None = None,
+            /, *,
             like_value: bool = False,
             ignore_case: bool = False,
             ignore_accent: bool = False,
@@ -1303,7 +1317,9 @@ class Sidb:
     @overload
     def get_actors(
             self,
-            *args: str,
+            property_name: str | None = None,
+            property_value: str | None = None,
+            /, *,
             like_value: bool = False,
             ignore_case: bool = False,
             ignore_accent: bool = False,
@@ -1316,7 +1332,9 @@ class Sidb:
     @overload
     def get_actors(
             self,
-            *args: str,
+            property_name: str | None = None,
+            property_value: str | None = None,
+            /, *,
             like_value: bool = False,
             ignore_case: bool = False,
             ignore_accent: bool = False,
@@ -1329,7 +1347,9 @@ class Sidb:
     @overload
     def get_actors(
             self,
-            *args: str,
+            property_name: str | None = None,
+            property_value: str | None = None,
+            /, *,
             like_value: bool = False,
             ignore_case: bool = False,
             ignore_accent: bool = False,
@@ -1342,7 +1362,9 @@ class Sidb:
     @overload
     def get_actors(
             self,
-            *args: str,
+            property_name: str | None = None,
+            property_value: str | None = None,
+            /, *,
             like_value: bool = False,
             ignore_case: bool = False,
             ignore_accent: bool = False,
@@ -1354,7 +1376,9 @@ class Sidb:
 
     def get_actors(
             self,
-            *args: str,
+            property_name: str | None = None,
+            property_value: str | None = None,
+            /, *,
             like_value: bool = False,
             ignore_case: bool = False,
             ignore_accent: bool = False,
@@ -1405,7 +1429,7 @@ class Sidb:
             ValueError: Paramètres invalides.
         """
         return self.get_mtobjects_tap(Actor,
-                                      *args,
+                                      property_name, property_value,
                                       like_value=like_value,
                                       ignore_case=ignore_case,
                                       ignore_accent=ignore_accent,
@@ -2004,7 +2028,9 @@ class Sidb:
     @overload
     def get_products(
             self,
-            *args: str,
+            property_name: str | None = None,
+            property_value: str | None = None,
+            /, *,
             nomenclature: str | None = None,
             like_value: bool = False,
             ignore_case: bool = False,
@@ -2018,7 +2044,9 @@ class Sidb:
     @overload
     def get_products(
             self,
-            *args: str,
+            property_name: str | None = None,
+            property_value: str | None = None,
+            /, *,
             nomenclature: str | None = None,
             like_value: bool = False,
             ignore_case: bool = False,
@@ -2032,7 +2060,9 @@ class Sidb:
     @overload
     def get_products(
             self,
-            *args: str,
+            property_name: str | None = None,
+            property_value: str | None = None,
+            /, *,
             nomenclature: str | None = None,
             like_value: bool = False,
             ignore_case: bool = False,
@@ -2046,7 +2076,9 @@ class Sidb:
     @overload
     def get_products(
             self,
-            *args: str,
+            property_name: str | None = None,
+            property_value: str | None = None,
+            /, *,
             nomenclature: str | None = None,
             like_value: bool = False,
             ignore_case: bool = False,
@@ -2060,7 +2092,9 @@ class Sidb:
     @overload
     def get_products(
             self,
-            *args: str,
+            property_name: str | None = None,
+            property_value: str | None = None,
+            /, *,
             nomenclature: str | None = None,
             like_value: bool = False,
             ignore_case: bool = False,
@@ -2073,7 +2107,9 @@ class Sidb:
 
     def get_products(
             self,
-            *args: str,
+            property_name: str | None = None,
+            property_value: str | None = None,
+            /, *,
             nomenclature: str | None = None,
             like_value: bool = False,
             ignore_case: bool = False,
@@ -2123,7 +2159,7 @@ class Sidb:
             ValueError: Paramètres invalides.
         """
         return self.get_mtobjects_tap(Product,
-                                      *args,
+                                      property_name, property_value,
                                       like_value=like_value,
                                       ignore_case=ignore_case,
                                       ignore_accent=ignore_accent,
@@ -4219,7 +4255,9 @@ class Sidb:
     def get_mtobjects_tap[T: (Territory, Actor, Product)](
             self,
             mtobject_class: type[T],
-            *args: str,
+            property_name: str | None = None,
+            property_value: str | None = None,
+            /, *,
             like_value: bool = False,
             ignore_case: bool = False,
             ignore_accent: bool = False,
@@ -4252,25 +4290,23 @@ class Sidb:
                 q[nq] = q[nq].where((prop_nomenclature.name_a == 'Nomenclature')
                                     & (prop_nomenclature.value_literal == nomenclature))
 
-            # If no arguments were given, no need to filter properties.
-            if not len(args):
+            # If no property name was given, no need to filter properties.
+            if not property_name:
                 continue
             q[nq] = q[nq].join(mtobject_class.properties)
 
-            key, value = args[0], args[1]
-
             # Add a filter for the properties' values.
-            if value != "*":
+            if property_value and property_value != "*":
                 prop = func.unaccent(Property.value_literal) if ignore_accent else Property.value_literal
                 prop = func.lower(prop) if ignore_case else prop
-                value = func.unaccent(value) if ignore_accent else value
+                value = func.unaccent(property_value) if ignore_accent else property_value
                 value = func.lower(value) if ignore_case else value
                 if like_value:
                     q[nq] = q[nq].where(prop.like(value))
                 else:
                     q[nq] = q[nq].where(prop == value)
 
-            propname_a, *propname_b = key.split('@', 1)
+            propname_a, *propname_b = property_name.split('@', 1)
             q[nq] = q[nq].where(Property.name_a == propname_a)
             if propname_b:
                 q[nq] = q[nq].where(Property.name_b == propname_b[0])
