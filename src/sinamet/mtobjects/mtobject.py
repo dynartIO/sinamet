@@ -115,7 +115,7 @@ class MTObject(DBObjectClassBase):
         if verbose:
             print(f"Got {len(lst_object_children)} objects.")
         for child in lst_object_children:
-            _parent = child.get_property("IsInProduct", raise_none=False)
+            _parent = child.get_property("IsInProduct")
             if type(_parent) is list:
                 [print(f"{pr=}") for pr in _parent]
                 raise SidbMultiFoundError(f"Multi parents found in nomenclature for {child}")
@@ -136,7 +136,7 @@ class MTObject(DBObjectClassBase):
     def get_property_gen(self, prop_name: str, prop_type: list[str] | str = [],
                          date_point: str | date | None = None,
                          return_type: Literal['value', 'property', 'tuple'] = "value",
-                         raise_none: bool = True,
+                         if_none: Literal['raise', 'warn', None] = None,
                          use_default: bool = False,
                          force_cache: bool = False,
                          multi: Literal['raise', 'warn_first', 'warn_list',
@@ -150,6 +150,7 @@ class MTObject(DBObjectClassBase):
             >>> charente = get_territory("Name", "Charente")
             >>> charente.get_property_gen("Population", date_point="01/01/2023")
             351036.0
+            >>> charente.get_property_gen("Name", ["fr", "en"]) or "-"  # `or` pour gérer une valeur par défaut
 
         Parameters:
             prop_name: Nom de la propriété.
@@ -162,7 +163,8 @@ class MTObject(DBObjectClassBase):
                 * `property`: L'object propriété (ex. <Property:Name>).
                 * `tuple`: Un tuple avec comme premier élément la valeur, et en
                     deuxième le type de la propriété (ex. ("FR", "isoa2")).
-            raise_none: Lève une erreur si aucune propriété trouvée.
+            if_none: Comportement en cas de propriété non trouvée: lève un erreur
+                (`raise`), affiche un avertissement (`warn`) ou renvoie None (défaut).
             use_default: Si prop_type pas trouvé, renvoie la première propriété
                 correspondant à prop_name.
             force_cache: Ne refait pas d'appel à la base de donnée et utilise les
@@ -187,7 +189,7 @@ class MTObject(DBObjectClassBase):
         Raises:
             ValueError: Si la valeur de `return_type` ou `multi` est incorrecte.
             SidbNotFoundError: Si aucune propriété n'a été trouvée et que
-                `raise_none == True`.
+                `if_none == 'raise'`.
             SidbMultiFoundError: Si plusieurs propriétés correspondent et que
                 `multi == 'raise'`.
 
@@ -246,9 +248,12 @@ class MTObject(DBObjectClassBase):
                 )], properties[1])
 
         if not properties[0]:
-            if raise_none:
+            if if_none == 'raise':
                 raise SidbNotFoundError(f"No such property has been found `{prop_name}"
                                         f"{'' if not prop_type else (f'@{prop_type}')}`.")
+            elif if_none == 'warn':
+                warnings.warn(f"No such property has been found `{prop_name}"
+                              f"{'' if not prop_type else (f'@{prop_type}')}`.")
             return None
 
         match return_type:
@@ -281,7 +286,7 @@ class MTObject(DBObjectClassBase):
     def get_code(self, codes: list[str] | str = [],
                  date_point: str | date | None = None,
                  return_type: Literal['value', 'property', 'tuple'] = "value",
-                 raise_none: bool = True,
+                 if_none: Literal['raise', 'warn', None] = None,
                  use_default: bool = False,
                  force_cache: bool = False,
                  multi: Literal['raise', 'warn_first', 'warn_list',
@@ -295,14 +300,14 @@ class MTObject(DBObjectClassBase):
         [mtobjects.mtobject.MTObject.get_property_gen], avec `prop_name='Code'`
         """
         return self.get_property_gen("Code", codes, return_type=return_type,
-                                     raise_none=raise_none, use_default=use_default,
+                                     if_none=if_none, use_default=use_default,
                                      force_cache=force_cache, multi=multi,
                                      date_point=date_point, verbose=verbose)
 
     def get_name(self, names: list[str] | str = [],
                  date_point: str | date | None = None,
                  return_type: Literal['value', 'property', 'tuple'] = "value",
-                 raise_none: bool = True,
+                 if_none: Literal['raise', 'warn', None] = None,
                  use_default: bool = False,
                  force_cache: bool = False,
                  multi: Literal['raise', 'warn_first', 'warn_list',
@@ -316,14 +321,14 @@ class MTObject(DBObjectClassBase):
         [mtobjects.mtobject.MTObject.get_property_gen], avec `prop_name='Name'`
         """
         return self.get_property_gen("Name", names, return_type=return_type,
-                                     raise_none=raise_none, use_default=use_default,
+                                     if_none=if_none, use_default=use_default,
                                      force_cache=force_cache, multi=multi,
                                      date_point=date_point, verbose=verbose)
 
     def get_property(self, full_name: str,
                      date_point: str | date | None = None,
                      return_type: Literal['value', 'property', 'tuple'] = "value",
-                     raise_none: bool = True,
+                     if_none: Literal['raise', 'warn', None] = None,
                      use_default: bool = False,
                      force_cache: bool = False,
                      multi: Literal['raise', 'warn_first', 'warn_list',
@@ -339,7 +344,7 @@ class MTObject(DBObjectClassBase):
         """
         name_a, *name_b = full_name.split('@')
         return self.get_property_gen(name_a, name_b, return_type=return_type,
-                                     raise_none=raise_none, use_default=use_default,
+                                     if_none=if_none, use_default=use_default,
                                      force_cache=force_cache, multi=multi,
                                      date_point=date_point, verbose=verbose)
 
@@ -350,7 +355,7 @@ class MTObject(DBObjectClassBase):
                            return_type: Literal['value', 'property',
                                                 'tuple', 'dict',
                                                 'profile'] = 'value',
-                           raise_none: bool = True,
+                           if_none: Literal['raise', 'warn', None] = None,
                            use_default: bool = False,
                            force_cache: bool = False,
                            verbose: bool = False) -> (list[str] | list[MTObject] |
@@ -378,7 +383,8 @@ class MTObject(DBObjectClassBase):
                 * `dict`: Un dictionnaire (ex. {"isoa2": "FR", "isoa3": "FRA"}). Attention si
                     une précision comporte plusieurs propriétés.
                 * `profile`: L'object `Profile` contenant les propriétés recherchées.
-            raise_none: Lève une erreur si aucune propriété trouvée ou si une précision n'a pas été trouvée.
+            if_none: Comportement en cas de propriété non trouvée: lève un erreur
+                (`raise`), affiche un avertissement (`warn`) ou renvoie une liste vide (défaut).
             use_default: Renvoie toutes les propriétés en commençant par celles indiquées dans `prop_type`.
             force_cache: Ne refait pas d'appel à la base de donnée et utilise les
                 propriétés déjà mise en cache.
@@ -397,7 +403,7 @@ class MTObject(DBObjectClassBase):
         Raises:
             ValueError: Si la valeur de `return_type` est incorrecte.
             SidbNotFoundError: Si aucune propriété n'a été trouvée et que
-                `raise_none == True`.
+                `if_none == 'raise'`.
         """
         from sinamet.sidb import Sidb
 
@@ -420,8 +426,11 @@ class MTObject(DBObjectClassBase):
             if prop_type != "_":
                 prop_full_name += f"@{prop_type}"
             _list = self.cached_properties.get(prop_full_name, [])
-            if not _list and raise_none:
-                raise SidbNotFoundError(f"No such property has been found `{prop_full_name}`.")
+            if not _list:
+                if if_none == 'raise':
+                    raise SidbNotFoundError(f"No such property has been found `{prop_full_name}`.")
+                elif if_none == 'warn':
+                    warnings.warn(f"No such property has been found `{prop_full_name}`.")
             for p in _list:
                 properties.append((p, prop_type))
         if not prop_types or use_default:
@@ -439,9 +448,12 @@ class MTObject(DBObjectClassBase):
         if verbose:
             print(f"{properties=}")
         if not properties:
-            if raise_none:
+            if if_none == 'raise':
                 raise SidbNotFoundError(f"No such properties have been found `{prop_name}"
                                         f"{'' if not prop_types else (f'@{prop_types}')}`.")
+            elif if_none == 'warn':
+                warnings.warn(f"No such properties have been found `{prop_name}"
+                              f"{'' if not prop_types else (f'@{prop_types}')}`.")
             return []
 
         match return_type:
@@ -460,7 +472,7 @@ class MTObject(DBObjectClassBase):
                   return_type: Literal['value', 'property',
                                        'tuple', 'dict',
                                        'profile'] = 'value',
-                  raise_none: bool = True,
+                  if_none: Literal['raise', 'warn', None] = None,
                   use_default: bool = False,
                   force_cache: bool = False,
                   verbose: bool = False) -> (list[str] | list[MTObject] |
@@ -474,7 +486,7 @@ class MTObject(DBObjectClassBase):
         [mtobjects.mtobject.MTObject.get_properties_gen], avec `prop_name='Code'`
         """
         return self.get_properties_gen("Code", codes, return_type=return_type,
-                                       raise_none=raise_none, use_default=use_default,
+                                       if_none=if_none, use_default=use_default,
                                        force_cache=force_cache, date_point=date_point,
                                        date_start=date_start, date_end=date_end,
                                        verbose=verbose)
@@ -486,7 +498,7 @@ class MTObject(DBObjectClassBase):
                   return_type: Literal['value', 'property',
                                        'tuple', 'dict',
                                        'profile'] = 'value',
-                  raise_none: bool = True,
+                  if_none: Literal['raise', 'warn', None] = None,
                   use_default: bool = False,
                   force_cache: bool = False,
                   verbose: bool = False) -> (list[str] | list[MTObject] |
@@ -500,7 +512,7 @@ class MTObject(DBObjectClassBase):
             [mtobjects.mtobject.MTObject.get_properties_gen], avec `prop_name='Code'`
         """
         return self.get_properties_gen("Name", names, return_type=return_type,
-                                       raise_none=raise_none, use_default=use_default,
+                                       if_none=if_none, use_default=use_default,
                                        force_cache=force_cache, date_point=date_point,
                                        date_start=date_start, date_end=date_end,
                                        verbose=verbose)
@@ -512,7 +524,7 @@ class MTObject(DBObjectClassBase):
                        return_type: Literal['value', 'property',
                                             'tuple', 'dict',
                                             'profile'] = 'value',
-                       raise_none: bool = True,
+                       if_none: Literal['raise', 'warn', None] = None,
                        use_default: bool = False,
                        force_cache: bool = False,
                        verbose: bool = False) -> (list[str] | list[MTObject] |
@@ -528,7 +540,7 @@ class MTObject(DBObjectClassBase):
         """
         name_a, *name_b = full_name.split('@')
         return self.get_properties_gen(name_a, name_b, return_type=return_type,
-                                       raise_none=raise_none, use_default=use_default,
+                                       if_none=if_none, use_default=use_default,
                                        force_cache=force_cache, date_point=date_point,
                                        date_start=date_start, date_end=date_end,
                                        verbose=verbose)
@@ -703,7 +715,7 @@ class MTObject(DBObjectClassBase):
             if dic["key"] in specific_keys or dic["key"].split("@")[0] in specific_keys:
                 continue
             if dic["unique"]:
-                prop = self.get_property(dic["key"], return_type="property", raise_none=False)
+                prop = self.get_property(dic["key"], return_type="property")
                 if prop is not None:
                     print("GOT PROP = %s" % prop)
                     if prop.get_value() != dic["value"]:
@@ -733,7 +745,7 @@ class MTObject(DBObjectClassBase):
             if type(dic["value"]) is not str:
                 return "WRONG_DATA_TYPE", "Name", dic["value"]
             if dic["unique"]:
-                prop = self.get_property(dic["key"], return_type="property", raise_none=False)
+                prop = self.get_property(dic["key"], return_type="property")
                 if prop is not None:
                     if prop.get_value() != dic["value"]:
                         return "CONFLICTING_DATA", "Name", dic["value"]
@@ -811,8 +823,7 @@ class MTObject(DBObjectClassBase):
             return "AMBIGUOUS_DATA", "Nomenclature", str(lst_ikeys)
         dic_nom = mapper.get_dict_i(lst_ikeys[0])
         existing_property = self.get_property("Nomenclature",
-                                              return_type="property",
-                                              raise_none=False)
+                                              return_type="property")
         if existing_property is None or not dic_nom["unique"]:
             self.create_property("Nomenclature", dic_nom["value"], dic_nom["source_ref"])
             return "OK", None, None

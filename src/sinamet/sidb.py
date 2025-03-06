@@ -1,12 +1,12 @@
 from __future__ import annotations
 
-from collections.abc import Iterable, Iterator
+from collections.abc import Iterable, Iterator, Sequence
 
 from contextlib import contextmanager
 
 from datetime import date
 
-from typing import Any, Literal, Sequence, overload
+from typing import Any, Literal, overload
 
 import warnings
 
@@ -14,7 +14,7 @@ from sqlalchemy import ColumnElement, Engine, create_engine
 from sqlalchemy.orm import aliased
 from sqlalchemy.orm.exc import UnmappedInstanceError
 from sqlalchemy.orm.session import Session, object_session, sessionmaker
-from sqlalchemy.sql import Select, and_, delete, func, or_, select
+from sqlalchemy.sql import Select, and_, delete, func, or_, select, union
 
 from sinamet.config import config
 from sinamet.mapper import Mapper, MapperError
@@ -481,7 +481,7 @@ class Sidb:
             ignore_case: bool = False,
             ignore_accent: bool = False,
             return_type: Literal['object'] = 'object',
-            if_none: str | None = None,
+            if_none: Literal['raise', 'warn', None] = None,
             multi: Literal['raise',
                            'first',
                            'list',
@@ -500,7 +500,7 @@ class Sidb:
             ignore_case: bool = False,
             ignore_accent: bool = False,
             return_type: Literal['id'],
-            if_none: str | None = None,
+            if_none: Literal['raise', 'warn', None] = None,
             multi: Literal['raise',
                            'first',
                            'list',
@@ -519,7 +519,7 @@ class Sidb:
             ignore_case: bool = False,
             ignore_accent: bool = False,
             return_type: Literal['query'],
-            if_none: str | None = None,
+            if_none: Literal['raise', 'warn', None] = None,
             multi: Literal['raise',
                            'first',
                            'list',
@@ -538,7 +538,7 @@ class Sidb:
             ignore_case: bool = False,
             ignore_accent: bool = False,
             return_type: Literal['queryid', 'qid'],
-            if_none: str | None = None,
+            if_none: Literal['raise', 'warn', None] = None,
             multi: Literal['raise',
                            'first',
                            'list',
@@ -561,7 +561,7 @@ class Sidb:
                                  'queryid',
                                  'qid',
                                  ] = 'object',
-            if_none: str | None = None,
+            if_none: Literal['raise', 'warn', None] = None,
             multi: Literal['raise',
                            'first',
                            'list',
@@ -594,8 +594,8 @@ class Sidb:
                 * `id`: L'identifiant de l'objet.
                 * `query`: La requète de l'objet.
                 * `queryid` ou `qid`: La requète de l'identifiant de l'object.
-            if_none: Si True, lève une [`SidbNotFoundError`][errors.SidbNotFoundError] si aucun
-                élément ne correspond à la requète, renvoie `None` sinon.
+            if_none: Comportement en cas de propriété non trouvée: lève un erreur
+                (`raise`), affiche un avertissement (`warn`) ou renvoie None (défaut).
             multi: Action à prendre quand plusieurs éléments correspondents à la requète
                 Les valeurs possibles sont:
 
@@ -1115,7 +1115,7 @@ class Sidb:
             ignore_case: bool = False,
             ignore_accent: bool = False,
             return_type: Literal['object'] = 'object',
-            if_none: str | None = None,
+            if_none: Literal['raise', 'warn', None] = None,
             multi: Literal['raise',
                            'first',
                            'list',
@@ -1134,7 +1134,7 @@ class Sidb:
             ignore_case: bool = False,
             ignore_accent: bool = False,
             return_type: Literal['id'],
-            if_none: str | None = None,
+            if_none: Literal['raise', 'warn', None] = None,
             multi: Literal['raise',
                            'first',
                            'list',
@@ -1153,7 +1153,7 @@ class Sidb:
             ignore_case: bool = False,
             ignore_accent: bool = False,
             return_type: Literal['query'],
-            if_none: str | None = None,
+            if_none: Literal['raise', 'warn', None] = None,
             multi: Literal['raise',
                            'first',
                            'list',
@@ -1172,7 +1172,7 @@ class Sidb:
             ignore_case: bool = False,
             ignore_accent: bool = False,
             return_type: Literal['queryid', 'qid'],
-            if_none: str | None = None,
+            if_none: Literal['raise', 'warn', None] = None,
             multi: Literal['raise',
                            'first',
                            'list',
@@ -1195,7 +1195,7 @@ class Sidb:
                                  'queryid',
                                  'qid',
                                  ] = 'object',
-            if_none: str | None = None,
+            if_none: Literal['raise', 'warn', None] = None,
             multi: Literal['raise',
                            'first',
                            'list',
@@ -1230,8 +1230,8 @@ class Sidb:
                 * `id`: L'identifiant de l'objet.
                 * `query`: La requète de l'objet.
                 * `queryid` ou `qid`: La requète de l'identifiant de l'object.
-            if_none: Si True, lève une [`SidbNotFoundError`][errors.SidbNotFoundError] si aucun
-                élément ne correspond à la requète, renvoie `None` sinon.
+            if_none: Comportement en cas de propriété non trouvée: lève un erreur
+                (`raise`), affiche un avertissement (`warn`) ou renvoie None (défaut).
             multi: Action à prendre quand plusieurs éléments correspondents à la requète
                 Les valeurs possibles sont:
 
@@ -1795,7 +1795,7 @@ class Sidb:
             ignore_case: bool = False,
             ignore_accent: bool = False,
             return_type: Literal['object'] = 'object',
-            if_none: str | None = None,
+            if_none: Literal['raise', 'warn', None] = None,
             multi: Literal['raise',
                            'first',
                            'list',
@@ -1815,7 +1815,7 @@ class Sidb:
             ignore_case: bool = False,
             ignore_accent: bool = False,
             return_type: Literal['id'],
-            if_none: str | None = None,
+            if_none: Literal['raise', 'warn', None] = None,
             multi: Literal['raise',
                            'first',
                            'list',
@@ -1835,7 +1835,7 @@ class Sidb:
             ignore_case: bool = False,
             ignore_accent: bool = False,
             return_type: Literal['query'],
-            if_none: str | None = None,
+            if_none: Literal['raise', 'warn', None] = None,
             multi: Literal['raise',
                            'first',
                            'list',
@@ -1855,7 +1855,7 @@ class Sidb:
             ignore_case: bool = False,
             ignore_accent: bool = False,
             return_type: Literal['queryid', 'qid'],
-            if_none: str | None = None,
+            if_none: Literal['raise', 'warn', None] = None,
             multi: Literal['raise',
                            'first',
                            'list',
@@ -1879,7 +1879,7 @@ class Sidb:
                                  'queryid',
                                  'qid',
                                  ] = 'object',
-            if_none: str | None = None,
+            if_none: Literal['raise', 'warn', None] = None,
             multi: Literal['raise',
                            'first',
                            'list',
@@ -1911,8 +1911,8 @@ class Sidb:
                 * `id`: L'identifiant de l'objet.
                 * `query`: La requète de l'objet.
                 * `queryid` ou `qid`: La requète de l'identifiant de l'object.
-            if_none: Si True, lève une [`SidbNotFoundError`][errors.SidbNotFoundError] si aucun
-                élément ne correspond à la requète, renvoie `None` sinon.
+            if_none: Comportement en cas de propriété non trouvée: lève un erreur
+                (`raise`), affiche un avertissement (`warn`) ou renvoie None (défaut).
             multi: Action à prendre quand plusieurs éléments correspondents à la requète
                 Les valeurs possibles sont:
 
@@ -2456,7 +2456,7 @@ class Sidb:
             print(f"Found {lstp=}")
         _returnp = None
         for _p in lstp:
-            _isinprop = _p.get_property("IsInProduct", force_cache=True, raise_none=False)
+            _isinprop = _p.get_property("IsInProduct", force_cache=True)
             if verbose:
                 print(f"Check {_isinprop=}")
             if _isinprop is None:
@@ -3964,7 +3964,7 @@ class Sidb:
             return_type: Literal['object', 'id',
                                  'queryid', 'qid',
                                  'query'] = 'object',
-            if_none: str | None = None,
+            if_none: Literal['raise', 'warn', None] = None,
             multi: Literal['raise', 'warn_first',
                            'warn_list', 'first',
                            'list'] = 'warn_list',
@@ -3973,7 +3973,7 @@ class Sidb:
             **kwargs: str
             ) -> (T | Sequence[T] | int | Sequence[int] |
                   Select[tuple[T]] | Select[tuple[int]] |
-                  str | None):
+                  None):
 
         if not issubclass(mtobject_class, (Actor, Territory, Product)):  # type: ignore
             raise TypeError(f"mtobject_class has to be Actor, Territory or Product, got {mtobject_class}")
@@ -4047,8 +4047,7 @@ class Sidb:
                 raise SidbNotFoundError(f"No such object has been found in the database ({key}={value})")
             if if_none == 'warn':
                 warnings.warn(f'No corresponding object {key}=\'{value}\'.')
-                return None
-            return if_none
+            return None
         if len(result) == 1:
             if key != "Id" and not like_value and not ignore_case and not ignore_accent:
                 self.set_cache_mtobject_codename(result[0], key, value, False, prefix=nomenclature)
@@ -4184,7 +4183,8 @@ class Sidb:
             self,
             mtobject: (Territory | Actor | Product |
                        Sequence[Territory] | Sequence[Actor] |
-                       Sequence[Product] | Sequence[int] | int),
+                       Sequence[Product] | Sequence[int] | int |
+                       Select[tuple[int]] | Sequence[Select[tuple[int]]]),
             mtobject_to_return: type[T],
             scale: str | None = None,
             source_ref: str | None = None,
@@ -4208,12 +4208,18 @@ class Sidb:
         if isinstance(mtobject, (Territory, Actor, Product)):
             id_start = mtobject.id
             type_mtobject = type(mtobject)
-        elif isinstance(mtobject, int):
+        elif isinstance(mtobject, (int, Select)):
             id_start = mtobject
             type_mtobject = mtobject_to_return
-        elif isinstance(mtobject, (list, tuple)):
-            if isinstance(mtobject[0], int):
+        elif isinstance(mtobject, Sequence):
+            if not len(mtobject):
+                id_start = ()
+                type_mtobject = mtobject_to_return
+            elif isinstance(mtobject[0], int):
                 id_start = mtobject
+                type_mtobject = mtobject_to_return
+            elif isinstance(mtobject[0], Select):
+                id_start = union(*mtobject)
                 type_mtobject = mtobject_to_return
             else:
                 type_mtobject = type(mtobject[0])
@@ -4372,7 +4378,7 @@ class Sidb:
                 flowtype = flowtype.lower()
                 q[nq] = q[nq].where(object_class.flowtype == flowtype)
             # Product search
-            if product is not None:
+            if product:
                 products_search = []
                 if product_desc:
                     products_search.append(object_class.product_id.in_(
