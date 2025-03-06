@@ -42,5 +42,5 @@ class Stock(MTQuantifiable):
         return "<Stock-%s:%s | %s | %s | %s | %s | %s>" % \
             (self.id, self.product.get_name(),
              "self.str_period()", _strquantity,
-             actor_terr, self.get_code(raise_none=False),
-             self.get_name(raise_none=False))
+             actor_terr, self.get_code(),
+             self.get_name())

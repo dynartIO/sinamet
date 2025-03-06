@@ -85,8 +85,7 @@ class MTQuantifiable(MTObject):
             # Associés au produit
             # Construction du dictionnaire
             lst_coeff_attr = product.get_properties("Coefficient",
-                                                    return_type="property",
-                                                    raise_none=False)
+                                                    return_type="property")
             if not lst_coeff_attr:
                 raise ConversionError(f'Unable to convert: no coefficients found in {product=}'
                                       f' ({quant=})')
