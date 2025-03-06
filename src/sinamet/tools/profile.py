@@ -106,17 +106,17 @@ class Profile():
         return lst_return
 
     @staticmethod
-    def static_get_profile(list_flows, unit, freq=None, per_day=True, step_profile=True):
+    def static_get_profile(flows, unit, freq=None, per_day=True, step_profile=True):
         """
         Return (time, val) profile for a liste of quantifiable
         """
 
-        if type(list_flows) is list:
-            _df = list_flows_to_dataframe(list_flows, unit, per_day=per_day)
-        elif list_flows.__class__.__name__ == "DataFrame":
-            _df = list_flows
+        if type(flows) is list:
+            _df = list_flows_to_dataframe(flows, unit, per_day=per_day)
+        elif flows.__class__.__name__ == "DataFrame":
+            _df = flows
         else:
-            raise TypeError("Unknown type : " + str(type(list_flows)))
+            raise TypeError("Unknown type : " + str(type(flows)))
 
         if freq is None or freq == "":
             (t, v) = dataframe_flows_to_timeval(_df, unit, per_day=per_day)
@@ -141,14 +141,14 @@ class Profile():
         return t, v
 
     @staticmethod
-    def get_value(list_flows, unit, start=None, end=None, year=None, month=None):
+    def get_value(flows, unit, start=None, end=None, year=None, month=None):
         """
         Renvoie la valeur d'une liste de flux sur la période indiquée.
         La période est renseignée soit par une date de début et/ou de fin,
         soit par une année, soit par une année et un mois (de 1 à 12)
 
         Parameters:
-            list_flows: Liste des flux
+            flows: Liste des flux
             unit: Unité pour exprimer les flux
             start: Date de début
             end: Date de fin
@@ -156,16 +156,16 @@ class Profile():
             month: Mois
         """
         # CONVERSION LIST FLOW INTO DATAFRAME
-        if type(list_flows) is list:
-            if len(list_flows) == 0:
+        if type(flows) is list:
+            if len(flows) == 0:
                 return 0.0
-            _df = list_flows_to_dataframe(list_flows, unit)
-        elif list_flows.__class__.__name__ == "DataFrame":
-            if len(list_flows.index) == 0:
+            _df = list_flows_to_dataframe(flows, unit)
+        elif flows.__class__.__name__ == "DataFrame":
+            if len(flows.index) == 0:
                 return 0.0
-            _df = list_flows
+            _df = flows
         else:
-            raise TypeError("Unknown type : " + str(type(list_flows)))
+            raise TypeError("Unknown type : " + str(type(flows)))
 
         # CONVERTIR
         _returnval = dataframe_flows_to_val(
