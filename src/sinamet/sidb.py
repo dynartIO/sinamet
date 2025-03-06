@@ -384,18 +384,6 @@ class Sidb:
         """
         return source_ref in self.get_source_refs(False)
 
-    def is_not_loaded(self, source_ref: str) -> bool:
-        """Détermine si une source n'est pas chargée.
-
-        Parameters:
-            source_ref: Le nom de la source à vérifier.
-
-        Returns:
-            `True` si la source n'est pas chargée dans la base de donnée,
-                `False` sinon.
-        """
-        return source_ref not in self.get_source_refs(False)
-
     def progress(self, steps_commit: int = 1000,
                  steps_print: int = 20, commit: bool = True) -> None:
         """
