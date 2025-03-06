@@ -139,7 +139,7 @@ class MTObject(DBObjectClassBase):
                          if_none: Literal['raise', 'warn', None] = None,
                          use_default: bool = False,
                          force_cache: bool = False,
-                         multi: Literal['raise', 'warn_first', 'warn_list',
+                         if_many: Literal['raise', 'warn_first', 'warn_list',
                                         'first', 'list'] = "warn_first",
                          verbose: bool = False) -> (str | MTObject | Geometry |
                                                     Property | None |
@@ -169,7 +169,7 @@ class MTObject(DBObjectClassBase):
                 correspondant à prop_name.
             force_cache: Ne refait pas d'appel à la base de donnée et utilise les
                 propriétés déjà mise en cache.
-            multi (str): Comportement en cas de plusieurs propriétés correspondantes
+            if_many (str): Comportement en cas de plusieurs propriétés correspondantes
                 au même nom ou code. Valeurs possibles:
 
                 * `raise`: Lève une erreur.
@@ -187,22 +187,22 @@ class MTObject(DBObjectClassBase):
             (None): Aucune propriété n'a été trouvée.
 
         Raises:
-            ValueError: Si la valeur de `return_type` ou `multi` est incorrecte.
+            ValueError: Si la valeur de `return_type` ou `if_many` est incorrecte.
             SidbNotFoundError: Si aucune propriété n'a été trouvée et que
                 `if_none == 'raise'`.
             SidbMultiFoundError: Si plusieurs propriétés correspondent et que
-                `multi == 'raise'`.
+                `if_many == 'raise'`.
 
         Warns:
-            UserWarning: Plusieurs propriétés correspondantes et `multi` est
+            UserWarning: Plusieurs propriétés correspondantes et `if_many` est
                 `warn_first` ou `warn_list`.
         """
         from sinamet.sidb import Sidb
 
         if return_type not in (_list := ["tuple", "value", "property"]):
             raise ValueError(f"Argument `return_type` can only be one of {_list}, got '{return_type}'")
-        if multi not in (_list := ["raise", "warn_first", "warn_list", "first", "list"]):
-            raise ValueError(f"Argument `multi` can only be one of {_list}, got '{multi}'")
+        if if_many not in (_list := ["raise", "warn_first", "warn_list", "first", "list"]):
+            raise ValueError(f"Argument `if_many` can only be one of {_list}, got '{if_many}'")
 
         # Vérification dans le cache
         key_list = [key for key in self.cached_properties.keys() if key == prop_name
@@ -266,7 +266,7 @@ class MTObject(DBObjectClassBase):
 
         if len(properties) == 1:
             return properties[0]
-        match multi:
+        match if_many:
             case "raise":
                 raise SidbMultiFoundError(f"Several properties corresponding to {prop_name}"
                                           f"{'' if not prop_type else f'@{prop_type}'}.")
@@ -289,7 +289,7 @@ class MTObject(DBObjectClassBase):
                  if_none: Literal['raise', 'warn', None] = None,
                  use_default: bool = False,
                  force_cache: bool = False,
-                 multi: Literal['raise', 'warn_first', 'warn_list',
+                 if_many: Literal['raise', 'warn_first', 'warn_list',
                                 'first', 'list'] = 'first',
                  verbose: bool = False) -> (str | MTObject | Geometry |
                                             Property | None |
@@ -301,7 +301,7 @@ class MTObject(DBObjectClassBase):
         """
         return self.get_property_gen("Code", codes, return_type=return_type,
                                      if_none=if_none, use_default=use_default,
-                                     force_cache=force_cache, multi=multi,
+                                     force_cache=force_cache, if_many=if_many,
                                      date_point=date_point, verbose=verbose)
 
     def get_name(self, names: list[str] | str = [],
@@ -310,7 +310,7 @@ class MTObject(DBObjectClassBase):
                  if_none: Literal['raise', 'warn', None] = None,
                  use_default: bool = False,
                  force_cache: bool = False,
-                 multi: Literal['raise', 'warn_first', 'warn_list',
+                 if_many: Literal['raise', 'warn_first', 'warn_list',
                                 'first', 'list'] = 'first',
                  verbose: bool = False) -> (str | MTObject | Geometry |
                                             Property | None |
@@ -322,7 +322,7 @@ class MTObject(DBObjectClassBase):
         """
         return self.get_property_gen("Name", names, return_type=return_type,
                                      if_none=if_none, use_default=use_default,
-                                     force_cache=force_cache, multi=multi,
+                                     force_cache=force_cache, if_many=if_many,
                                      date_point=date_point, verbose=verbose)
 
     def get_property(self, full_name: str,
@@ -331,7 +331,7 @@ class MTObject(DBObjectClassBase):
                      if_none: Literal['raise', 'warn', None] = None,
                      use_default: bool = False,
                      force_cache: bool = False,
-                     multi: Literal['raise', 'warn_first', 'warn_list',
+                     if_many: Literal['raise', 'warn_first', 'warn_list',
                                     'first', 'list'] = 'warn_first',
                      verbose: bool = False) -> (str | MTObject | Geometry |
                                                 Property | None |
@@ -345,7 +345,7 @@ class MTObject(DBObjectClassBase):
         name_a, *name_b = full_name.split('@')
         return self.get_property_gen(name_a, name_b, return_type=return_type,
                                      if_none=if_none, use_default=use_default,
-                                     force_cache=force_cache, multi=multi,
+                                     force_cache=force_cache, if_many=if_many,
                                      date_point=date_point, verbose=verbose)
 
     def get_properties_gen(self, prop_name: str, prop_types: list[str] = [],
