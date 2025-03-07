@@ -790,19 +790,6 @@ class MTObject(DBObjectClassBase):
             self.create_property(dic["key"], dic["value"], dic["source_ref"])
         return "OK", None, None
 
-    def set_scale(self, mapper: Mapper) -> tuple[str, str | None, str | None]:
-        """Définit l'échelle de l'objet. (À enlever)
-
-        Parameters:
-            mapper: L'object `Mapper` lié à cet objet.
-
-        Returns:
-            Un tuple indiquant le résultat de l'opération.
-        """
-        if mapper.get('Scale') is None:
-            return "NO_DATA", None, None
-        return "OK", None, None
-
     def set_nomenclature(self, mapper: Mapper) -> tuple[str, str | None,
                                                         str | None]:
         """Définit la nomenclatue de l'objet. (Product uniquement)

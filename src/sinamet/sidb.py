@@ -1112,7 +1112,6 @@ class Sidb:
         result = {}
         result["code"] = territory.set_code(mapper)
         result["name"] = territory.set_name(mapper)
-        result["scale"] = territory.set_scale(mapper)
         result["isinterritory"] = territory.set_isin_territory(mapper)
 
         # Recherche des erreurs
@@ -1122,7 +1121,7 @@ class Sidb:
             raise MapperError(mapper, result, "code")
         elif result["name"][0] != "OK" and result["name"][0] != "NO_DATA":
             raise MapperError(mapper, result, "name")
-        if new_territory and result["scale"][0] != "OK":
+        if new_territory and mapper.get('Scale') is None:
             raise MapperError(mapper, result, "scale")
         if result["isinterritory"][0] != "OK" and result["isinterritory"][0] != "NO_DATA":
             raise MapperError(mapper, result, "isinterritory")
@@ -1836,7 +1835,6 @@ class Sidb:
         result["isinterritory"] = actor.set_isin_territory(mapper)
         result["territory"] = actor.set_territory(mapper)
         result["emitteractor"] = actor.set_emitter_actor(mapper)
-        result["scale"] = actor.set_scale(mapper)
 
         # Recherche des erreurs
         if result["code"][0] != "OK" and result["code"][0] != "NO_DATA":
