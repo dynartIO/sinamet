@@ -253,7 +253,7 @@ class Sidb:
 
     def get_properties(self, properties: Iterable[str] | str,
                        filter_ids: Select[tuple[int]] | list[int] | None = None,
-                       return_type: str = 'list') -> Sequence[Property]:
+                       ) -> Sequence[Property]:
         """Charge et renvoie les propriétés correspondantes.
 
         Parameters:
