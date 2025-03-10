@@ -208,12 +208,6 @@ class Mapper():
         if key == "SourceRef":
             raise ValueError("SourceRef is not an available key at the moment.")
 
-        if (primary_key or foreign_key) and not key.startswith(('Code', 'Name')):
-            raise ValueError("`primary_key` can only be associated with Code or Name")
-        if primary_key and foreign_key:
-            raise ValueError('Cannot have `primary_key` and `foreign_key`'
-                             ' at the same time.')
-
         if key.startswith("Primary:") or primary_key:
             if key.startswith("Primary:"):
                 key = key.replace("Primary:", "", 1)
@@ -221,6 +215,12 @@ class Mapper():
                               " Use attribute 'primary_key=' instead")
                 primary_key = True
             self.primary_key = len(self)
+
+        if (primary_key or foreign_key) and not key.startswith(('Code', 'Name')):
+            raise ValueError("`primary_key` can only be associated with Code or Name")
+        if primary_key and foreign_key:
+            raise ValueError('Cannot have `primary_key` and `foreign_key`'
+                             ' at the same time.')
 
         date_point = to_date(date_point)
         start_n, end_n = get_start_end_dates(start=date_start, end=date_end,
