@@ -1081,12 +1081,16 @@ class Sidb:
             verbose:
         """
         territory = None
-        if mapper.primary_key != -1:
-            i_primary_keys = [i for i, pk in enumerate(mapper.primary_keys) if pk]
-            for ipk in i_primary_keys:
-                mapper_ipk = mapper.get_dict_i(ipk)
-                territory = self.get_territory(mapper_ipk["key"], mapper_ipk["value"])
-                if territory is not None:
+        if True in mapper.foreign_keys:
+            row = mapper.get_dict_i(mapper.foreign_keys.index(True))
+            territory = self.get_territory(row['key'], row['value'])
+            if not territory:
+                raise SidbNotFoundError(f"Could not find Territory({row['key']}={row['value']})")
+        elif True in mapper.primary_keys:
+            for pk_idx in (i for i, pk in enumerate(mapper.primary_keys) if pk):
+                row = mapper.get_dict_i(pk_idx)
+                territory = self.get_territory(row['key'], row['value'])
+                if territory:
                     break
         else:
             lst_i_keys = mapper.get_keys_index("Code", startswith=True)
@@ -1800,12 +1804,16 @@ class Sidb:
             verbose:
         """
         actor = None
-        if mapper.primary_key != -1:
-            i_primary_keys = [i for i, pk in enumerate(mapper.primary_keys) if pk]
-            for ipk in i_primary_keys:
-                mapper_ipk = mapper.get_dict_i(ipk)
-                actor = self.get_actor(mapper_ipk["key"], mapper_ipk["value"])
-                if actor is not None:
+        if True in mapper.foreign_keys:
+            row = mapper.get_dict_i(mapper.foreign_keys.index(True))
+            actor = self.get_actor(row['key'], row['value'])
+            if not actor:
+                raise SidbNotFoundError(f"Could not find Actor({row['key']}={row['value']})")
+        elif True in mapper.primary_keys:
+            for pk_idx in (i for i, pk in enumerate(mapper.primary_keys) if pk):
+                row = mapper.get_dict_i(pk_idx)
+                actor = self.get_actor(row['key'], row['value'])
+                if actor:
                     break
         else:
             lst_i_keys = mapper.get_keys_index("Code", startswith=True)
@@ -2580,13 +2588,18 @@ class Sidb:
             MapperError: Une erreur s'est produite.
         """
         product = None
-        if mapper.primary_key != -1:
-            i_primary_keys = [i for i, pk in enumerate(mapper.primary_keys) if pk]
-            for ipk in i_primary_keys:
-                mapper_ipk = mapper.get_dict_i(ipk)
-                product = self.get_product(mapper_ipk["key"], mapper_ipk["value"],
-                                           nomenclature=mapper.get("Nomenclature"))
-                if product is not None:
+        if True in mapper.foreign_keys:
+            row = mapper.get_dict_i(mapper.foreign_keys.index(True))
+            product = self.get_product(row['key'], row['value'],
+                                       nomenclature=mapper.get('Nomenclature'))
+            if not product:
+                raise SidbNotFoundError(f"Could not find Product({row['key']}={row['value']})")
+        elif True in mapper.primary_keys:
+            for pk_idx in (i for i, pk in enumerate(mapper.primary_keys) if pk):
+                row = mapper.get_dict_i(pk_idx)
+                product = self.get_product(row['key'], row['value'],
+                                           nomenclature=mapper.get('Nomenclature'))
+                if product:
                     break
         else:
             lst_i_keys = mapper.get_keys_index("Code", startswith=True)

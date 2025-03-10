@@ -208,8 +208,11 @@ class Mapper():
         if key == "SourceRef":
             raise ValueError("SourceRef is not an available key at the moment.")
 
-        if primary_key and not key.startswith(('Code', 'Name')):
+        if (primary_key or foreign_key) and not key.startswith(('Code', 'Name')):
             raise ValueError("`primary_key` can only be associated with Code or Name")
+        if primary_key and foreign_key:
+            raise ValueError('Cannot have `primary_key` and `foreign_key`'
+                             ' at the same time.')
 
         if key.startswith("Primary:") or primary_key:
             if key.startswith("Primary:"):
