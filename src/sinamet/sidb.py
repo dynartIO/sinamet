@@ -457,80 +457,25 @@ class Sidb:
 
     # Territory
     @overload
-    def get_territory(
-            self,
-            *args: str,
-            match_pattern: bool = False,
-            ignore_case: bool = False,
-            ignore_accent: bool = False,
-            return_type: Literal['object'] = 'object',
-            if_none: Literal['raise', 'warn', None] = None,
-            if_many: Literal['raise',
-                             'first',
-                             'list',
-                             'warn_list',
-                             'warn_first',
-                             ] = 'warn_list',
-            verbose: bool = False,
-            **kwargs: str
-            ) -> (Territory | Sequence[Territory] | None): ...
-
+    def get_territory(self, *args: str, match_pattern: bool = False, ignore_case: bool = False, ignore_accent: bool = False, return_type: Literal['object'] = 'object', if_none: Literal['raise'], if_many: Literal['raise', 'first', 'warn_first'], verbose: bool = False, **kwargs: str) -> Territory: ...
     @overload
-    def get_territory(
-            self,
-            *args: str,
-            match_pattern: bool = False,
-            ignore_case: bool = False,
-            ignore_accent: bool = False,
-            return_type: Literal['id'],
-            if_none: Literal['raise', 'warn', None] = None,
-            if_many: Literal['raise',
-                             'first',
-                             'list',
-                             'warn_list',
-                             'warn_first',
-                             ] = 'warn_list',
-            verbose: bool = False,
-            **kwargs: str
-            ) -> (int | Sequence[int] | None): ...
-
+    def get_territory(self, *args: str, match_pattern: bool = False, ignore_case: bool = False, ignore_accent: bool = False, return_type: Literal['object'] = 'object', if_none: Literal['raise'], if_many: Literal['list', 'warn_list', ] = 'warn_list', verbose: bool = False, **kwargs: str) -> Territory | Sequence[Territory]: ...
     @overload
-    def get_territory(
-            self,
-            *args: str,
-            match_pattern: bool = False,
-            ignore_case: bool = False,
-            ignore_accent: bool = False,
-            return_type: Literal['query'],
-            if_none: Literal['raise', 'warn', None] = None,
-            if_many: Literal['raise',
-                             'first',
-                             'list',
-                             'warn_list',
-                             'warn_first',
-                             ] = 'warn_list',
-            verbose: bool = False,
-            **kwargs: str
-            ) -> Select[tuple[Territory]]: ...
-
+    def get_territory(self, *args: str, match_pattern: bool = False, ignore_case: bool = False, ignore_accent: bool = False, return_type: Literal['object'] = 'object', if_none: Literal['warn', None] = None, if_many: Literal['raise', 'first', 'warn_first'], verbose: bool = False, **kwargs: str) -> Territory | None: ...
     @overload
-    def get_territory(
-            self,
-            *args: str,
-            match_pattern: bool = False,
-            ignore_case: bool = False,
-            ignore_accent: bool = False,
-            return_type: Literal['queryid', 'qid'],
-            if_none: Literal['raise', 'warn', None] = None,
-            if_many: Literal['raise',
-                             'first',
-                             'list',
-                             'warn_list',
-                             'warn_first',
-                             ] = 'warn_list',
-            verbose: bool = False,
-            **kwargs: str
-            ) -> Select[tuple[int]]: ...
+    def get_territory(self, *args: str, match_pattern: bool = False, ignore_case: bool = False, ignore_accent: bool = False, return_type: Literal['object'] = 'object', if_none: Literal['warn', None] = None, if_many: Literal['list', 'warn_list', ] = 'warn_list', verbose: bool = False, **kwargs: str) -> Territory | Sequence[Territory] | None: ...
+    @overload
+    def get_territory(self, *args: str, match_pattern: bool = False, ignore_case: bool = False, ignore_accent: bool = False, return_type: Literal['id'], if_none: Literal['raise'], if_many: Literal['raise', 'first', 'warn_first'], verbose: bool = False, **kwargs: str) -> int: ...
+    @overload
+    def get_territory(self, *args: str, match_pattern: bool = False, ignore_case: bool = False, ignore_accent: bool = False, return_type: Literal['id'], if_none: Literal['raise'], if_many: Literal['list', 'warn_list', ] = 'warn_list', verbose: bool = False, **kwargs: str) -> int | Sequence[int]: ...
+    @overload
+    def get_territory(self, *args: str, match_pattern: bool = False, ignore_case: bool = False, ignore_accent: bool = False, return_type: Literal['id'], if_none: Literal['warn', None] = None, if_many: Literal['raise', 'first', 'warn_first'], verbose: bool = False, **kwargs: str) -> int | None: ...
+    @overload
+    def get_territory(self, *args: str, match_pattern: bool = False, ignore_case: bool = False, ignore_accent: bool = False, return_type: Literal['id'], if_none: Literal['warn', None] = None, if_many: Literal['list', 'warn_list', ] = 'warn_list', verbose: bool = False, **kwargs: str) -> int | Sequence[int] | None: ...
+    @overload
+    def get_territory(self, *args: str, match_pattern: bool = False, ignore_case: bool = False, ignore_accent: bool = False, return_type: Literal['query'], if_none: Literal['raise', 'warn', None] = None, if_many: Literal['raise', 'first', 'list', 'warn_list', 'warn_first', ] = 'warn_list', verbose: bool = False, **kwargs: str) -> Select[tuple[Territory]]: ...
+    @overload
+    def get_territory(self, *args: str, match_pattern: bool = False, ignore_case: bool = False, ignore_accent: bool = False, return_type: Literal['queryid', 'qid'], if_none: Literal['raise', 'warn', None] = None, if_many: Literal['raise', 'first', 'list', 'warn_list', 'warn_first', ] = 'warn_list', verbose: bool = False, **kwargs: str) -> Select[tuple[int]]: ...
 
     def get_territory(
             self,
@@ -1132,80 +1077,25 @@ class Sidb:
 
     # Actor
     @overload
-    def get_actor(
-            self,
-            *args: str,
-            match_pattern: bool = False,
-            ignore_case: bool = False,
-            ignore_accent: bool = False,
-            return_type: Literal['object'] = 'object',
-            if_none: Literal['raise', 'warn', None] = None,
-            if_many: Literal['raise',
-                             'first',
-                             'list',
-                             'warn_list',
-                             'warn_first',
-                             ] = 'warn_list',
-            verbose: bool = False,
-            **kwargs: str
-            ) -> Actor | Sequence[Actor] | None: ...
-
+    def get_actor(self, *args: str, match_pattern: bool = False, ignore_case: bool = False, ignore_accent: bool = False, return_type: Literal['object'] = 'object', if_none: Literal['raise'], if_many: Literal['raise', 'first', 'warn_first'], verbose: bool = False, **kwargs: str) -> Actor: ...
     @overload
-    def get_actor(
-            self,
-            *args: str,
-            match_pattern: bool = False,
-            ignore_case: bool = False,
-            ignore_accent: bool = False,
-            return_type: Literal['id'],
-            if_none: Literal['raise', 'warn', None] = None,
-            if_many: Literal['raise',
-                             'first',
-                             'list',
-                             'warn_list',
-                             'warn_first',
-                             ] = 'warn_list',
-            verbose: bool = False,
-            **kwargs: str
-            ) -> int | Sequence[int] | None: ...
-
+    def get_actor(self, *args: str, match_pattern: bool = False, ignore_case: bool = False, ignore_accent: bool = False, return_type: Literal['object'] = 'object', if_none: Literal['raise'], if_many: Literal['list', 'warn_list', ] = 'warn_list', verbose: bool = False, **kwargs: str) -> Actor | Sequence[Actor]: ...
     @overload
-    def get_actor(
-            self,
-            *args: str,
-            match_pattern: bool = False,
-            ignore_case: bool = False,
-            ignore_accent: bool = False,
-            return_type: Literal['query'],
-            if_none: Literal['raise', 'warn', None] = None,
-            if_many: Literal['raise',
-                             'first',
-                             'list',
-                             'warn_list',
-                             'warn_first',
-                             ] = 'warn_list',
-            verbose: bool = False,
-            **kwargs: str
-            ) -> Select[tuple[Actor]]: ...
-
+    def get_actor(self, *args: str, match_pattern: bool = False, ignore_case: bool = False, ignore_accent: bool = False, return_type: Literal['object'] = 'object', if_none: Literal['warn', None] = None, if_many: Literal['raise', 'first', 'warn_first'], verbose: bool = False, **kwargs: str) -> Actor | None: ...
     @overload
-    def get_actor(
-            self,
-            *args: str,
-            match_pattern: bool = False,
-            ignore_case: bool = False,
-            ignore_accent: bool = False,
-            return_type: Literal['queryid', 'qid'],
-            if_none: Literal['raise', 'warn', None] = None,
-            if_many: Literal['raise',
-                             'first',
-                             'list',
-                             'warn_list',
-                             'warn_first',
-                             ] = 'warn_list',
-            verbose: bool = False,
-            **kwargs: str
-            ) -> Select[tuple[int]]: ...
+    def get_actor(self, *args: str, match_pattern: bool = False, ignore_case: bool = False, ignore_accent: bool = False, return_type: Literal['object'] = 'object', if_none: Literal['warn', None] = None, if_many: Literal['list', 'warn_list', ] = 'warn_list', verbose: bool = False, **kwargs: str) -> Actor | Sequence[Actor] | None: ...
+    @overload
+    def get_actor(self, *args: str, match_pattern: bool = False, ignore_case: bool = False, ignore_accent: bool = False, return_type: Literal['id'], if_none: Literal['raise'], if_many: Literal['raise', 'first', 'warn_first'], verbose: bool = False, **kwargs: str) -> int: ...
+    @overload
+    def get_actor(self, *args: str, match_pattern: bool = False, ignore_case: bool = False, ignore_accent: bool = False, return_type: Literal['id'], if_none: Literal['raise'], if_many: Literal['list', 'warn_list', ] = 'warn_list', verbose: bool = False, **kwargs: str) -> int | Sequence[int]: ...
+    @overload
+    def get_actor(self, *args: str, match_pattern: bool = False, ignore_case: bool = False, ignore_accent: bool = False, return_type: Literal['id'], if_none: Literal['warn', None] = None, if_many: Literal['raise', 'first', 'warn_first'], verbose: bool = False, **kwargs: str) -> int | None: ...
+    @overload
+    def get_actor(self, *args: str, match_pattern: bool = False, ignore_case: bool = False, ignore_accent: bool = False, return_type: Literal['id'], if_none: Literal['warn', None] = None, if_many: Literal['list', 'warn_list', ] = 'warn_list', verbose: bool = False, **kwargs: str) -> int | Sequence[int] | None: ...
+    @overload
+    def get_actor(self, *args: str, match_pattern: bool = False, ignore_case: bool = False, ignore_accent: bool = False, return_type: Literal['query'], if_none: Literal['raise', 'warn', None] = None, if_many: Literal['raise', 'first', 'list', 'warn_list', 'warn_first', ] = 'warn_list', verbose: bool = False, **kwargs: str) -> Select[tuple[Actor]]: ...
+    @overload
+    def get_actor(self, *args: str, match_pattern: bool = False, ignore_case: bool = False, ignore_accent: bool = False, return_type: Literal['queryid', 'qid'], if_none: Literal['raise', 'warn', None] = None, if_many: Literal['raise', 'first', 'list', 'warn_list', 'warn_first', ] = 'warn_list', verbose: bool = False, **kwargs: str) -> Select[tuple[int]]: ...
 
     def get_actor(
             self,
@@ -1856,84 +1746,25 @@ class Sidb:
 
     # Product
     @overload
-    def get_product(
-            self,
-            *args: str,
-            nomenclature: str | None = None,
-            match_pattern: bool = False,
-            ignore_case: bool = False,
-            ignore_accent: bool = False,
-            return_type: Literal['object'] = 'object',
-            if_none: Literal['raise', 'warn', None] = None,
-            if_many: Literal['raise',
-                             'first',
-                             'list',
-                             'warn_list',
-                             'warn_first',
-                             ] = 'warn_list',
-            verbose: bool = False,
-            **kwargs: str
-            ) -> Product | Sequence[Product] | None: ...
-
+    def get_product(self, *args: str, nomenclature: str | None = None, match_pattern: bool = False, ignore_case: bool = False, ignore_accent: bool = False, return_type: Literal['object'] = 'object', if_none: Literal['raise'], if_many: Literal['raise', 'first', 'warn_first'], verbose: bool = False, **kwargs: str) -> Product: ...
     @overload
-    def get_product(
-            self,
-            *args: str,
-            nomenclature: str | None = None,
-            match_pattern: bool = False,
-            ignore_case: bool = False,
-            ignore_accent: bool = False,
-            return_type: Literal['id'],
-            if_none: Literal['raise', 'warn', None] = None,
-            if_many: Literal['raise',
-                             'first',
-                             'list',
-                             'warn_list',
-                             'warn_first',
-                             ] = 'warn_list',
-            verbose: bool = False,
-            **kwargs: str
-            ) -> int | Sequence[int] | None: ...
-
+    def get_product(self, *args: str, nomenclature: str | None = None, match_pattern: bool = False, ignore_case: bool = False, ignore_accent: bool = False, return_type: Literal['object'] = 'object', if_none: Literal['raise'], if_many: Literal['list', 'warn_list', ] = 'warn_list', verbose: bool = False, **kwargs: str) -> Product | Sequence[Product]: ...
     @overload
-    def get_product(
-            self,
-            *args: str,
-            nomenclature: str | None = None,
-            match_pattern: bool = False,
-            ignore_case: bool = False,
-            ignore_accent: bool = False,
-            return_type: Literal['query'],
-            if_none: Literal['raise', 'warn', None] = None,
-            if_many: Literal['raise',
-                             'first',
-                             'list',
-                             'warn_list',
-                             'warn_first',
-                             ] = 'warn_list',
-            verbose: bool = False,
-            **kwargs: str
-            ) -> Select[tuple[Product]]: ...
-
+    def get_product(self, *args: str, nomenclature: str | None = None, match_pattern: bool = False, ignore_case: bool = False, ignore_accent: bool = False, return_type: Literal['object'] = 'object', if_none: Literal['warn', None] = None, if_many: Literal['raise', 'first', 'warn_first'], verbose: bool = False, **kwargs: str) -> Product | None: ...
     @overload
-    def get_product(
-            self,
-            *args: str,
-            nomenclature: str | None = None,
-            match_pattern: bool = False,
-            ignore_case: bool = False,
-            ignore_accent: bool = False,
-            return_type: Literal['queryid', 'qid'],
-            if_none: Literal['raise', 'warn', None] = None,
-            if_many: Literal['raise',
-                             'first',
-                             'list',
-                             'warn_list',
-                             'warn_first',
-                             ] = 'warn_list',
-            verbose: bool = False,
-            **kwargs: str
-            ) -> Select[tuple[int]]: ...
+    def get_product(self, *args: str, nomenclature: str | None = None, match_pattern: bool = False, ignore_case: bool = False, ignore_accent: bool = False, return_type: Literal['object'] = 'object', if_none: Literal['warn', None] = None, if_many: Literal['list', 'warn_list', ] = 'warn_list', verbose: bool = False, **kwargs: str) -> Product | Sequence[Product] | None: ...
+    @overload
+    def get_product(self, *args: str, nomenclature: str | None = None, match_pattern: bool = False, ignore_case: bool = False, ignore_accent: bool = False, return_type: Literal['id'], if_none: Literal['raise'], if_many: Literal['raise', 'first', 'warn_first'], verbose: bool = False, **kwargs: str) -> int: ...
+    @overload
+    def get_product(self, *args: str, nomenclature: str | None = None, match_pattern: bool = False, ignore_case: bool = False, ignore_accent: bool = False, return_type: Literal['id'], if_none: Literal['raise'], if_many: Literal['list', 'warn_list', ] = 'warn_list', verbose: bool = False, **kwargs: str) -> int | Sequence[int]: ...
+    @overload
+    def get_product(self, *args: str, nomenclature: str | None = None, match_pattern: bool = False, ignore_case: bool = False, ignore_accent: bool = False, return_type: Literal['id'], if_none: Literal['warn', None] = None, if_many: Literal['raise', 'first', 'warn_first'], verbose: bool = False, **kwargs: str) -> int | None: ...
+    @overload
+    def get_product(self, *args: str, nomenclature: str | None = None, match_pattern: bool = False, ignore_case: bool = False, ignore_accent: bool = False, return_type: Literal['id'], if_none: Literal['warn', None] = None, if_many: Literal['list', 'warn_list', ] = 'warn_list', verbose: bool = False, **kwargs: str) -> int | Sequence[int] | None: ...
+    @overload
+    def get_product(self, *args: str, nomenclature: str | None = None, match_pattern: bool = False, ignore_case: bool = False, ignore_accent: bool = False, return_type: Literal['query'], if_none: Literal['raise', 'warn', None] = None, if_many: Literal['raise', 'first', 'list', 'warn_list', 'warn_first', ] = 'warn_list', verbose: bool = False, **kwargs: str) -> Select[tuple[Product]]: ...
+    @overload
+    def get_product(self, *args: str, nomenclature: str | None = None, match_pattern: bool = False, ignore_case: bool = False, ignore_accent: bool = False, return_type: Literal['queryid', 'qid'], if_none: Literal['raise', 'warn', None] = None, if_many: Literal['raise', 'first', 'list', 'warn_list', 'warn_first', ] = 'warn_list', verbose: bool = False, **kwargs: str) -> Select[tuple[int]]: ...
 
     def get_product(
             self,
