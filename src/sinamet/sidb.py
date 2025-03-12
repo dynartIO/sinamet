@@ -270,12 +270,12 @@ class Sidb:
         q = select(Property)
         mysqllst: list[ColumnElement[bool]] = []
         for prop in properties:
-            mytabname = Property.tabname(prop)
-            if mytabname[1] is not None:
-                mysqllst.append(and_(Property.name_a == mytabname[0],
-                                     Property.name_b == mytabname[1]))
+            prop = prop.split('@', 1)
+            if len(prop) > 1:
+                mysqllst.append(and_(Property.name_a == prop[0],
+                                     Property.name_b == prop[1]))
             else:
-                mysqllst.append(Property.name_a == mytabname[0])
+                mysqllst.append(Property.name_a == prop[0])
         q = q.where(or_(*mysqllst))
 
         if filter_ids is not None:

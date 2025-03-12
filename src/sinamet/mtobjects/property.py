@@ -175,14 +175,6 @@ class Property(DBObjectClassBase):
         else:
             raise TypeError("Property type error = '" + str(self.type) + "'")
 
-    @staticmethod
-    def tabname(property_name: str) -> list[str | None]:
-        """Divise le un nom de propriété en deux."""
-        if len(property_name) == 2:
-            print(f"Calling tabname with already two parts : {property_name=}")
-            return property_name
-        return property_name.split('@') if '@' in property_name else [property_name, None]
-
     def get_name(self) -> str:
         """Renvoie le nom complet de la propriété."""
         return self.name_a + ('' if self.name_b is None else f'@{self.name_b}')
