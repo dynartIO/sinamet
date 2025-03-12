@@ -20,7 +20,4 @@ class Product(MTObject):
         code = self.get_code() or 'No code'
         name = self.get_name() or 'No name'
         nomenclature = self.get_property('Nomenclature') or 'No nomenclature'
-        return f"<Product-{self.id}:{nomenclature}({code})-{name}>"
-
-    def str_hard_property(self) -> str:
-        return ""
+        return f'<Product-{self.id}: {nomenclature}({code})-{name}>'

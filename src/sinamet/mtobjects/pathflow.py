@@ -30,20 +30,3 @@ class Pathflow(MTQuantifiable):
     __mapper_args__ = {
         'polymorphic_identity': 'pathflow',
     }
-
-    def __str__(self):
-        temp_emitter_actor = "A?" if self.emitter_actor is None else self.emitter_actor.get_name()
-        temp_emitter_territory = "T?" if self.emitter_territory is None else self.emitter_territory.get_code()
-        temp_receiver_actor = "A?" if self.receiver_actor is None else self.receiver_actor.get_name()
-        temp_receiver_territory = "T?" if self.receiver_territory is None else self.receiver_territory.get_code()
-        temp_omes = " !! NO PRODUCT !! " if self.product is None else "[" + self.product.get_code().ljust(5) + "] " \
-            + self.product.get_name()
-
-        for key, val in self.quantity.items():
-            qunit = "%s %s" % (val, key)
-            break
-
-        return "<Pathflow " + temp_omes.ljust(50)[:50] + " "\
-               + str(qunit) + " [%s @ %s] -> [%s @ %s]>" % \
-               (temp_emitter_territory, temp_emitter_actor,
-                temp_receiver_territory, temp_receiver_actor)

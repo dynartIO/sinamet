@@ -49,7 +49,23 @@ class MTQuantifiable(MTObject):
         self.quantity = {}
 
     def __str__(self) -> str:
-        return "<MTQuantifiable>"
+        quantity = next(f'{val} {key}' for key, val in self.quantity.items())
+
+        if self.date_point is not None:
+            date = f'[{self.date_point}]'
+        else:
+            date = f'[{self.date_start} -> {self.date_end}]'
+
+        if name := self.get_name():
+            name = f'Name: {name}'
+        if code := self.get_code():
+            code = f'Code: {code}'
+        product_name = str(self.product.get_name()) if self.product else ''
+
+        return f'<{" | ".join(filter(None, (
+            f'{self.__class__.__name__}-{self.id}',
+            name, code, product_name, date, quantity
+        )))}>'
 
     def get_quantity(self, unit: str,
                      error: Literal['raise', 'none', 'print'] = 'raise',

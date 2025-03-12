@@ -67,19 +67,10 @@ class MTObject(DBObjectClassBase):
         return "<MTObject>"
 
     def __repr__(self) -> str:
-        _str_return = str(self) + "\n"
-        _str_return += self.str_hard_property()
-        _str_return += self.str_properties()
-        return _str_return
-
-    def str_hard_property(self) -> str:
-        return "NO HARD PROPERTY IMPLEMENTED \n"
-
-    def str_properties(self) -> str:
-        _return_string = ""
-        for attr in self.properties:
-            _return_string += "    > " + str(attr) + "\n"
-        return _return_string
+        s = f'{self}\n'
+        for property in self.properties:
+            s += f'    > {property}\n'
+        return s
 
     def to_string_object(self) -> str:
         mydict = self.get_codes(return_type="dict")

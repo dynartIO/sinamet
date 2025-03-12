@@ -22,9 +22,4 @@ class Actor(MTObject):
     }
 
     def __str__(self) -> str:
-        return f"<Actor|{self.get_name()}>"
-
-    def str_hard_property(self) -> str:
-        str_ = f"Code(s) : {self.get_code() or 'no code'}\n"
-        str_ += f"Name(s) : {self.get_name() or 'no name'}\n"
-        return str_
+        return f'<Actor-{self.id}: {self.get_name()}>'

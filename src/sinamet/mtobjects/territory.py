@@ -17,6 +17,4 @@ class Territory(MTObject):
     }
 
     def __str__(self) -> str:
-        _str_return = "<Territory-" + str(self.id) + ": " \
-                    + str(self.get_code()) + "-" + str(self.get_name(force_cache=False)) + ">"
-        return _str_return
+        return f'<Territory-{self.id}: {self.get_code()}-{self.get_name()}>'
