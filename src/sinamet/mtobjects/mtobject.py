@@ -178,9 +178,9 @@ class MTObject(DBObjectClassBase):
             verbose: Si `True`, décrit le déroulement de la fonction dans le shell.
 
         Returns:
-            (str | MTObject | Geometry): La valeur de la propriété.
+            (str | int | float | MTObject | Geometry): La valeur de la propriété.
             (Property): L'object Property lui-même.
-            (tuple[str | MTObject | Geometry, str]): Le tuple contenant la valeur
+            (tuple[str | int | float | MTObject | Geometry, str]): Le tuple contenant la valeur
                 de la propriété et la précision de la propriété.
             (None): Aucune propriété n'a été trouvée.
 
@@ -482,12 +482,12 @@ class MTObject(DBObjectClassBase):
             verbose: Si `True`, décrit le déroulement de la fonction dans le shell.
 
         Returns:
-            (list[str] | list[MTObject] | list[Geometry]): La liste des valeurs
+            (list[str | int | float | MTObject | Geometry]): La liste des valeurs
                 des propriétés recherchées.
             (list[Property]): La liste des objects `Property` recherchés.
-            (list[tuple[str | MTObject | Geometry], str]): La liste des tuples
+            (list[tuple[str | int | float | MTObject | Geometry], str]): La liste des tuples
                 contenants les valeurs des propriétés et leurs précisions.
-            (dict[str, str | MTObject, Geometry]): Un dictionnaire avec comme clés
+            (dict[str, str | int | float | MTObject, Geometry]): Un dictionnaire avec comme clés
                 les précisions des propriétés, et comme valeurs leurs valeurs.
             (Profile): L'object `Profile` contenant les propriétés recherchées.
 
