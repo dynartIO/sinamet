@@ -2,8 +2,8 @@ from __future__ import annotations
 
 import warnings
 
-import typing
-from typing import Literal
+from collections.abc import Iterable
+from typing import Literal, overload, TYPE_CHECKING
 
 from datetime import date
 
@@ -21,7 +21,7 @@ from sinamet.tools.timext import get_start_end_dates, to_date
 from sinamet.tools.profile import Profile
 from sinamet.errors import SidbMultiFoundError, SidbNotFoundError
 
-if typing.TYPE_CHECKING:
+if TYPE_CHECKING:
     from shapely import Geometry
     from sqlalchemy import Select
     from sinamet.mapper import Mapper
@@ -41,13 +41,14 @@ class MTObject(DBObjectClassBase):
     id: Mapped[int] = mapped_column(primary_key=True)
     type: Mapped[str] = mapped_column(String(25))
 
-    properties: Mapped[list[Property]] = relationship(back_populates="item",
-                                                      primaryjoin=Property.item_id == id,
-                                                      cascade="all, delete-orphan")
-
-    property_values: Mapped[list[Property]] = relationship(back_populates="value_mtobject",
-                                                           primaryjoin=Property.value_mtobject_id == id,
-                                                           cascade="all, delete-orphan")
+    properties: Mapped[list[Property]] = relationship(
+            back_populates="item",
+            primaryjoin=Property.item_id == id,
+            cascade="all, delete-orphan")
+    property_values: Mapped[list[Property]] = relationship(
+            back_populates="value_mtobject",
+            primaryjoin=Property.value_mtobject_id == id,
+            cascade="all, delete-orphan")
 
     date_start: Mapped[date | None]
     date_end: Mapped[date | None]
@@ -124,17 +125,23 @@ class MTObject(DBObjectClassBase):
                 _child_node.parent = _parent_node
         return root_node
 
-    def get_property_gen(self, prop_name: str, prop_type: list[str] | str = [],
-                         date_point: str | date | None = None,
-                         return_type: Literal['value', 'property', 'tuple'] = "value",
-                         if_none: Literal['raise', 'warn', None] = None,
-                         use_default: bool = False,
-                         force_cache: bool = False,
-                         if_many: Literal['raise', 'warn_first', 'warn_list',
-                                        'first', 'list'] = "warn_first",
-                         verbose: bool = False) -> (str | MTObject | Geometry |
-                                                    Property | None |
-                                                    tuple[str | MTObject | Geometry, str]):
+    def get_property_gen(
+            self,
+            prop_name: str,
+            prop_type: Iterable[str] | str = [],
+            /, *,
+            date_point: str | date | None = None,
+            return_type: Literal['value', 'property', 'tuple'] = "value",
+            if_none: Literal['raise', 'warn', None] = None,
+            use_default: bool = False,
+            force_cache: bool = False,
+            if_many: Literal['raise', 'warn_first', 'warn_list',
+                             'first', 'list'] = "warn_first",
+            verbose: bool = False
+            ) -> (str | int | float | MTObject | Geometry | Property | None |
+                  tuple[str | int | float | MTObject | Geometry, str] |
+                  list[str | int | float | MTObject | Geometry] | list[Property] |
+                  list[tuple[str | int | float | MTObject | Geometry, str]]):
         """Fonction qui renvoie la ou les propriétés correspondantes aux arguments.
 
         Examples:
@@ -222,10 +229,11 @@ class MTObject(DBObjectClassBase):
         if not prop_type and prop_name in key_list:
             properties = (self.cached_properties[prop_name], '_')
         if not properties[0] and key_list and (use_default or not prop_type):
-            key_a, *key_b = key_list[0].split('@', 1)
-            properties = (self.cached_properties[key_list[0]], key_b)
+            _, _, key_b = key_list[0].partition('@')
+            properties = (self.cached_properties[key_list[0]], key_b if key_b else '_')
         if verbose:
             print(f"{properties=}")
+
         if properties[0] and date_point:
             date_point = to_date(date_point)
             properties = ([p for p in properties[0] if (
@@ -238,7 +246,7 @@ class MTObject(DBObjectClassBase):
                      not p.date_start)
                 )], properties[1])
 
-        if not properties[0]:
+        if not (properties[0] and properties[1]):
             if if_none == 'raise':
                 raise SidbNotFoundError(f"No such property has been found `{prop_name}"
                                         f"{'' if not prop_type else (f'@{prop_type}')}`.")
@@ -274,17 +282,47 @@ class MTObject(DBObjectClassBase):
             case "list":
                 return properties
 
-    def get_code(self, codes: list[str] | str = [],
-                 date_point: str | date | None = None,
-                 return_type: Literal['value', 'property', 'tuple'] = "value",
-                 if_none: Literal['raise', 'warn', None] = None,
-                 use_default: bool = False,
-                 force_cache: bool = False,
-                 if_many: Literal['raise', 'warn_first', 'warn_list',
-                                'first', 'list'] = 'first',
-                 verbose: bool = False) -> (str | MTObject | Geometry |
-                                            Property | None |
-                                            tuple[str | MTObject | Geometry, str]):
+    @overload
+    def get_code(self, codes: Iterable[str] | str = [], /, *, date_point: str | date | None = None, return_type: Literal['value'] = 'value', if_none: Literal['raise'], use_default: bool = False, force_cache: bool = False, if_many: Literal['raise', 'warn_first', 'first'] = 'first', verbose: bool = False) -> str | int | float | MTObject | Geometry: ...
+    @overload
+    def get_code(self, codes: Iterable[str] | str = [], /, *, date_point: str | date | None = None, return_type: Literal['value'] = 'value', if_none: Literal['raise'], use_default: bool = False, force_cache: bool = False, if_many: Literal['warn_list', 'list'], verbose: bool = False) -> (str | int | float | MTObject | Geometry | list[str | int | float | MTObject | Geometry]): ...
+    @overload
+    def get_code(self, codes: Iterable[str] | str = [], /, *, date_point: str | date | None = None, return_type: Literal['value'] = 'value', if_none: Literal['warn', None] = None, use_default: bool = False, force_cache: bool = False, if_many: Literal['raise', 'warn_first', 'first'] = 'first', verbose: bool = False) -> str | int | float | MTObject | Geometry | None: ...
+    @overload
+    def get_code(self, codes: Iterable[str] | str = [], /, *, date_point: str | date | None = None, return_type: Literal['value'] = 'value', if_none: Literal['warn', None] = None, use_default: bool = False, force_cache: bool = False, if_many: Literal['warn_list', 'list'], verbose: bool = False) -> (str | int | float | MTObject | Geometry | None | list[str | int | float | MTObject | Geometry]): ...
+    @overload
+    def get_code(self, codes: Iterable[str] | str = [], /, *, date_point: str | date | None = None, return_type: Literal['property'], if_none: Literal['raise'], use_default: bool = False, force_cache: bool = False, if_many: Literal['raise', 'warn_first', 'first'] = 'first', verbose: bool = False) -> Property: ...
+    @overload
+    def get_code(self, codes: Iterable[str] | str = [], /, *, date_point: str | date | None = None, return_type: Literal['property'], if_none: Literal['raise'], use_default: bool = False, force_cache: bool = False, if_many: Literal['warn_list', 'list'], verbose: bool = False) -> Property | list[Property]: ...
+    @overload
+    def get_code(self, codes: Iterable[str] | str = [], /, *, date_point: str | date | None = None, return_type: Literal['property'], if_none: Literal['warn', None] = None, use_default: bool = False, force_cache: bool = False, if_many: Literal['raise', 'warn_first', 'first'] = 'first', verbose: bool = False) -> Property | None: ...
+    @overload
+    def get_code(self, codes: Iterable[str] | str = [], /, *, date_point: str | date | None = None, return_type: Literal['property'], if_none: Literal['warn', None] = None, use_default: bool = False, force_cache: bool = False, if_many: Literal['warn_list', 'list'], verbose: bool = False) -> Property | list[Property] | None: ...
+    @overload
+    def get_code(self, codes: Iterable[str] | str = [], /, *, date_point: str | date | None = None, return_type: Literal['tuple'], if_none: Literal['raise'], use_default: bool = False, force_cache: bool = False, if_many: Literal['raise', 'warn_first', 'first'] = 'first', verbose: bool = False) -> tuple[str | int | float | MTObject | Geometry, str]: ...
+    @overload
+    def get_code(self, codes: Iterable[str] | str = [], /, *, date_point: str | date | None = None, return_type: Literal['tuple'], if_none: Literal['raise'], use_default: bool = False, force_cache: bool = False, if_many: Literal['warn_list', 'list'], verbose: bool = False) -> (tuple[str | int | float | MTObject | Geometry, str] | list[tuple[str | int | float | MTObject | Geometry, str]]): ...
+    @overload
+    def get_code(self, codes: Iterable[str] | str = [], /, *, date_point: str | date | None = None, return_type: Literal['tuple'], if_none: Literal['warn', None] = None, use_default: bool = False, force_cache: bool = False, if_many: Literal['raise', 'warn_first', 'first'] = 'first', verbose: bool = False) -> tuple[str | int | float | MTObject | Geometry, str] | None: ...
+    @overload
+    def get_code(self, codes: Iterable[str] | str = [], /, *, date_point: str | date | None = None, return_type: Literal['tuple'], if_none: Literal['warn', None] = None, use_default: bool = False, force_cache: bool = False, if_many: Literal['warn_list', 'list'], verbose: bool = False) -> (tuple[str | int | float | MTObject | Geometry, str] | None | list[tuple[str | int | float | MTObject | Geometry, str]]): ...
+
+    def get_code(
+            self,
+            codes: Iterable[str] | str = [],
+            /, *,
+            date_point: str | date | None = None,
+            return_type: Literal['value', 'property', 'tuple'] = "value",
+            if_none: Literal['raise', 'warn', None] = None,
+            use_default: bool = False,
+            force_cache: bool = False,
+            if_many: Literal['raise', 'warn_first', 'warn_list',
+                             'first', 'list'] = 'first',
+            verbose: bool = False
+            ) -> (str | int | float | MTObject | Geometry | Property | None |
+                  tuple[str | int | float | MTObject | Geometry, str] |
+                  list[str | int | float | MTObject | Geometry] | list[Property] |
+                  list[tuple[str | int | float | MTObject | Geometry, str]]):
         """Renvoie le code recherché.
 
         Fonction wrapper de [get_property_gen]
@@ -295,17 +333,47 @@ class MTObject(DBObjectClassBase):
                                      force_cache=force_cache, if_many=if_many,
                                      date_point=date_point, verbose=verbose)
 
-    def get_name(self, names: list[str] | str = [],
-                 date_point: str | date | None = None,
-                 return_type: Literal['value', 'property', 'tuple'] = "value",
-                 if_none: Literal['raise', 'warn', None] = None,
-                 use_default: bool = False,
-                 force_cache: bool = False,
-                 if_many: Literal['raise', 'warn_first', 'warn_list',
-                                'first', 'list'] = 'first',
-                 verbose: bool = False) -> (str | MTObject | Geometry |
-                                            Property | None |
-                                            tuple[str | MTObject | Geometry, str]):
+    @overload
+    def get_name(self, names: Iterable[str] | str = [], /, *, date_point: str | date | None = None, return_type: Literal['value'] = 'value', if_none: Literal['raise'], use_default: bool = False, force_cache: bool = False, if_many: Literal['raise', 'warn_first', 'first'] = 'first', verbose: bool = False) -> str | int | float | MTObject | Geometry: ...
+    @overload
+    def get_name(self, names: Iterable[str] | str = [], /, *, date_point: str | date | None = None, return_type: Literal['value'] = 'value', if_none: Literal['raise'], use_default: bool = False, force_cache: bool = False, if_many: Literal['warn_list', 'list'], verbose: bool = False) -> (str | int | float | MTObject | Geometry | list[str | int | float | MTObject | Geometry]): ...
+    @overload
+    def get_name(self, names: Iterable[str] | str = [], /, *, date_point: str | date | None = None, return_type: Literal['value'] = 'value', if_none: Literal['warn', None] = None, use_default: bool = False, force_cache: bool = False, if_many: Literal['raise', 'warn_first', 'first'] = 'first', verbose: bool = False) -> str | int | float | MTObject | Geometry | None: ...
+    @overload
+    def get_name(self, names: Iterable[str] | str = [], /, *, date_point: str | date | None = None, return_type: Literal['value'] = 'value', if_none: Literal['warn', None] = None, use_default: bool = False, force_cache: bool = False, if_many: Literal['warn_list', 'list'], verbose: bool = False) -> (str | int | float | MTObject | Geometry | None | list[str | int | float | MTObject | Geometry]): ...
+    @overload
+    def get_name(self, names: Iterable[str] | str = [], /, *, date_point: str | date | None = None, return_type: Literal['property'], if_none: Literal['raise'], use_default: bool = False, force_cache: bool = False, if_many: Literal['raise', 'warn_first', 'first'] = 'first', verbose: bool = False) -> Property: ...
+    @overload
+    def get_name(self, names: Iterable[str] | str = [], /, *, date_point: str | date | None = None, return_type: Literal['property'], if_none: Literal['raise'], use_default: bool = False, force_cache: bool = False, if_many: Literal['warn_list', 'list'], verbose: bool = False) -> Property | list[Property]: ...
+    @overload
+    def get_name(self, names: Iterable[str] | str = [], /, *, date_point: str | date | None = None, return_type: Literal['property'], if_none: Literal['warn', None] = None, use_default: bool = False, force_cache: bool = False, if_many: Literal['raise', 'warn_first', 'first'] = 'first', verbose: bool = False) -> Property | None: ...
+    @overload
+    def get_name(self, names: Iterable[str] | str = [], /, *, date_point: str | date | None = None, return_type: Literal['property'], if_none: Literal['warn', None] = None, use_default: bool = False, force_cache: bool = False, if_many: Literal['warn_list', 'list'], verbose: bool = False) -> Property | list[Property] | None: ...
+    @overload
+    def get_name(self, names: Iterable[str] | str = [], /, *, date_point: str | date | None = None, return_type: Literal['tuple'], if_none: Literal['raise'], use_default: bool = False, force_cache: bool = False, if_many: Literal['raise', 'warn_first', 'first'] = 'first', verbose: bool = False) -> tuple[str | int | float | MTObject | Geometry, str]: ...
+    @overload
+    def get_name(self, names: Iterable[str] | str = [], /, *, date_point: str | date | None = None, return_type: Literal['tuple'], if_none: Literal['raise'], use_default: bool = False, force_cache: bool = False, if_many: Literal['warn_list', 'list'], verbose: bool = False) -> (tuple[str | int | float | MTObject | Geometry, str] | list[tuple[str | int | float | MTObject | Geometry, str]]): ...
+    @overload
+    def get_name(self, names: Iterable[str] | str = [], /, *, date_point: str | date | None = None, return_type: Literal['tuple'], if_none: Literal['warn', None] = None, use_default: bool = False, force_cache: bool = False, if_many: Literal['raise', 'warn_first', 'first'] = 'first', verbose: bool = False) -> tuple[str | int | float | MTObject | Geometry, str] | None: ...
+    @overload
+    def get_name(self, names: Iterable[str] | str = [], /, *, date_point: str | date | None = None, return_type: Literal['tuple'], if_none: Literal['warn', None] = None, use_default: bool = False, force_cache: bool = False, if_many: Literal['warn_list', 'list'], verbose: bool = False) -> (tuple[str | int | float | MTObject | Geometry, str] | None | list[tuple[str | int | float | MTObject | Geometry, str]]): ...
+
+    def get_name(
+            self,
+            names: Iterable[str] | str = [],
+            /, *,
+            date_point: str | date | None = None,
+            return_type: Literal['value', 'property', 'tuple'] = "value",
+            if_none: Literal['raise', 'warn', None] = None,
+            use_default: bool = False,
+            force_cache: bool = False,
+            if_many: Literal['raise', 'warn_first', 'warn_list',
+                             'first', 'list'] = 'first',
+            verbose: bool = False
+            ) -> (str | int | float | MTObject | Geometry | Property | None |
+                  tuple[str | int | float | MTObject | Geometry, str] |
+                  list[str | int | float | MTObject | Geometry] | list[Property] |
+                  list[tuple[str | int | float | MTObject | Geometry, str]]):
         """Renvoie le nom recherché.
 
         Fonction wrapper de [get_property_gen]
@@ -316,17 +384,47 @@ class MTObject(DBObjectClassBase):
                                      force_cache=force_cache, if_many=if_many,
                                      date_point=date_point, verbose=verbose)
 
-    def get_property(self, full_name: str,
-                     date_point: str | date | None = None,
-                     return_type: Literal['value', 'property', 'tuple'] = "value",
-                     if_none: Literal['raise', 'warn', None] = None,
-                     use_default: bool = False,
-                     force_cache: bool = False,
-                     if_many: Literal['raise', 'warn_first', 'warn_list',
-                                    'first', 'list'] = 'warn_first',
-                     verbose: bool = False) -> (str | MTObject | Geometry |
-                                                Property | None |
-                                                tuple[str | MTObject | Geometry, str]):
+    @overload
+    def get_property(self, full_name: str, /, *, date_point: str | date | None = None, return_type: Literal['value'] = 'value', if_none: Literal['raise'], use_default: bool = False, force_cache: bool = False, if_many: Literal['raise', 'warn_first', 'first'] = 'first', verbose: bool = False) -> str | int | float | MTObject | Geometry: ...
+    @overload
+    def get_property(self, full_name: str, /, *, date_point: str | date | None = None, return_type: Literal['value'] = 'value', if_none: Literal['raise'], use_default: bool = False, force_cache: bool = False, if_many: Literal['warn_list', 'list'], verbose: bool = False) -> (str | int | float | MTObject | Geometry | list[str | int | float | MTObject | Geometry]): ...
+    @overload
+    def get_property(self, full_name: str, /, *, date_point: str | date | None = None, return_type: Literal['value'] = 'value', if_none: Literal['warn', None] = None, use_default: bool = False, force_cache: bool = False, if_many: Literal['raise', 'warn_first', 'first'] = 'first', verbose: bool = False) -> str | int | float | MTObject | Geometry | None: ...
+    @overload
+    def get_property(self, full_name: str, /, *, date_point: str | date | None = None, return_type: Literal['value'] = 'value', if_none: Literal['warn', None] = None, use_default: bool = False, force_cache: bool = False, if_many: Literal['warn_list', 'list'], verbose: bool = False) -> (str | int | float | MTObject | Geometry | None | list[str | int | float | MTObject | Geometry]): ...
+    @overload
+    def get_property(self, full_name: str, /, *, date_point: str | date | None = None, return_type: Literal['property'], if_none: Literal['raise'], use_default: bool = False, force_cache: bool = False, if_many: Literal['raise', 'warn_first', 'first'] = 'first', verbose: bool = False) -> Property: ...
+    @overload
+    def get_property(self, full_name: str, /, *, date_point: str | date | None = None, return_type: Literal['property'], if_none: Literal['raise'], use_default: bool = False, force_cache: bool = False, if_many: Literal['warn_list', 'list'], verbose: bool = False) -> Property | list[Property]: ...
+    @overload
+    def get_property(self, full_name: str, /, *, date_point: str | date | None = None, return_type: Literal['property'], if_none: Literal['warn', None] = None, use_default: bool = False, force_cache: bool = False, if_many: Literal['raise', 'warn_first', 'first'] = 'first', verbose: bool = False) -> Property | None: ...
+    @overload
+    def get_property(self, full_name: str, /, *, date_point: str | date | None = None, return_type: Literal['property'], if_none: Literal['warn', None] = None, use_default: bool = False, force_cache: bool = False, if_many: Literal['warn_list', 'list'], verbose: bool = False) -> Property | list[Property] | None: ...
+    @overload
+    def get_property(self, full_name: str, /, *, date_point: str | date | None = None, return_type: Literal['tuple'], if_none: Literal['raise'], use_default: bool = False, force_cache: bool = False, if_many: Literal['raise', 'warn_first', 'first'] = 'first', verbose: bool = False) -> tuple[str | int | float | MTObject | Geometry, str]: ...
+    @overload
+    def get_property(self, full_name: str, /, *, date_point: str | date | None = None, return_type: Literal['tuple'], if_none: Literal['raise'], use_default: bool = False, force_cache: bool = False, if_many: Literal['warn_list', 'list'], verbose: bool = False) -> (tuple[str | int | float | MTObject | Geometry, str] | list[tuple[str | int | float | MTObject | Geometry, str]]): ...
+    @overload
+    def get_property(self, full_name: str, /, *, date_point: str | date | None = None, return_type: Literal['tuple'], if_none: Literal['warn', None] = None, use_default: bool = False, force_cache: bool = False, if_many: Literal['raise', 'warn_first', 'first'] = 'first', verbose: bool = False) -> tuple[str | int | float | MTObject | Geometry, str] | None: ...
+    @overload
+    def get_property(self, full_name: str, /, *, date_point: str | date | None = None, return_type: Literal['tuple'], if_none: Literal['warn', None] = None, use_default: bool = False, force_cache: bool = False, if_many: Literal['warn_list', 'list'], verbose: bool = False) -> (tuple[str | int | float | MTObject | Geometry, str] | None | list[tuple[str | int | float | MTObject | Geometry, str]]): ...
+
+    def get_property(
+            self,
+            full_name: str,
+            /, *,
+            date_point: str | date | None = None,
+            return_type: Literal['value', 'property', 'tuple'] = "value",
+            if_none: Literal['raise', 'warn', None] = None,
+            use_default: bool = False,
+            force_cache: bool = False,
+            if_many: Literal['raise', 'warn_first', 'warn_list',
+                             'first', 'list'] = 'warn_first',
+            verbose: bool = False
+            ) -> (str | int | float | MTObject | Geometry | Property | None |
+                  tuple[str | int | float | MTObject | Geometry, str] |
+                  list[str | int | float | MTObject | Geometry] | list[Property] |
+                  list[tuple[str | int | float | MTObject | Geometry, str]]):
         """Renvoie la propriété recherchée.
 
         Fonction wrapper de [get_property_gen]
@@ -339,21 +437,23 @@ class MTObject(DBObjectClassBase):
                                      force_cache=force_cache, if_many=if_many,
                                      date_point=date_point, verbose=verbose)
 
-    def get_properties_gen(self, prop_name: str, prop_types: list[str] = [],
-                           date_point: str | date | None = None,
-                           date_start: str | date | None = None,
-                           date_end: str | date | None = None,
-                           return_type: Literal['value', 'property',
-                                                'tuple', 'dict',
-                                                'profile'] = 'value',
-                           if_none: Literal['raise', 'warn', None] = None,
-                           use_default: bool = False,
-                           force_cache: bool = False,
-                           verbose: bool = False) -> (list[str] | list[MTObject] |
-                                                      list[Geometry] | list[Property] |
-                                                      list[tuple[str | MTObject | Geometry, str]] |
-                                                      dict[str, str | MTObject | Geometry] |
-                                                      Profile):
+    def get_properties_gen(
+            self,
+            prop_name: str,
+            prop_types: Iterable[str] = [],
+            date_point: str | date | None = None,
+            date_start: str | date | None = None,
+            date_end: str | date | None = None,
+            return_type: Literal['value', 'property',
+                                 'tuple', 'dict',
+                                 'profile'] = 'value',
+            if_none: Literal['raise', 'warn', None] = None,
+            use_default: bool = False,
+            force_cache: bool = False,
+            verbose: bool = False
+            ) -> (list[str | int | float | MTObject | Geometry] | list[Property] |
+                  list[tuple[str | int | float | MTObject | Geometry, str]] |
+                  dict[str, str | int | float | MTObject | Geometry] | Profile):
         """Fonction qui renvoie les propriétés correspondantes aux arguments.
 
         Examples:
@@ -411,7 +511,7 @@ class MTObject(DBObjectClassBase):
         if verbose:
             print(f"{self.cached_properties=}")
 
-        properties = []
+        properties: list[tuple[Property, str]] = []
         for prop_type in prop_types:
             prop_full_name = prop_name
             if prop_type != "_":
@@ -448,29 +548,40 @@ class MTObject(DBObjectClassBase):
             return []
 
         match return_type:
-            case 'value': properties = [p[0].get_value() for p in properties]
-            case 'property': properties = [p[0] for p in properties]
-            case 'tuple': properties = [(p[0].get_value(), p[1]) for p in properties]
-            case 'dict': properties = {p[1]: p[0].get_value() for p in properties}
-            case 'profile': properties = Profile(properties=[p[0] for p in properties])
+            case 'value': return [p[0].get_value() for p in properties]
+            case 'property': return [p[0] for p in properties]
+            case 'tuple': return [(p[0].get_value(), p[1]) for p in properties]
+            case 'dict': return {p[1]: p[0].get_value() for p in properties}
+            case 'profile': return Profile(properties=[p[0] for p in properties])
 
-        return properties
+    @overload
+    def get_codes(self, codes: Iterable[str] = [], /, *, date_point: str | date | None = None, date_start: str | date | None = None, date_end: str | date | None = None, return_type: Literal['value'] = 'value', if_none: Literal['raise', 'warn', None] = None, use_default: bool = False, force_cache: bool = False, verbose: bool = False) -> list[str | int | float | MTObject | Geometry]: ...
+    @overload
+    def get_codes(self, codes: Iterable[str] = [], /, *, date_point: str | date | None = None, date_start: str | date | None = None, date_end: str | date | None = None, return_type: Literal['property'], if_none: Literal['raise', 'warn', None] = None, use_default: bool = False, force_cache: bool = False, verbose: bool = False) -> list[Property]: ...
+    @overload
+    def get_codes(self, codes: Iterable[str] = [], /, *, date_point: str | date | None = None, date_start: str | date | None = None, date_end: str | date | None = None, return_type: Literal['tuple'], if_none: Literal['raise', 'warn', None] = None, use_default: bool = False, force_cache: bool = False, verbose: bool = False) -> list[tuple[str | int | float | MTObject | Geometry, str]]: ...
+    @overload
+    def get_codes(self, codes: Iterable[str] = [], /, *, date_point: str | date | None = None, date_start: str | date | None = None, date_end: str | date | None = None, return_type: Literal['dict'], if_none: Literal['raise', 'warn', None] = None, use_default: bool = False, force_cache: bool = False, verbose: bool = False) -> dict[str, str | int | float | MTObject | Geometry]: ...
+    @overload
+    def get_codes(self, codes: Iterable[str] = [], /, *, date_point: str | date | None = None, date_start: str | date | None = None, date_end: str | date | None = None, return_type: Literal['profile'], if_none: Literal['raise', 'warn', None] = None, use_default: bool = False, force_cache: bool = False, verbose: bool = False) -> Profile: ...
 
-    def get_codes(self, codes: list[str] = [],
-                  date_point: str | date | None = None,
-                  date_start: str | date | None = None,
-                  date_end: str | date | None = None,
-                  return_type: Literal['value', 'property',
-                                       'tuple', 'dict',
-                                       'profile'] = 'value',
-                  if_none: Literal['raise', 'warn', None] = None,
-                  use_default: bool = False,
-                  force_cache: bool = False,
-                  verbose: bool = False) -> (list[str] | list[MTObject] |
-                                             list[Geometry] | list[Property] |
-                                             list[tuple[str | MTObject | Geometry, str]] |
-                                             dict[str, str | MTObject | Geometry] |
-                                             Profile):
+    def get_codes(
+            self,
+            codes: Iterable[str] = [],
+            /, *,
+            date_point: str | date | None = None,
+            date_start: str | date | None = None,
+            date_end: str | date | None = None,
+            return_type: Literal['value', 'property',
+                                 'tuple', 'dict',
+                                 'profile'] = 'value',
+            if_none: Literal['raise', 'warn', None] = None,
+            use_default: bool = False,
+            force_cache: bool = False,
+            verbose: bool = False
+            ) -> (list[str | int | float | MTObject | Geometry] | list[Property] |
+                  list[tuple[str | int | float | MTObject | Geometry, str]] |
+                  dict[str, str | int | float | MTObject | Geometry] | Profile):
         """Renvoie les codes recherchés.
 
         Fonction wrapper de [get_properties_gen]
@@ -482,21 +593,34 @@ class MTObject(DBObjectClassBase):
                                        date_start=date_start, date_end=date_end,
                                        verbose=verbose)
 
-    def get_names(self, names: list[str] = [],
-                  date_point: str | date | None = None,
-                  date_start: str | date | None = None,
-                  date_end: str | date | None = None,
-                  return_type: Literal['value', 'property',
-                                       'tuple', 'dict',
-                                       'profile'] = 'value',
-                  if_none: Literal['raise', 'warn', None] = None,
-                  use_default: bool = False,
-                  force_cache: bool = False,
-                  verbose: bool = False) -> (list[str] | list[MTObject] |
-                                             list[Geometry] | list[Property] |
-                                             list[tuple[str | MTObject | Geometry, str]] |
-                                             dict[str, str | MTObject | Geometry] |
-                                             Profile):
+    @overload
+    def get_names(self, names: Iterable[str] = [], /, *, date_point: str | date | None = None, date_start: str | date | None = None, date_end: str | date | None = None, return_type: Literal['value'] = 'value', if_none: Literal['raise', 'warn', None] = None, use_default: bool = False, force_cache: bool = False, verbose: bool = False) -> list[str | int | float | MTObject | Geometry]: ...
+    @overload
+    def get_names(self, names: Iterable[str] = [], /, *, date_point: str | date | None = None, date_start: str | date | None = None, date_end: str | date | None = None, return_type: Literal['property'], if_none: Literal['raise', 'warn', None] = None, use_default: bool = False, force_cache: bool = False, verbose: bool = False) -> list[Property]: ...
+    @overload
+    def get_names(self, names: Iterable[str] = [], /, *, date_point: str | date | None = None, date_start: str | date | None = None, date_end: str | date | None = None, return_type: Literal['tuple'], if_none: Literal['raise', 'warn', None] = None, use_default: bool = False, force_cache: bool = False, verbose: bool = False) -> list[tuple[str | int | float | MTObject | Geometry, str]]: ...
+    @overload
+    def get_names(self, names: Iterable[str] = [], /, *, date_point: str | date | None = None, date_start: str | date | None = None, date_end: str | date | None = None, return_type: Literal['dict'], if_none: Literal['raise', 'warn', None] = None, use_default: bool = False, force_cache: bool = False, verbose: bool = False) -> dict[str, str | int | float | MTObject | Geometry]: ...
+    @overload
+    def get_names(self, names: Iterable[str] = [], /, *, date_point: str | date | None = None, date_start: str | date | None = None, date_end: str | date | None = None, return_type: Literal['profile'], if_none: Literal['raise', 'warn', None] = None, use_default: bool = False, force_cache: bool = False, verbose: bool = False) -> Profile: ...
+
+    def get_names(
+            self,
+            names: Iterable[str] = [],
+            /, *,
+            date_point: str | date | None = None,
+            date_start: str | date | None = None,
+            date_end: str | date | None = None,
+            return_type: Literal['value', 'property',
+                                 'tuple', 'dict',
+                                 'profile'] = 'value',
+            if_none: Literal['raise', 'warn', None] = None,
+            use_default: bool = False,
+            force_cache: bool = False,
+            verbose: bool = False
+            ) -> (list[str | int | float | MTObject | Geometry] | list[Property] |
+                  list[tuple[str | int | float | MTObject | Geometry, str]] |
+                  dict[str, str | int | float | MTObject | Geometry] | Profile):
         """Renvoie les noms recherchés.
 
         Fonction wrapper de [get_properties_gen]
@@ -508,21 +632,34 @@ class MTObject(DBObjectClassBase):
                                        date_start=date_start, date_end=date_end,
                                        verbose=verbose)
 
-    def get_properties(self, full_name: str,
-                       date_point: str | date | None = None,
-                       date_start: str | date | None = None,
-                       date_end: str | date | None = None,
-                       return_type: Literal['value', 'property',
-                                            'tuple', 'dict',
-                                            'profile'] = 'value',
-                       if_none: Literal['raise', 'warn', None] = None,
-                       use_default: bool = False,
-                       force_cache: bool = False,
-                       verbose: bool = False) -> (list[str] | list[MTObject] |
-                                                  list[Geometry] | list[Property] |
-                                                  list[tuple[str | MTObject | Geometry, str]] |
-                                                  dict[str, str | MTObject | Geometry] |
-                                                  Profile):
+    @overload
+    def get_properties(self, full_name: str, /, *, date_point: str | date | None = None, date_start: str | date | None = None, date_end: str | date | None = None, return_type: Literal['value'] = 'value', if_none: Literal['raise', 'warn', None] = None, use_default: bool = False, force_cache: bool = False, verbose: bool = False) -> list[str | int | float | MTObject | Geometry]: ...
+    @overload
+    def get_properties(self, full_name: str, /, *, date_point: str | date | None = None, date_start: str | date | None = None, date_end: str | date | None = None, return_type: Literal['property'], if_none: Literal['raise', 'warn', None] = None, use_default: bool = False, force_cache: bool = False, verbose: bool = False) -> list[Property]: ...
+    @overload
+    def get_properties(self, full_name: str, /, *, date_point: str | date | None = None, date_start: str | date | None = None, date_end: str | date | None = None, return_type: Literal['tuple'], if_none: Literal['raise', 'warn', None] = None, use_default: bool = False, force_cache: bool = False, verbose: bool = False) -> list[tuple[str | int | float | MTObject | Geometry, str]]: ...
+    @overload
+    def get_properties(self, full_name: str, /, *, date_point: str | date | None = None, date_start: str | date | None = None, date_end: str | date | None = None, return_type: Literal['dict'], if_none: Literal['raise', 'warn', None] = None, use_default: bool = False, force_cache: bool = False, verbose: bool = False) -> dict[str, str | int | float | MTObject | Geometry]: ...
+    @overload
+    def get_properties(self, full_name: str, /, *, date_point: str | date | None = None, date_start: str | date | None = None, date_end: str | date | None = None, return_type: Literal['profile'], if_none: Literal['raise', 'warn', None] = None, use_default: bool = False, force_cache: bool = False, verbose: bool = False) -> Profile: ...
+
+    def get_properties(
+            self,
+            full_name: str,
+            /, *,
+            date_point: str | date | None = None,
+            date_start: str | date | None = None,
+            date_end: str | date | None = None,
+            return_type: Literal['value', 'property',
+                                 'tuple', 'dict',
+                                 'profile'] = 'value',
+            if_none: Literal['raise', 'warn', None] = None,
+            use_default: bool = False,
+            force_cache: bool = False,
+            verbose: bool = False
+            ) -> (list[str | int | float | MTObject | Geometry] | list[Property] |
+                  list[tuple[str | int | float | MTObject | Geometry, str]] |
+                  dict[str, str | int | float | MTObject | Geometry] | Profile):
         """Renvoie les propriétés recherchées.
 
         Fonction wrapper de [get_properties_gen]
@@ -654,7 +791,7 @@ class MTObject(DBObjectClassBase):
                                return_type=return_type, verbose=verbose))
 
     def create_property(self, name: str,
-                        value: str | MTObject | Geometry,
+                        value: str | int | float | MTObject | Geometry,
                         source_ref: str | None = None,
                         date_start: str | date | None = None,
                         date_end: str | date | None = None,
@@ -835,7 +972,9 @@ class MTObject(DBObjectClassBase):
             one_map = mapper.get_dict_i(key)
             one_map["key"] = one_map["key"].replace("IsInTerritory", "")
             return_territory = (Sidb.get_sidb_from_object(self)
-                                .get_territory(one_map["key"], one_map["value"]))
+                                .get_territory(one_map["key"],
+                                               one_map["value"],
+                                               if_many='first'))
             if return_territory is None:
                 return "WRONG_DATA", "IsInTerritory", f"{one_map['key']}='{one_map['value']}'"
             self.create_property("IsInTerritory", return_territory, one_map["source_ref"])
@@ -863,7 +1002,9 @@ class MTObject(DBObjectClassBase):
             one_map = mapper.get_dict_i(key)
             one_map["key"] = one_map["key"].replace("IsInActor", "")
             return_actor = (Sidb.get_sidb_from_object(self)
-                            .get_actor(one_map["key"], one_map["value"]))
+                            .get_actor(one_map["key"],
+                                       one_map["value"],
+                                       if_many='first'))
             if return_actor is None:
                 return "WRONG_DATA", "IsInActor", str(one_map)
             else:
@@ -893,8 +1034,10 @@ class MTObject(DBObjectClassBase):
             one_map = mapper.get_dict_i(key)
             one_map["key"] = one_map["key"].replace("IsInProduct", "")
             return_product = (Sidb.get_sidb_from_object(self)
-                              .get_product(one_map["key"], one_map["value"],
-                                           nomenclature=mapper.get("Nomenclature")))
+                              .get_product(one_map["key"],
+                                           one_map["value"],
+                                           nomenclature=mapper.get("Nomenclature"),
+                                           if_many='first'))
             if return_product is None:
                 return "WRONG_DATA", "IsInProduct", f"{one_map['key']}='{one_map['value']}'"
             self.create_property("IsInProduct", return_product, one_map["source_ref"])
@@ -924,7 +1067,7 @@ class MTObject(DBObjectClassBase):
                 index = mapper.get_keys_index("Territory" + search,
                                               startswith=True, alias=True)
                 if len(index) > 1:
-                    return "WRONG_DATA_INFO", f"Too many Territory{search}", len(index)
+                    return "WRONG_DATA_INFO", f"Too many Territory{search}", str(len(index))
                 elif len(index) == 1:
                     dici = mapper.get_dict_i(index[0])
                     naming_case = dici["key"].replace("Territory", "")
@@ -997,7 +1140,7 @@ class MTObject(DBObjectClassBase):
             if object_t is None:
                 index = mapper.get_keys_index(direction + mtobjecttype + sc, startswith=True, alias=True)
                 if len(index) > 1:
-                    return "WRONG_DATA_INFO", direction + mtobjecttype + f":nb({sc})", len(index)
+                    return "WRONG_DATA_INFO", direction + mtobjecttype + f":nb({sc})", str(len(index))
                 elif len(index) == 1:
                     dici = mapper.get_dict_i(index[0])
                     naming_case = dici["key"].replace(direction + mtobjecttype, "")
@@ -1110,7 +1253,7 @@ class MTObject(DBObjectClassBase):
                 index = mapper.get_keys_index("Product" + sc,
                                               startswith=True, alias=True)
                 if len(index) > 1:
-                    return "WRONG_DATA_INFO", "Product" + sc + ".nb()" % sc, len(index)
+                    return "WRONG_DATA_INFO", "Product" + sc + ".nb()" % sc, str(len(index))
                 elif len(index) == 1:
                     dici = mapper.get_dict_i(index[0])
                     naming_case = dici["key"].replace("Product", "")
@@ -1216,8 +1359,12 @@ class MTObject(DBObjectClassBase):
         return "OK", None, None
 
 
-def _check_property_date(p: Property, date_point: str | date,
-                         date_start: str | date, date_end: str | date) -> bool:
+def _check_property_date(
+        p: Property,
+        date_point: str | date | None,
+        date_start: str | date | None,
+        date_end: str | date | None
+        ) -> bool:
     """Vérifie si la propriété `p` correspond aux critères de date.
 
     Parameters:
@@ -1229,36 +1376,36 @@ def _check_property_date(p: Property, date_point: str | date,
     Returns:
         `True` si la propriété correspond aux critères de date, `False` sinon.
     """
-    date_point, date_start, date_end = map(to_date, (date_point, date_start, date_end))
     if date_point and (date_end or date_start):
         raise ValueError("Invalid date arguments: date_point and a date range"
                          " is not compatible.")
 
+    date_point = to_date(date_point)
+    date_start = to_date(date_start)
+    date_end = to_date(date_end)
+
     if date_start and date_end:
-        return (
+        return bool(
             (p.date_start and p.date_end
              and p.date_start <= date_end and p.date_end >= date_start) or
             (p.date_start and not p.date_end and p.date_start <= date_end) or
             (p.date_end and not p.date_start and p.date_end >= date_start) or
-            (p.date_point and date_start <= p.date_point <= date_end)
-        )
+            (p.date_point and date_start <= p.date_point <= date_end))
     elif date_start:
-        return (
+        return bool(
             (p.date_start and not p.date_end) or
             (p.date_end and p.date_end >= date_start) or
-            (p.date_point and p.date_point >= date_start)
-        )
+            (p.date_point and p.date_point >= date_start))
     elif date_end:
-        return (
+        return bool(
             (p.date_end and not p.date_start) or
             (p.date_start and p.date_start <= date_end) or
-            (p.date_point and p.date_point <= date_end)
-        )
+            (p.date_point and p.date_point <= date_end))
     elif date_point:
-        return (
+        return bool(
             p.date_point == date_point or
             (p.date_start and p.date_end
              and p.date_start <= date_point <= p.date_end) or
             (p.date_start and not p.date_end and p.date_start <= date_point) or
-            (p.date_end and not p.date_start and date_point <= p.date_end)
-        )
+            (p.date_end and not p.date_start and date_point <= p.date_end))
+    return True

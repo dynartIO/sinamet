@@ -1,4 +1,5 @@
 from datetime import datetime, date, timedelta
+from typing import overload
 
 import pandas
 
@@ -51,6 +52,12 @@ def common_nb_days(start1, end1, start2, end2):
     #print(str(start1) + " -> " + str(end1) + " // " + \
     #      str(start2) + " -> " + str(end2) + " = " + str(_return))
     return _return
+
+
+@overload
+def to_date(d:  None) -> None: ...
+@overload
+def to_date(d: str | datetime | date) -> date: ...
 
 
 def to_date(d: str | datetime | date | None) -> date | None:
