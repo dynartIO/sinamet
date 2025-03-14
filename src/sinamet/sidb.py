@@ -6,7 +6,7 @@ from contextlib import contextmanager
 
 from datetime import date
 
-from typing import Any, Literal, overload
+from typing import Any, Literal, cast, overload
 
 import warnings
 
@@ -332,7 +332,7 @@ class Sidb:
                 raise ValueError(f'Unknown return type, got {return_type}')
 
     def compute_query_cache_properties(self,
-                                       cache_properties: list[str] | str,
+                                       cache_properties: Iterable[str] | str,
                                        return_type: str,
                                        q_id: Select[tuple[int]]) -> None:
         """Charge en cache des propriétés.
@@ -428,7 +428,12 @@ class Sidb:
         if self.session.bind:
             DBObjectClassBase.metadata.create_all(self.session.bind)
 
-    def get_cache(self, obj_type: str, key: str, value: str) -> MTObject | None:
+    def get_cache[T: MTObject](
+            self,
+            obj_type: type[T],
+            key: str,
+            value: str
+            ) -> T | None:
         """Récupère l'objet en cache associé aux paramètres.
 
         Parameters:
@@ -439,7 +444,7 @@ class Sidb:
         Returns:
             L'objet correspondant ou `None` sinon.
         """
-        return self.cache.get((obj_type, key, value))
+        return cast(T, self.cache.get((obj_type.__class__.__name__, key, value)))
 
     def set_cache(self, obj: MTObject, key: str, value: str) -> None:
         """Stock un objet dans le cache.
@@ -2723,7 +2728,7 @@ class Sidb:
         if key != "Id" and not match_pattern and not ignore_case and not ignore_accent:
             if verbose:
                 print("Looking for object in cache ...")
-            cached_object = self.get_one_mtobject_from_cache(mtobject_class.__name__,
+            cached_object = self.get_one_mtobject_from_cache(mtobject_class,
                                                              key, value, nomenclature)
             if cached_object:
                 if verbose:
@@ -3182,13 +3187,13 @@ class Sidb:
             .where(Property.item_id == mtobject.id)
         ).all()
 
-    def get_one_mtobject_from_cache(
+    def get_one_mtobject_from_cache[T: MTObject](
             self,
-            mtobject_type: str,
+            mtobject_type: type[T],
             attribute_name: str,
             attribute_value: str,
             prefix: str | None = None,
-            ) -> MTObject | None:
+            ) -> T | None:
         """ ....
         Regarde le résultat d'une requête ce trouve dans le cache pour éviter
         de refaire la requête et gagner du temps. \n
@@ -3260,10 +3265,27 @@ class Sidb:
                 self.set_cache(mtobject, prefix + attribute_name[0:4] + "Alias_", attribute_value)
 
     # Static functions
+    @overload
+    @staticmethod
+    def get_mtobject_children[T: (Territory, Actor, Product)](mtobject: T, /, *, cache_properties: Iterable[str] | str = [], return_type: Literal['list', 'object'] = 'list') -> Sequence[T]: ...
+    @overload
+    @staticmethod
+    def get_mtobject_children[T: (Territory, Actor, Product)](mtobject: T, /, *, cache_properties: Iterable[str] | str = [], return_type: Literal['id']) -> Sequence[int]: ...
+    @overload
+    @staticmethod
+    def get_mtobject_children[T: (Territory, Actor, Product)](mtobject: T, /, *, cache_properties: Iterable[str] | str = [], return_type: Literal['query']) -> Select[tuple[T]]: ...
+    @overload
+    @staticmethod
+    def get_mtobject_children[T: (Territory, Actor, Product)](mtobject: T, /, *, cache_properties: Iterable[str] | str = [], return_type: Literal['qid', 'queryid']) -> Select[tuple[int]]: ...
+    @overload
+    @staticmethod
+    def get_mtobject_children[T: (Territory, Actor, Product)](mtobject: T, /, *, cache_properties: Iterable[str] | str = [], return_type: Literal['count']) -> int: ...
+
     @staticmethod
     def get_mtobject_children[T: (Territory, Actor, Product)](
             mtobject: T,
-            cache_properties: list[str] = [],
+            /, *,
+            cache_properties: Iterable[str] | str = [],
             return_type: Literal['qid', 'queryid',
                                  'query', 'id',
                                  'list', 'object',
@@ -3308,10 +3330,27 @@ class Sidb:
 
         return result
 
+    @overload
+    @staticmethod
+    def get_mtobject_parents[T: (Territory, Actor, Product)](mtobject: T, /, *, cache_properties: Iterable[str] | str = [], return_type: Literal['list', 'object'] = 'list') -> Sequence[T]: ...
+    @overload
+    @staticmethod
+    def get_mtobject_parents[T: (Territory, Actor, Product)](mtobject: T, /, *, cache_properties: Iterable[str] | str = [], return_type: Literal['id']) -> Sequence[int]: ...
+    @overload
+    @staticmethod
+    def get_mtobject_parents[T: (Territory, Actor, Product)](mtobject: T, /, *, cache_properties: Iterable[str] | str = [], return_type: Literal['query']) -> Select[tuple[T]]: ...
+    @overload
+    @staticmethod
+    def get_mtobject_parents[T: (Territory, Actor, Product)](mtobject: T, /, *, cache_properties: Iterable[str] | str = [], return_type: Literal['qid', 'queryid']) -> Select[tuple[int]]: ...
+    @overload
+    @staticmethod
+    def get_mtobject_parents[T: (Territory, Actor, Product)](mtobject: T, /, *, cache_properties: Iterable[str] | str = [], return_type: Literal['count']) -> int: ...
+
     @staticmethod
     def get_mtobject_parents[T: (Territory, Actor, Product)](
             mtobject: T,
-            cache_properties: list[str] = [],
+            /, *,
+            cache_properties: Iterable[str] | str = [],
             return_type: Literal['qid', 'queryid',
                                  'query', 'id',
                                  'list', 'object',
