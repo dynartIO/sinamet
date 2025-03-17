@@ -864,13 +864,15 @@ class Sidb:
             territory = territory[0]
 
         territory.delete_cached_properties()
-        # Tous les attributs non spécifiques
-        territory.set_extra_properties(mapper)
-        # Tous les attributs spécifiques
-        result = {}
-        result["code"] = territory.set_code(mapper)
-        result["name"] = territory.set_name(mapper)
-        result["isinterritory"] = territory.set_isin_territory(mapper)
+
+        with self.session.no_autoflush:
+            # Tous les attributs non spécifiques
+            territory.set_extra_properties(mapper)
+            # Tous les attributs spécifiques
+            result = {}
+            result["code"] = territory.set_code(mapper)
+            result["name"] = territory.set_name(mapper)
+            result["isinterritory"] = territory.set_isin_territory(mapper)
 
         # Recherche des erreurs
         if result["code"][0] != "OK" and result["name"][0] != "OK":
@@ -1333,14 +1335,15 @@ class Sidb:
 
         actor.delete_cached_properties()
 
-        actor.set_extra_properties(mapper)
-        result = {}
-        result["code"] = actor.set_code(mapper)
-        result["name"] = actor.set_name(mapper)
-        result["isinactor"] = actor.set_isin_actor(mapper)
-        result["isinterritory"] = actor.set_isin_territory(mapper)
-        result["territory"] = actor.set_territory(mapper)
-        result["emitteractor"] = actor.set_emitter_actor(mapper)
+        with self.session.no_autoflush:
+            actor.set_extra_properties(mapper)
+            result = {}
+            result["code"] = actor.set_code(mapper)
+            result["name"] = actor.set_name(mapper)
+            result["isinactor"] = actor.set_isin_actor(mapper)
+            result["isinterritory"] = actor.set_isin_territory(mapper)
+            result["territory"] = actor.set_territory(mapper)
+            result["emitteractor"] = actor.set_emitter_actor(mapper)
 
         # Recherche des erreurs
         if result["code"][0] != "OK" and result["code"][0] != "NO_DATA":
@@ -1867,12 +1870,13 @@ class Sidb:
 
         product.delete_cached_properties()
 
-        product.set_extra_properties(mapper)
-        result = {}
-        result["code"] = product.set_code(mapper)
-        result["name"] = product.set_name(mapper)
-        result["nomenclature"] = product.set_nomenclature(mapper)
-        result["isinproduct"] = product.set_isin_product(mapper)
+        with self.session.no_autoflush:
+            product.set_extra_properties(mapper)
+            result = {}
+            result["code"] = product.set_code(mapper)
+            result["name"] = product.set_name(mapper)
+            result["nomenclature"] = product.set_nomenclature(mapper)
+            result["isinproduct"] = product.set_isin_product(mapper)
 
         # Recherche des erreurs
         if result["code"][0] != "OK" and result["name"][0] != "OK":
@@ -1988,14 +1992,16 @@ class Sidb:
         self.session.add(stock)
         # Créer un attribut (objet) par champ du dictionnaire
         # Ajout des attributs non fonctionnels
-        stock.set_extra_properties(mapper)
-        result = {}
-        result["code"] = stock.set_code(mapper)
-        result["product"] = stock.set_product(mapper)
-        result["quantity"] = stock.set_quantity(mapper)
-        result["timeperiod"] = stock.set_timeperiod(mapper)
-        result["territory"] = stock.set_territory(mapper)
-        result["actor"] = stock.set_actor(mapper)
+
+        with self.session.no_autoflush:
+            stock.set_extra_properties(mapper)
+            result = {}
+            result["code"] = stock.set_code(mapper)
+            result["product"] = stock.set_product(mapper)
+            result["quantity"] = stock.set_quantity(mapper)
+            result["timeperiod"] = stock.set_timeperiod(mapper)
+            result["territory"] = stock.set_territory(mapper)
+            result["actor"] = stock.set_actor(mapper)
 
         if result["code"][0] == "WRONG_DATA_TYPE":
             raise MapperError(mapper, result, "code")
@@ -2319,14 +2325,16 @@ class Sidb:
         self.session.add(obj)
         # Créer un attribut (objet) par champ du dictionnaire
         # Ajout des attributs non fonctionnels
-        obj.set_extra_properties(mapper)
-        result = {}
-        result["flowtype"] = obj.set_flowtype(mapper)
-        result["product"] = obj.set_product(mapper)
-        result["quantity"] = obj.set_quantity(mapper)
-        result["timeperiod"] = obj.set_timeperiod(mapper)
-        result["territory"] = obj.set_territory(mapper)
-        result["actor"] = obj.set_actor(mapper)
+
+        with self.session.no_autoflush:
+            obj.set_extra_properties(mapper)
+            result = {}
+            result["flowtype"] = obj.set_flowtype(mapper)
+            result["product"] = obj.set_product(mapper)
+            result["quantity"] = obj.set_quantity(mapper)
+            result["timeperiod"] = obj.set_timeperiod(mapper)
+            result["territory"] = obj.set_territory(mapper)
+            result["actor"] = obj.set_actor(mapper)
 
         if result["quantity"][0] != "OK":
             raise MapperError(mapper, result, "quantity")
@@ -2665,15 +2673,16 @@ class Sidb:
         pathflow = Pathflow()
         self.session.add(pathflow)
 
-        pathflow.set_extra_properties(mapper)
-        result = {}
-        result["quantity"] = pathflow.set_quantity(mapper)
-        result["timeperiod"] = pathflow.set_timeperiod(mapper)
-        result["product"] = pathflow.set_product(mapper)
-        result["emitter_territory"] = pathflow.set_emitter_territory(mapper)
-        result["emitter_actor"] = pathflow.set_emitter_actor(mapper)
-        result["receiver_territory"] = pathflow.set_receiver_territory(mapper)
-        result["receiver_actor"] = pathflow.set_receiver_actor(mapper)
+        with self.session.no_autoflush:
+            pathflow.set_extra_properties(mapper)
+            result = {}
+            result["quantity"] = pathflow.set_quantity(mapper)
+            result["timeperiod"] = pathflow.set_timeperiod(mapper)
+            result["product"] = pathflow.set_product(mapper)
+            result["emitter_territory"] = pathflow.set_emitter_territory(mapper)
+            result["emitter_actor"] = pathflow.set_emitter_actor(mapper)
+            result["receiver_territory"] = pathflow.set_receiver_territory(mapper)
+            result["receiver_actor"] = pathflow.set_receiver_actor(mapper)
 
         # Recherche des erreurs
         if result["receiver_territory"][0] != "OK" and result["receiver_actor"][0] != "OK":
