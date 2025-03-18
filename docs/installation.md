@@ -8,6 +8,8 @@ Sinamet peut être simplement installée avec Pip :
 
     pip install sinamet
 
+Voir la page PyPI du projet : <https://pypi.org/project/sinamet/>
+
 ### Dépendances complémentaires
 
 Nous conseillons également d'installer ces librairies, qui ne sont pas strictement nécessaires pour faire
