@@ -207,12 +207,6 @@ with Sidb.connect() as sidb:
         show_root_full_path: false
         heading_level: 3
 
-::: sidb.Sidb.is_not_loaded
-    options:
-        show_root_heading: true
-        show_root_full_path: false
-        heading_level: 3
-
 ## Supprimer des données
 
 ::: sidb.Sidb.delete
