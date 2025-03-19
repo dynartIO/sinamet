@@ -2734,11 +2734,11 @@ class Sidb:
             print(f'key = {key}, value = {value}')
 
         # Recherche dans le cache si recherche sur clé exacte uniquement
-        if key != "Id" and not match_pattern and not ignore_case and not ignore_accent:
+        if not (match_pattern or ignore_case or ignore_accent):
             if verbose:
                 print("Looking for object in cache ...")
-            cached_object = self.get_one_mtobject_from_cache(mtobject_class,
-                                                             key, value, nomenclature)
+            cached_object = self.get_mtobject_from_cache(mtobject_class,
+                                                         key, value, nomenclature)
             if cached_object:
                 if verbose:
                     print("Found in cache and returned : ", cached_object)
@@ -2768,8 +2768,13 @@ class Sidb:
                 prop_a, *prop_b = key.split('@', 1)
                 if verbose:
                     print(f'prop_a = {prop_a}, prop_b = {prop_b}')
-                q[nq] = q[nq].where((Property.name_a == prop_a) |
-                                    (Property.name_a == prop_a + "Alias"))
+
+                if prop_a in ('Code', 'Name'):
+                    prop_a = (prop_a, f'{prop_a}Alias')
+                else:
+                    prop_a = (prop_a,)
+                q[nq] = q[nq].where(Property.name_a.in_(prop_a))
+
                 if prop_b:
                     q[nq] = q[nq].where(Property.name_b == prop_b[0])
 
@@ -2783,7 +2788,7 @@ class Sidb:
             print("Build query = ", q["object"])
 
         result = self.compute_query_return_type(q, return_type)
-        if isinstance(result, (Select, int)):
+        if isinstance(result, (Select, int)):  # if query or count
             return result
         if verbose:
             print(result, len(result))
@@ -2795,11 +2800,15 @@ class Sidb:
             if if_none == 'warn':
                 warnings.warn(f'No corresponding object {key}=\'{value}\'.')
             return None
+
         if len(result) == 1:
-            if key != "Id" and not match_pattern and not ignore_case and not ignore_accent:
-                self.set_cache_mtobject_codename(result[0], key, value, False, prefix=nomenclature)
+            if isinstance(result[0], int):  # if id
+                return result[0]
+
             self.cache_mtobject_properties(result[0])
+            self.set_mtobject_in_cache(result[0], prefix=nomenclature)
             return result[0]
+
         match if_many:
             case "raise":
                 raise SidbMultiFoundError("Several corresponding objects.")
@@ -3196,11 +3205,11 @@ class Sidb:
             .where(Property.item_id == mtobject.id)
         ).all()
 
-    def get_one_mtobject_from_cache[T: MTObject](
+    def get_mtobject_from_cache[T: MTObject](
             self,
             mtobject_type: type[T],
-            attribute_name: str,
-            attribute_value: str,
+            key: str,
+            value: str,
             prefix: str | None = None,
             ) -> T | None:
         """ ....
@@ -3211,67 +3220,48 @@ class Sidb:
         :return: L'objet en cache s'il existe, None sinon
         :rtype: MTObject / None
         """
+        if key == 'Id':
+            return self.get_cache(mtobject_type, key, value)
+
+        key_a, _, key_b = key.partition('@')
+        if key_a not in ('Code', 'Name'):
+            return None
 
         # Pour un produit dans le cache :
         # nom d'attribut = "Nomenclature/Code" ou "Nomenclature/Name"
-        prefix = prefix + "/" if prefix else ''
+        prefix = prefix + '/' if prefix else ''
 
-        # Cas d'un code ou d'un nom précisé
-        if attribute_name[0:5] in ("Name@", "Code@"):
-            temp_mtobject = self.get_cache(mtobject_type, prefix + attribute_name, attribute_value)
-            if temp_mtobject is None:
-                temp_mtobject = self.get_cache(mtobject_type,
-                                               prefix + attribute_name[0:4] + "Alias"
-                                               + attribute_name[4:],
-                                               attribute_value)
+        for name in (key_a, f'{key_a}Alias'):
+            if key_b:
+                name += f'@{key_b}'
 
-        # Code ou nom, non précisé
-        elif attribute_name in ("Code", "Name"):
-            temp_mtobject = self.get_cache(mtobject_type,
-                                           prefix + attribute_name, attribute_value)
-            if temp_mtobject is None:
-                temp_mtobject = self.get_cache(mtobject_type,
-                                               prefix + attribute_name + "_", attribute_value)
-            if temp_mtobject is None:
-                temp_mtobject = self.get_cache(mtobject_type,
-                                               prefix + attribute_name + "Alias", attribute_value)
-            if temp_mtobject is None:
-                temp_mtobject = self.get_cache(mtobject_type,
-                                               prefix + attribute_name + "Alias_", attribute_value)
+            if obj := self.get_cache(mtobject_type, prefix + name, value):
+                return obj
 
-        else:
-            raise AttributeError(f"Unexpected cache key '{attribute_name}'={attribute_value}")
-        return temp_mtobject
-
-    def set_cache_mtobject_codename(
+    def set_mtobject_in_cache(
             self,
             mtobject: MTObject,
-            attribute_name: str,
-            attribute_value: str,
-            use_alias: bool,
+            /, *,
             prefix: str | None = None
             ) -> None:
-        """ Set mtobject in cache for Territory, Actor, Product
-        """
+        """Set mtobject in cache for Territory, Actor, Product."""
+        self.set_cache(mtobject, 'Id', str(mtobject.id))
+
         # Pour un produit dans le cache :
         # nom d'attribut = "Nomenclature/Code" ou "Nomenclature/Name"
-        prefix = prefix + "/" if prefix else ''
+        prefix = prefix + '/' if prefix else ''
 
-        if attribute_name in ("Code", "Name"):
-            if not use_alias:
-                self.set_cache(mtobject, prefix + attribute_name, attribute_value)
-                self.set_cache(mtobject, prefix + attribute_name + "_", attribute_value)
-            else:
-                self.set_cache(mtobject, prefix + attribute_name + "Alias", attribute_value)
-                self.set_cache(mtobject, prefix + attribute_name + "Alias_", attribute_value)
-        else:
-            # Exemple : attribute_name == "Code@insee"
-            if not use_alias:
-                self.set_cache(mtobject, prefix + attribute_name, attribute_value)
-                self.set_cache(mtobject, prefix + attribute_name[0:4] + "_", attribute_value)
-            else:
-                self.set_cache(mtobject, prefix + attribute_name[0:4] + "Alias" + attribute_name[4:], attribute_value)
-                self.set_cache(mtobject, prefix + attribute_name[0:4] + "Alias_", attribute_value)
+        for property in filter(
+                lambda p: p.name_a in ('Code', 'Name', 'CodeAlias', 'NameAlias'),
+                mtobject.properties):
+            if not property.value_literal:
+                continue
+
+            name = property.name_a
+            if property.name_b:
+                name += f'@{property.name_b}'
+
+            self.set_cache(mtobject, prefix + name, property.value_literal)
 
     # Static functions
     @overload
