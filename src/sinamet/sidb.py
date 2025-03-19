@@ -444,7 +444,7 @@ class Sidb:
         Returns:
             L'objet correspondant ou `None` sinon.
         """
-        return cast(T, self.cache.get((obj_type.__class__.__name__, key, value)))
+        return cast(T, self.cache.get((obj_type.__name__, key, value)))
 
     def set_cache(self, obj: MTObject, key: str, value: str) -> None:
         """Stock un objet dans le cache.
