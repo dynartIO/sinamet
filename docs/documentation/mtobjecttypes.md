@@ -121,7 +121,7 @@ vers d’autres produits pour la conversion dans d’autres nomenclatures.
 - `Name` / `Name@xxx` : Nom de produit (xxx précise le type de nom, par exemple 'fr', 'en', ...)
 - `CodeAlias[@xxx]` / `NameAlias[@xxx]` : Alias de code ou de nom (code ou nom secondaire)
 - `Nomenclature` : Nom de la nomenclature 
-- `IsInProductCode` / `IsInProductName[@xxx]` : Code ou nom du territoire parent
+- `IsInProductCode` / `IsInProductName[@xxx]` : Code ou nom du produit parent
 - `Coefficient@xxx/yyy` : Coefficient de conversion pour le produit (xxx/yyy = rapport d'unité, par exemple kg/m3)
 
 ## Stock
@@ -163,8 +163,8 @@ destination de manière claire. Ils sont appelés de "flux de porte" (`Gateflow`
 
 Plusieurs notions courantes du vocabulaire économique et environnemental reposent implicitement sur cette notion : 
 lorsqu’on parle d’extraction, de recyclage, de rejets, d’émissions, de production ou de consommation, c’est souvent 
-en association avec un seul acteur ou un seul territoire. Les noms `Consumption`, `Production`, `Emission`, `Extraction`
-sont ainsi disponibles pour classifier l'information (voir mapper exemple ci-dessous).
+en association avec un seul acteur ou un seul territoire. Les termes "consumption", "production", "emission", "extraction"
+sont ainsi disponibles pour classifier l'information et correspondent à des `Gateflow` (voir mapper exemple ci-dessous).
 En plus de ces informations minimales, d’autres attributs peuvent compléter la description d’un flux notamment le moyen
 de transport (route, rail, eau, air, pipeline, fil électrique ...).
 
@@ -198,9 +198,9 @@ pathflow), à un produit, à une temporalité et à une ou plusieurs quantités 
 ### Exemple
 
 Exemple du mapper pour le chargement d'un flux de céréales (item 01.1 de la nomenclature NST 2007) entre la Charente
-et la Gironde en 2024 (type *Pathflow* car l'origine et la destination sont connus) :
+et la Gironde en 2024 (type `Pathflow` car l'origine et la destination sont connus) :
 ```python
-    mapper = Mapper("Pathflow", source_ref="script-test")
+    mapper = Mapper("Pathflow")
     mapper.add("EmitterTerritoryCode@insee", "16")
     mapper.add("ReceiverTerritoryCode@insee", "33")
     mapper.add("ProductCode", "01.1")
@@ -210,9 +210,9 @@ et la Gironde en 2024 (type *Pathflow* car l'origine et la destination sont conn
     mapper.add("Year", 2024)
 ```
 Exemple du mapper pour la production de céréales en Charente en 2024 
-(type *Gateflow* alias *Production* car il n'y a pas d'origine + destination):
+(type `Gateflow` alias `Production` car il n'y a pas d'origine + destination):
 ```python
-    mapper = Mapper("Production", source_ref=mysrcref)
+    mapper = Mapper("Production")
     mapper.add("TerritoryCode@insee", "16")
     mapper.add("ProductCode", "01.1")
     mapper.add("ProductNomenclature", "NST2007")
