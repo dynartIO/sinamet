@@ -10,7 +10,7 @@ from typing import Any, Literal, cast, overload
 
 import warnings
 
-from sqlalchemy import ColumnElement, Engine, create_engine
+from sqlalchemy import ColumnElement, Engine, create_engine, intersect
 from sqlalchemy.orm import aliased
 from sqlalchemy.orm.exc import UnmappedInstanceError
 from sqlalchemy.orm.session import Session, object_session, sessionmaker
@@ -1736,52 +1736,44 @@ class Sidb:
                                       nomenclature=nomenclature,
                                       verbose=verbose)
 
-    def get_products_in_conversion(self,
-                                   product: Product | Sequence[Product],
-                                   dest_nomenclature: str,
-                                   return_type: Literal['list',
-                                                        'object',
-                                                        'id',
-                                                        'query',
-                                                        'queryid',
-                                                        'qid',
-                                                        'count',
-                                                        ] = 'list',
-                                   ) -> list[Product]:
-        """
-        Convertit un produit en ses produits dérivés dans une autre nomenclature, hiérarchie inclue.
-        Si product est une liste de produits, ils doivent tous avoir la même nomenclature.
-        """
+    def get_products_conversion(
+            self,
+            product: Product,
+            dest_nomenclature: str,
+            /, *,
+            include_children_products: bool = True,
+            return_type: Literal[
+                'list', 'object',
+                'id',
+                'query',
+                'queryid', 'qid',
+                'count',
+                ] = 'list',
+            cache_properties: Iterable[str] = []
+            ) -> (Sequence[Product] | Sequence[int] | int |
+                  Select[tuple[Product]] | Select[tuple[int]]):
 
-        # FutureDev:  Améliorer Prototype
-        if isinstance(product, Product):
-            nomenclature = product.get_property('Nomenclature', if_many='first')
+        if include_children_products:
+            products_ids = self.get_products_in(product.id,
+                                                return_type='qid')
         else:
-            nomenclature = product[0].get_property('Nomenclature', if_many='first')
+            products_ids = (product.id,)
 
-        if not isinstance(nomenclature, str):
-            raise TypeError('Invalid type for nomenclature '
-                            f'(expected `str`, got `{type(nomenclature)}`).')
+        query1 = (select(Product.id)
+                  .join(Product.property_values)
+                  .where(Property.item_id.in_(products_ids))
+                  .where(Property.name_a == 'ProductConversion'))
+        query2 = self.get_product_list(dest_nomenclature,
+                                       return_type='qid')
+        query_intersected = intersect(query1, query2)
 
-        set_sel = set(self.get_products(f"ConversionProductCode@{dest_nomenclature}", "*",
-                                        nomenclature=nomenclature,
-                                        return_type="id"))
-        set_sel &= set(self.get_products_in(product, return_type="id"))
+        q = {}
+        for nq, targetq in zip(('id', 'object'), (Product.id, Product)):
+            q[nq] = select(targetq).where(Product.id.in_(query_intersected))
 
-        stmt = select(Property.value_literal)
-        stmt = stmt.where(Property.item_id.in_(set_sel))
-        stmt = stmt.where(Property.name_a == "ConversionProductCode")
-        stmt = stmt.where(Property.name_b == dest_nomenclature).distinct()
-
-        converted_products: list[Product] = []
-        for result in filter(None, self.session.scalars(stmt).all()):
-            p = self.get_product(code=result,
-                                 nomenclature=dest_nomenclature)
-            if isinstance(p, Product):
-                converted_products.append(p)
-            elif isinstance(p, Sequence):
-                converted_products.extend(p)
-        return converted_products
+        result = self.compute_query_return_type(q, return_type)
+        self.compute_query_cache_properties(cache_properties, return_type, q['id'])
+        return result
 
     def get_list_nomenclatures(self) -> list[str]:
         """Renvoie la liste des nomenclatures."""
