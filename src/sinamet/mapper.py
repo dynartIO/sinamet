@@ -153,6 +153,8 @@ class Mapper():
         """
         lst_key: list[int] = []
         for index, k in enumerate(self.keys):
+            k = k.partition('#')[0]  # Discards complementary informations
+
             if k == key and exact:
                 lst_key.append(index)
                 continue

@@ -1877,6 +1877,7 @@ class Sidb:
             result["name"] = product.set_name(mapper)
             result["nomenclature"] = product.set_nomenclature(mapper)
             result["isinproduct"] = product.set_isin_product(mapper)
+            result['product_conversion'] = product.set_product_conversion(mapper)
 
         # Recherche des erreurs
         if result["code"][0] != "OK" and result["name"][0] != "OK":
@@ -1889,6 +1890,8 @@ class Sidb:
             raise MapperError(mapper, result, "nomenclature")
         if result["isinproduct"][0] != "OK" and result["isinproduct"][0] != "NO_DATA":
             raise MapperError(mapper, result, "isinproduct")
+        if result['product_conversion'][0] not in ('OK', 'NO_DATA'):
+            raise MapperError(mapper, result, 'product_conversion')
 
     # Stock
     @overload

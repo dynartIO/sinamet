@@ -835,12 +835,14 @@ class MTObject(DBObjectClassBase):
                          "ActorCode", "ActorName", "Actor",
                          "Code", "Name", "CodeAlias", "NameAlias",
                          "FlowType", "Quantity", "Nomenclature",
-                         "DateStart", "DateEnd", "DatePoint", "Year", "Month"]
+                         "DateStart", "DateEnd", "DatePoint", "Year", "Month",
+                         'ProductConversionCode', 'ProductConversionName', 'ProductConversion',
+                         ]
 
         for i in range(len(mapper)):
             dic = mapper.get_dict_i(i)
             # Clefs spécifiques, ne sont pas traitées dans cette méthode
-            if dic["key"] in specific_keys or dic["key"].split("@")[0] in specific_keys:
+            if dic["key"] in specific_keys or dic["key"].split("@")[0].split('#')[0] in specific_keys:
                 continue
             if dic["unique"]:
                 prop = self.get_property(dic["key"], return_type="property")
@@ -1272,6 +1274,41 @@ class MTObject(DBObjectClassBase):
         self.product = object_t
         self.create_property("Product", object_t, srcref_t)
         return "OK", None, None
+
+    def set_product_conversion(self, mapper: Mapper) -> tuple[str,
+                                                              str | None,
+                                                              str | None]:
+        from ..sidb import Sidb
+        from .product import Product
+
+        keys_indexes = mapper.get_keys_index('ProductConversion',
+                                             startswith=True)
+        if not keys_indexes:
+            return ('NO_DATA', 'ProductConversion', None)
+        for index in keys_indexes:
+            row = mapper.get_dict_i(index)
+            key = row['key'].removeprefix('ProductConversion')
+
+            if not key:
+                if not isinstance(row['value'], Product):
+                    return ('WRONG_DATA_TYPE', 'ProductConversion',
+                            'Invalid value type: expected Product, '
+                            f'got {type(row["value"])}')
+                product = row['value']
+            else:
+                key, _, nomenclature = key.partition('#')
+                product = (Sidb.get_sidb_from_object(self)
+                           .get_product(key,
+                                        row['value'],
+                                        nomenclature=nomenclature,
+                                        if_many='warn_first'))
+                if not product:
+                    return ('WRONG_DATA', 'ProductConversion',
+                            f'Product not found ({row["key"]}={row["value"]!r},'
+                            f' {nomenclature=})')
+
+            self.create_property('ProductConversion', product, row['source_ref'])
+        return ('OK', None, None)
 
     def set_timeperiod(self, mapper: Mapper) -> tuple[str, str | None,
                                                       str | None]:
