@@ -1941,8 +1941,8 @@ class Sidb:
             source_ref: La source de référence des stocks.
             filter_by: Liste de propriétés supplémentaires pour le filtrage des
                 stocks (ex. [("Label", "Bio")]).
-            combine_targets: Si `True`, compare les `target` en utilisant un ou binaire,
-                sinon compare en utilisant un et binaire.
+            combine_targets: Si `True` (default), associe les `target` en utilisant un ET binaire,
+                sinon associe les `target` en utilisant un OU binaire.
             filter_ids: Filtre d'identifiants des objets.
             cache_properties: Liste des propriétés à mettre en cache.
             return_type: Type de retour de la fonction. Valeurs possibles:
@@ -2074,8 +2074,8 @@ class Sidb:
             source_ref: La source de référence des flux.
             filter_by: Liste de propriétés supplémentaires pour le filtrage des
                 flux (ex. [("Label", "Bio")]).
-            combine_targets: Si `True`, compare les `target` en utilisant un ou binaire,
-                sinon compare en utilisant un et binaire.
+            combine_targets: Si `True` (default), associe les `target` en utilisant un ET binaire,
+                sinon associe les `target` en utilisant un OU binaire.
             filter_ids: Filtre d'identifiants des objets.
             cache_properties: Liste des propriétés à mettre en cache.
             return_type: Type de retour de la fonction. Valeurs possibles:
@@ -3165,16 +3165,16 @@ class Sidb:
                 target_search = []
                 for tg in target:
                     if type(tg) is Territory:
-                        target_search.append(object_class.territory_id.in_(self.get_territories_in(tg, return_type="qid")))
-                        target_search.append(object_class.actor_id.in_(self.get_actors_in(tg, return_type="qid")))
+                        target_search.append(or_(object_class.territory_id.in_(self.get_territories_in(tg, return_type="qid")),
+                                                 object_class.actor_id.in_(self.get_actors_in(tg, return_type="qid"))))
                     elif type(tg) is Actor:
                         target_search.append(object_class.actor_id.in_(self.get_actors_in(tg, return_type="qid")))
                     else:
                         raise TypeError(f"Unknown target type : '{type(tg)}' --> {tg}")
                 if combine_targets:
-                    q[nq] = q[nq].where(or_(*target_search))
-                else:
                     q[nq] = q[nq].where(and_(*target_search))
+                else:
+                    q[nq] = q[nq].where(or_(*target_search))
 
             for name, value in filter_by:
                 p = aliased(Property)
