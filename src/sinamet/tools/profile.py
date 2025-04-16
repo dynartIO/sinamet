@@ -1,4 +1,5 @@
 from datetime import timedelta
+import datetime
 import pandas as pd
 from sinamet.tools.timext import to_date
 from sinamet.tools.listmtq import (list_flows_to_dataframe,
@@ -72,8 +73,9 @@ class Profile():
         Parameters:
             lst_qt: List de quantifiables (flux)
             unit: Unité souhaitée
-            freq:
-            per_day: valeur quotidienne
+            freq: Fréquence de la série temporelle (voir ...
+            ... https://pandas.pydata.org/pandas-docs/version/1.5/user_guide/timeseries.html#timeseries-offset-aliases)
+            per_day: indique si la valeur du flux doit être calculée en unité / jour
         """
         if len(lst_qt) == 0:
             return Profile([], [])

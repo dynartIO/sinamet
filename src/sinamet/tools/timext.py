@@ -14,24 +14,21 @@ def full_date_range(start, end, freq):
     _startlistdates = pandas.date_range(end=_start_date,
                                         freq=freq,
                                         periods=1,
-                                        closed='right')
+                                        inclusive='right')
     # Nearest date (with freq) after start
     _endlistdates = pandas.date_range(start=_end_date,
                                       freq=freq,
                                       periods=1,
-                                      closed='left')
+                                      inclusive='left')
     # All dates in between
     _listdates = pandas.date_range(start=_start_date,
                                    end=_end_date,
                                    freq=freq)
 
-    # print(_startlistdates)
-    # print(_endlistdates)
-    # print(_listdates)
-
     rslt = pandas.DatetimeIndex.union(_startlistdates, _listdates)
     rslt = pandas.DatetimeIndex.union(rslt, _endlistdates)
     return rslt
+
 
 def common_nb_days(start1, end1, start2, end2):
     """End date excluded"""

@@ -14,9 +14,9 @@ def list_flows_to_dataframe(list_flows, unity, per_day = True):
         unity = [unity]
     for unit in unity:
         #df[unit] = parallelize(df['object'], get_quantity(unit)
-        df[unit] = df['object'].apply(lambda v: v.get_quantity(unit))
+        df[unit] = df['object'].apply(lambda v: v.get_quantity(unit)).astype(float)
         if per_day:
-            df[unit + "_per_day"] = df[unit] / df['nb_days']
+            df[unit + "_per_day"] = df[unit] / df['nb_days'].astype(float)
     return df
 
 
@@ -182,10 +182,9 @@ def dataframe_flows_to_timeval_freq(df, unity, freq, per_day = True):
             
             for unit in unity:
                 if per_day:
-                    sub_df[unit + '_temp_result'] = sub_df['temp_common_days'] *\
-                                                sub_df[unit + '_per_day']
-                    #print(sub_df)
-                    values[unit].append(sub_df[unit + '_temp_result'].sum())
+                    sub_df[unit + '_temp_result'] = (sub_df['temp_common_days'] *\
+                                                sub_df[unit + '_per_day']).astype(float)
+                    values[unit].append(float(sub_df[unit + '_temp_result'].sum()))
                 else:
                     raise AttributeError("'per_day = False' is not implemented yet")
         else:
@@ -196,7 +195,7 @@ def dataframe_flows_to_timeval_freq(df, unity, freq, per_day = True):
             
     for unit in unity:
         values[unit] += [0]
-   
+
     if unity_is_list:
         return (_listdates, values)
     else:
