@@ -146,7 +146,7 @@ par les données importées permettent de travailler également à l'échelle de
 ```py linenums='31'
     bretagne = sidb.get_territory(code='R53')  # Région 53 = Bretagne
     flux_import = sidb.get_imports(bretagne, product=mon_produit)
-    quantite = Profile.get_value(flux_export, "kt", year=annee)
+    quantite = Profile.get_value(flux_import, "kt", year=annee)
     print(f"{quantite} kt de {mon_produit.get_name()} importé par {bretagne.get_name()} en {annee}")
 ```
 
