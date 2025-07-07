@@ -175,7 +175,7 @@ class Mapper():
         return lst_key
 
     def add(self, key: str,
-            value: str | MTObject | Geometry,
+            value: str | int | float | MTObject | Geometry,
             date_point: str | date | datetime | None = None,
             date_start: str | date | datetime | None = None,
             date_end: str | date | datetime | None = None,
