@@ -156,12 +156,16 @@ Résultat:
 ```
 
 De manière plus avancées, il est possible de filtrer les données en fonction des origine et destination,
+à l'aide du paramètre `related_target`, 
 par exemple tous les flux de céréales en provenance de Charente et à distination de Bretagne :
 
 ```py linenums='36'
-    flux_export = sidb.get_exports(charente, btarget=bretagne, product=mon_produit)
+    flux_export = sidb.get_exports(charente, related_target=bretagne, product=mon_produit)
     print(f"{len(flux_export)} flux en provenance de {charente.get_name()} et à destination de {bretagne.get_name()} ont été requêtés")
 ```
+
+De la même manière, il est possible d'exclure les flux en provenance ou destination d'un territoire spécifique,
+à l'aide du paramètre `exclude_related_target`.
 
 Résultat:
 ``` { .text .no-copy }
