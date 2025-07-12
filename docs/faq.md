@@ -4,7 +4,7 @@ En cours de réalisation ...
 
 ## Comment réinitialiser la base de données
 
-Pour réinitiliser la base de données, il suffit d'éxecuter les lignes suivantes :
+Pour réinitialiser la base de données, il suffit d'éxecuter les lignes suivantes :
 
     with Sidb.connect() as sidb:
         sidb.reset()

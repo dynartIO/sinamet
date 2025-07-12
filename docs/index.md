@@ -30,10 +30,15 @@ d'Information pour l'ANalyse du Métabolisme des Territoires"
 
 Dans l'onglet prise en main, vous trouverez les instructions pour faire vos premiers pas avec Sinamet.
 
+## Licence et code source
+
+Sinamet est diffusé sous licence MIT. Le code source est disponible sur GitLab :
+<a href="https://gitlab.com/dynartio/sinamet target="_blank">https://gitlab.com/dynartio/sinamet</a>
+
 ## Contact
 
 Des questions à propos de la librairie ? Vous souhaitez être formé à l'utilisation de l'outil ou vous souhaitez
-mettre un observatoire des flux sur votre territoire ? Contactez l'équipe de développement : contact@sinamet.tech
+déployer un observatoire des flux sur votre territoire ? Contactez l'équipe de développement : contact@sinamet.tech
 
 ## Credit
 
