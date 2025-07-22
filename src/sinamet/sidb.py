@@ -251,13 +251,13 @@ class Sidb:
                                   ]
         return stats
 
-    def get_properties(self, properties: Iterable[str] | str,
+    def get_properties(self, properties: Iterable[str] | str | None,
                        filter_ids: Select[tuple[int]] | list[int] | None = None,
                        ) -> Sequence[Property]:
         """Charge et renvoie les propriétés correspondantes.
 
         Parameters:
-            properties: Les noms des propriétés à charger.
+            properties: Les noms des propriétés à charger. Si None, renvoie toutes les propriétés
             filter_ids: Si renseigné, charge uniquement les propriétés liées aux objets
                 dont l'id correspond.
             return_type: Pas implémenté.
@@ -276,7 +276,8 @@ class Sidb:
                                      Property.name_b == prop[1]))
             else:
                 mysqllst.append(Property.name_a == prop[0])
-        q = q.where(or_(*mysqllst))
+        if properties is not None:
+            q = q.where(or_(*mysqllst))
 
         if filter_ids is not None:
             result = self.session.scalars(q.where(Property.item_id.in_(filter_ids)))
