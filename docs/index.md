@@ -33,7 +33,7 @@ Dans l'onglet prise en main, vous trouverez les instructions pour faire vos prem
 ## Licence et code source
 
 Sinamet est diffusé sous licence MIT. Le code source est disponible sur GitLab :
-<a href="https://gitlab.com/dynartio/sinamet target="_blank">https://gitlab.com/dynartio/sinamet</a>
+<a href="https://gitlab.com/dynartio/sinamet" target="_blank">https://gitlab.com/dynartio/sinamet</a>
 
 ## Contact
 
