@@ -756,6 +756,50 @@ class Sidb:
                                          cache_properties=cache_properties,
                                          return_type=return_type)
 
+    def get_territories_by_ids(
+            self,
+            ids: Iterable[int] | int,
+            cache_properties: list[str] = [],
+            return_type: Literal['list',
+                                 'object',
+                                 'query',
+                                 'queryid',
+                                 'qid',
+                                 'count',
+                                 ] = "list",
+            verbose: bool = False
+            ) -> Sequence[Territory] | int | Select[tuple[Territory]] | Select[tuple[int]]:
+        """Trouve les territoires correspondants aux identifiants.
+
+        Args:
+            ids: Liste des identifiants.
+            cache_properties: Liste des propriétés à mettre en cache,
+                en plus des noms et des codes.
+            return_type: Type de retour de la fonction. Valeurs possibles:
+
+                * `list` ou `object`: La liste des objets correspondants.
+                * `query`: La requète des objets.
+                * `queryid` ou `qid`: La requète des identifiants des acteurs.
+                * `count`: Nombre d'éléments correspondants.
+            verbose:
+
+        Returns:
+            (list[Territory]): Liste des territoires correspondants.
+            (int): Nombre d'objets contenus dans l'objet passé en paramètre.
+            (Select): Requète des territoires ou des identifiants.
+        """
+        if isinstance(ids, int):
+            ids = (ids,)
+
+        q = {}
+        for nq, targetq in zip(["id", "object"], [Territory.id, Territory]):
+            q[nq] = select(targetq)
+            q[nq] = q[nq].where(Territory.id.in_(ids))
+
+        result = self.compute_query_return_type(q, return_type)
+        self.compute_query_cache_properties(cache_properties, return_type, q['id'])
+        return result
+
     @overload
     def get_all_territories_like_name_code(self, name_code: str, return_type: Literal['list', 'object'] = 'list', cache_properties: list[str] = [],) -> Sequence[Territory]: ...
     @overload
