@@ -1,5 +1,6 @@
 from __future__ import annotations
 from datetime import date, datetime
+import math
 import enum
 from typing import Any, TYPE_CHECKING
 
@@ -101,7 +102,7 @@ class Property(DBObjectClassBase):
         """
         from .mtobject import MTObject
 
-        if value is None or value == '':
+        if (value is None) or (value == '') or (math.isnan(value)):
             raise ValueError(f'Cannot set a property with an empty value ({value=}).')
 
         name_a, *name_b = name.split('@', 1)
