@@ -103,10 +103,10 @@ class Property(DBObjectClassBase):
         from .mtobject import MTObject
 
         if (value is None) or (value == ''):
-            raise ValueError(f'Cannot set a property with an empty value ({value=}).')
+            raise ValueError(f'Cannot set a property with an empty value ({name}={value}).')
         if type(value) is float:
             if math.isnan(value):
-                raise ValueError(f'Cannot set a property with a NaN value ({value=}).')
+                raise ValueError(f'Cannot set a property with a NaN value ({name}={value}).')
 
         name_a, *name_b = name.split('@', 1)
         self.name_a = name_a
