@@ -731,7 +731,8 @@ class MTObject(DBObjectClassBase):
         from sinamet import Sidb
 
         if type(self) is not type(mtobject):
-            raise TypeError("Different object types not implemented yet.")
+            raise TypeError("Different object types not implemented yet '%s in %s'." % (
+                self.__class__.__name__, mtobject.__class__.__name__))
 
         if (self == mtobject) and include_self:
             return True
