@@ -2532,24 +2532,100 @@ class Sidb:
                 if related_target is not None and type(related_target) is not Territory:
                     raise TypeError(f"related_target '{related_target}' is not a Territory")
                 if direction == "import":
-                    q[nq] = q[nq].where(and_(~Pathflow.emitter_territory_id.in_(self.get_territories_in(target, return_type="qid")),
-                                             Pathflow.receiver_territory_id.in_(self.get_territories_in(target, return_type="qid"))))
+                    q[nq] = q[nq].where(
+                        and_(
+                            or_( # Target is not origin territory
+                                ~Pathflow.emitter_territory_id.in_(self.get_territories_in(target, return_type="qid")),
+                                Pathflow.emitter_territory_id.is_(None)
+                            ),
+                            or_( # Target is not origin actor
+                                ~Pathflow.emitter_actor_id.in_(self.get_actors_in(target, return_type="qid")),
+                                Pathflow.emitter_actor_id.is_(None)
+                            ),
+                            or_( # Destination is either in territory either in actor
+                                Pathflow.receiver_territory_id.in_(self.get_territories_in(target, return_type="qid")),
+                                Pathflow.receiver_actor_id.in_(self.get_actors_in(target, return_type="qid"))
+                            )
+                        )
+                    )
                     if exclude_related_target is not None:
-                        q[nq] = q[nq].where(~Pathflow.emitter_territory_id.in_(self.get_territories_in(exclude_related_target, return_type="qid")))
+                        q[nq] = q[nq].where(
+                            and_(
+                                or_(
+                                    ~Pathflow.emitter_territory_id.in_(
+                                        self.get_territories_in(exclude_related_target, return_type="qid")),
+                                    Pathflow.emitter_territory_id.is_(None)
+                                ),
+                                or_(
+                                    ~Pathflow.emitter_actor_id.in_(
+                                        self.get_actors_in(exclude_related_target, return_type="qid")),
+                                    Pathflow.emitter_actor_id.is_(None)
+                                ),
+                            )
+                        )
                     if related_target is not None:
-                        q[nq] = q[nq].where(Pathflow.emitter_territory_id.in_(self.get_territories_in(related_target, return_type="qid")))
+                        q[nq] = q[nq].where(
+                            or_(
+                                Pathflow.emitter_territory_id.in_(
+                                    self.get_territories_in(related_target, return_type="qid")),
+                                Pathflow.emitter_actor_id.in_(
+                                    self.get_actors_in(related_target, return_type="qid")),
+                            )
+                        )
                 elif direction == "internal":
-                    q[nq] = q[nq].where(and_(or_(Pathflow.emitter_territory_id.in_(self.get_territories_in(target, return_type="qid")),
-                                                 Pathflow.emitter_actor_id.in_(self.get_actors_in(target, return_type="qid"))),
-                                             or_(Pathflow.receiver_territory_id.in_(self.get_territories_in(target, return_type="qid")),
-                                                 Pathflow.receiver_actor_id.in_(self.get_actors_in(target, return_type="qid")))))
+                    q[nq] = q[nq].where(
+                        and_(
+                            or_(
+                                Pathflow.emitter_territory_id.in_(self.get_territories_in(target, return_type="qid")),
+                                Pathflow.emitter_actor_id.in_(self.get_actors_in(target, return_type="qid"))
+                            ),
+                            or_(
+                                Pathflow.receiver_territory_id.in_(self.get_territories_in(target, return_type="qid")),
+                                Pathflow.receiver_actor_id.in_(self.get_actors_in(target, return_type="qid"))
+                            )
+                        )
+                    )
                 elif direction == "export":
-                    q[nq] = q[nq].where(and_(Pathflow.emitter_territory_id.in_(self.get_territories_in(target, return_type="qid")),
-                                             ~Pathflow.receiver_territory_id.in_(self.get_territories_in(target, return_type="qid"))))
+                    q[nq] = q[nq].where(
+                        and_(
+                            or_( # Origin is either in territory either in actor
+                                Pathflow.emitter_territory_id.in_(self.get_territories_in(target, return_type="qid")),
+                                Pathflow.emitter_actor_id.in_(self.get_actors_in(target, return_type="qid")),
+                            ),
+                            or_( # Target is not destination territory
+                                ~Pathflow.receiver_territory_id.in_(self.get_territories_in(target, return_type="qid")),
+                                Pathflow.receiver_territory_id.is_(None)
+                            ),
+                            or_( # Target is not destination actor
+                                ~Pathflow.receiver_actor_id.in_(self.get_actors_in(target, return_type="qid")),
+                                Pathflow.receiver_actor_id.is_(None)
+                            )
+                        )
+                    )
                     if exclude_related_target is not None:
-                        q[nq] = q[nq].where(~Pathflow.receiver_territory_id.in_(self.get_territories_in(exclude_related_target, return_type="qid")))
+                        q[nq] = q[nq].where(
+                            and_(
+                                or_(
+                                    ~Pathflow.receiver_territory_id.in_(
+                                        self.get_territories_in(exclude_related_target, return_type="qid")),
+                                    Pathflow.receiver_territory_id.is_(None)
+                                ),
+                                or_(
+                                    ~Pathflow.receiver_actor_id.in_(
+                                        self.get_actors_in(exclude_related_target, return_type="qid")),
+                                    Pathflow.receiver_actor_id.is_(None)
+                                ),
+                            )
+                        )
                     if related_target is not None:
-                        q[nq] = q[nq].where(Pathflow.receiver_territory_id.in_(self.get_territories_in(related_target, return_type="qid")))
+                        q[nq] = q[nq].where(
+                            or_(
+                                Pathflow.receiver_territory_id.in_(
+                                    self.get_territories_in(related_target, return_type="qid")),
+                                Pathflow.receiver_actor_id.in_(
+                                    self.get_actors_in(related_target, return_type="qid")),
+                            )
+                        )
                 elif direction == "all":
                     q[nq] = q[nq].where(or_(Pathflow.emitter_territory_id.in_(self.get_territories_in(target, return_type="qid")),
                                             Pathflow.receiver_territory_id.in_(self.get_territories_in(target, return_type="qid"))))
