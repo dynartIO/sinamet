@@ -768,6 +768,23 @@ class MTObject(DBObjectClassBase):
                 temp += child.get_children(depth=depth-1)
             return temp
 
+    def has_property(self, full_name, value, force_cache=False, verbose=False) -> bool:
+        """Vérifie si l'objet a une propriété avec la valeur indiquée
+
+        Parameters:
+            full_name: Nom complet de la propriété
+            value: Valeur recherchée
+            force_cache: Si `True`, utilise uniquement les propriétés mises en
+                cache, et ne fait pas de requète sur la base de données.
+
+        Returns:
+            `True` si l'objet a une propriété avec la valeur indiquée, `False` sinon."""
+
+        name_a, *name_b = full_name.split('@')
+        myprops = self.get_properties_gen(name_a, name_b, return_type="value", if_none=None,
+                                          force_cache=force_cache, verbose=verbose)
+        return value in myprops
+
     def is_in(self, mtobject: MTObject, force_cache: bool = False, include_self=True) -> bool:
         """Détermine si un autre objet est contenu dans cet objet.
 
