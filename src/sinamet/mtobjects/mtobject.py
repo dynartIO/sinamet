@@ -9,6 +9,9 @@ from datetime import date
 
 from anytree import Node
 
+import pyproj
+from shapely.ops import transform
+
 from sqlalchemy import String
 from sqlalchemy.orm import Mapped
 from sqlalchemy.orm import mapped_column
@@ -436,6 +439,54 @@ class MTObject(DBObjectClassBase):
                                      if_none=if_none, use_default=use_default,
                                      force_cache=force_cache, if_many=if_many,
                                      date_point=date_point, verbose=verbose)
+
+    @overload
+    def get_geoproperty(self, full_name: str, /, *, date_point: str | date | None = None,
+                     if_none: Literal['warn', None] = None, force_cache: bool = False,
+                     if_many: Literal['warn_list', 'list'], verbose: bool = False) -> list[Geometry] | Geometry | None : ...
+
+    @overload
+    def get_geoproperty(self, full_name: str, /, *, date_point: str | date | None = None,
+                     if_none: Literal['warn', None] = None, force_cache: bool = False,
+                     if_many: Literal['warn_first', 'first'], verbose: bool = False) -> Geometry | None : ...
+
+    def get_geoproperty(
+            self,
+            full_name: str,
+            /, *,
+            date_point: str | date | None = None,
+            if_none: Literal['raise', 'warn', None] = None,
+            force_cache: bool = False,
+            if_many: Literal['raise', 'warn_first', 'warn_list',
+                             'first', 'list'] = 'warn_first',
+            verbose: bool = False
+            ) -> Geometry | list[Geometry] | None:
+        """Renvoie la propriété géographique recherchée dans le référentiel indiqué (retourne la valeur uniquement).
+        Attention : les propriétés géographique doivent porter un nom du type "xxx@epsg4326" ou
+        "xxx" (par défault epsg 4326), par exemple "Geoshape@epsg4326"
+        """
+        name_a, *name_b = full_name.split('@')
+        epsg = name_b[0].replace("epsg", "") if name_b else "4326"
+        myprop = self.get_property_gen(name_a, f"epsg{epsg}", return_type="value",
+                                     if_none=None, use_default=False,
+                                     force_cache=force_cache, if_many=if_many,
+                                     date_point=date_point, verbose=verbose)
+        if myprop:
+            return myprop
+
+        ls = self.get_properties_gen(name_a, ['epsg4326'], return_type="tuple",
+                                     if_none=if_none, use_default=True,
+                                     force_cache=force_cache, date_point=date_point,
+                                     verbose=verbose)
+        if not ls:
+            return None
+
+        existing_value, existing_epsg = ls[0]
+        myproj = pyproj.Transformer.from_proj(
+            pyproj.Proj(init=f'epsg:{existing_epsg.replace("epsg", "")}'),
+            pyproj.Proj(init=f'epsg:{epsg}'))
+        myprop = transform(myproj.transform, existing_value)
+        return myprop
 
     def get_properties_gen(
             self,
