@@ -6,6 +6,7 @@ from collections.abc import Iterable
 from typing import Literal, overload, TYPE_CHECKING
 
 from datetime import date
+import re
 
 from anytree import Node
 
@@ -459,14 +460,19 @@ class MTObject(DBObjectClassBase):
             force_cache: bool = False,
             if_many: Literal['raise', 'warn_first', 'warn_list',
                              'first', 'list'] = 'warn_first',
+            epsg='4326',
             verbose: bool = False
             ) -> Geometry | list[Geometry] | None:
         """Renvoie la propriété géographique recherchée dans le référentiel indiqué (retourne la valeur uniquement).
         Attention : les propriétés géographique doivent porter un nom du type "xxx@epsg4326" ou
         "xxx" (par défault epsg 4326), par exemple "Geoshape@epsg4326"
         """
+        if if_none:
+            warnings.warn(f"if_none attribute not configured for '{if_none}'")
+
         name_a, *name_b = full_name.split('@')
-        epsg = name_b[0].replace("epsg", "") if name_b else "4326"
+        if name_b:
+            epsg = name_b[0].replace("epsg", "") if name_b else "4326"
         myprop = self.get_property_gen(name_a, f"epsg{epsg}", return_type="value",
                                      if_none=None, use_default=False,
                                      force_cache=force_cache, if_many=if_many,
@@ -478,12 +484,26 @@ class MTObject(DBObjectClassBase):
                                      if_none=if_none, use_default=True,
                                      force_cache=force_cache, date_point=date_point,
                                      verbose=verbose)
+        if verbose: print("Got following Geoproperties :", ls)
         if not ls:
             return None
 
-        existing_value, existing_epsg = ls[0]
+        existing_value, existing_epsg = None, None
+        for tvalue, tepsg in ls: # returned tuple list in the forme (value, prop_name_b)
+            if bool(re.search(r'epsg\d+$', tepsg, re.IGNORECASE)):
+                existing_epsg = tepsg.lower().split("epsg")[1]
+                existing_value = tvalue
+                break
+
+        if verbose: print(f"Transforming {existing_value=} of EPSG{existing_epsg} to {epsg=}")
+
+        if not existing_epsg:
+            return None
+        if existing_epsg == epsg:
+            return existing_value
+
         myproj = pyproj.Transformer.from_proj(
-            pyproj.Proj(init=f'epsg:{existing_epsg.replace("epsg", "")}'),
+            pyproj.Proj(init=f'epsg:{existing_epsg}'),
             pyproj.Proj(init=f'epsg:{epsg}'))
         myprop = transform(myproj.transform, existing_value)
         return myprop
