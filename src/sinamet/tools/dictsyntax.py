@@ -29,7 +29,8 @@ def listnamesfields(listp):
     return [p["namefield"] for p in listp if p["typefield"] not in ["title", "empty"]]
 
 
-def check_argv(default_params: Any = None) -> Any:
+def check_argv(default_params: Any = None, verbose: bool = False) -> Any:
     if len(sys.argv) > 1:
+        if verbose: print("Arg =", sys.argv)
         return literal_eval(sys.argv[1])
     return default_params
