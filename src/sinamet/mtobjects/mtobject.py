@@ -501,10 +501,9 @@ class MTObject(DBObjectClassBase):
             return None
         if existing_epsg == epsg:
             return existing_value
-
         myproj = pyproj.Transformer.from_proj(
-            pyproj.Proj(init=f'epsg:{existing_epsg}'),
-            pyproj.Proj(init=f'epsg:{epsg}'))
+            pyproj.Proj(f'epsg:{existing_epsg}'),
+            pyproj.Proj(f'epsg:{epsg}'))
         myprop = transform(myproj.transform, existing_value)
         return myprop
 
