@@ -136,7 +136,7 @@ class Sidb:
                 raise
             print(f"MapperError: {error}")
         except Exception:
-            print(f"{mapper}")
+            print(f"MapperException:{mapper}")
             raise
 
     def delete(self, obj: MTObject | Property, verbose: bool = False) -> None:
@@ -2361,30 +2361,36 @@ class Sidb:
         if flowtype is not None:
             mapper.add("FlowType", flowtype, source_ref=mapper.all_srcref)
 
-        obj = Gateflow()
-        self.session.add(obj)
+        gateflow = Gateflow()
+        self.session.add(gateflow)
         # Créer un attribut (objet) par champ du dictionnaire
         # Ajout des attributs non fonctionnels
 
         with self.session.no_autoflush:
-            obj.set_extra_properties(mapper)
+            gateflow.set_extra_properties(mapper)
             result = {}
-            result["flowtype"] = obj.set_flowtype(mapper)
-            result["product"] = obj.set_product(mapper)
-            result["quantity"] = obj.set_quantity(mapper)
-            result["timeperiod"] = obj.set_timeperiod(mapper)
-            result["territory"] = obj.set_territory(mapper)
-            result["actor"] = obj.set_actor(mapper)
+            result["flowtype"] = gateflow.set_flowtype(mapper)
+            result["product"] = gateflow.set_product(mapper)
+            result["quantity"] = gateflow.set_quantity(mapper)
+            result["timeperiod"] = gateflow.set_timeperiod(mapper)
+            result["territory"] = gateflow.set_territory(mapper)
+            result["actor"] = gateflow.set_actor(mapper)
+
 
         if result["quantity"][0] != "OK":
+            self.delete(self.session.merge(gateflow))
             raise MapperError(mapper, result, "quantity")
         if result["timeperiod"][0] != "OK":
+            self.delete(self.session.merge(gateflow))
             raise MapperError(mapper, result, "timeperiod")
         if result["product"][0] != "OK":
+            self.delete(self.session.merge(gateflow))
             raise MapperError(mapper, result, "product")
         if result["territory"][0] != "OK" and result["territory"][0] != "NO_DATA":
+            self.delete(self.session.merge(gateflow))
             raise MapperError(mapper, result, "territory")
         if result["actor"][0] != "OK" and result["actor"][0] != "NO_DATA":
+            self.delete(self.session.merge(gateflow))
             raise MapperError(mapper, result, "actor")
 
     # Pathflow
@@ -2802,14 +2808,19 @@ class Sidb:
 
         # Recherche des erreurs
         if result["receiver_territory"][0] != "OK" and result["receiver_actor"][0] != "OK":
+            self.delete(self.session.merge(pathflow))
             raise MapperError(mapper, result, "receiver_territory/receiver_actor")
         if result["emitter_territory"][0] != "OK" and result["emitter_actor"][0] != "OK":
+            self.delete(self.session.merge(pathflow))
             raise MapperError(mapper, result, "emitter_territory/emitter_actor")
         if result["quantity"][0] != "OK":
+            self.delete(self.session.merge(pathflow))
             raise MapperError(mapper, result, "quantity")
         if result["timeperiod"][0] != "OK":
+            self.delete(self.session.merge(pathflow))
             raise MapperError(mapper, result, "timeperiod")
         if result["product"][0] != "OK":
+            self.delete(self.session.merge(pathflow))
             raise MapperError(mapper, result, "product")
 
     # MTObject's common methods
