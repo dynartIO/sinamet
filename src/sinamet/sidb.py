@@ -564,21 +564,22 @@ class Sidb:
                                      **kwargs)
 
     @overload
-    def get_territories(self, property_name: str | None = None, property_value: str | None = None, /, *, match_pattern: bool = False, ignore_case: bool = False, ignore_accent: bool = False, filter_ids: Iterable[int] | Select[tuple[int]] | None = None, return_type: Literal['list', 'object'] = 'list', cache_properties: list[str] = [], verbose: bool = False,) -> Sequence[Territory]: ...
+    def get_territories(self, property_name: str | None = None, property_value: str | None = None, /, *, property_date_point: str | date | None = None, match_pattern: bool = False, ignore_case: bool = False, ignore_accent: bool = False, filter_ids: Iterable[int] | Select[tuple[int]] | None = None, return_type: Literal['list', 'object'] = 'list', cache_properties: list[str] = [], verbose: bool = False,) -> Sequence[Territory]: ...
     @overload
-    def get_territories(self, property_name: str | None = None, property_value: str | None = None, /, *, match_pattern: bool = False, ignore_case: bool = False, ignore_accent: bool = False, filter_ids: Iterable[int] | Select[tuple[int]] | None = None, return_type: Literal['id'], cache_properties: list[str] = [], verbose: bool = False,) -> Sequence[int]: ...
+    def get_territories(self, property_name: str | None = None, property_value: str | None = None, /, *, property_date_point: str | date | None = None, match_pattern: bool = False, ignore_case: bool = False, ignore_accent: bool = False, filter_ids: Iterable[int] | Select[tuple[int]] | None = None, return_type: Literal['id'], cache_properties: list[str] = [], verbose: bool = False,) -> Sequence[int]: ...
     @overload
-    def get_territories(self, property_name: str | None = None, property_value: str | None = None, /, *, match_pattern: bool = False, ignore_case: bool = False, ignore_accent: bool = False, filter_ids: Iterable[int] | Select[tuple[int]] | None = None, return_type: Literal['count'], cache_properties: list[str] = [], verbose: bool = False,) -> int: ...
+    def get_territories(self, property_name: str | None = None, property_value: str | None = None, /, *, property_date_point: str | date | None = None, match_pattern: bool = False, ignore_case: bool = False, ignore_accent: bool = False, filter_ids: Iterable[int] | Select[tuple[int]] | None = None, return_type: Literal['count'], cache_properties: list[str] = [], verbose: bool = False,) -> int: ...
     @overload
-    def get_territories(self, property_name: str | None = None, property_value: str | None = None, /, *, match_pattern: bool = False, ignore_case: bool = False, ignore_accent: bool = False, filter_ids: Iterable[int] | Select[tuple[int]] | None = None, return_type: Literal['query'], cache_properties: list[str] = [], verbose: bool = False,) -> Select[tuple[Territory]]: ...
+    def get_territories(self, property_name: str | None = None, property_value: str | None = None, /, *, property_date_point: str | date | None = None, match_pattern: bool = False, ignore_case: bool = False, ignore_accent: bool = False, filter_ids: Iterable[int] | Select[tuple[int]] | None = None, return_type: Literal['query'], cache_properties: list[str] = [], verbose: bool = False,) -> Select[tuple[Territory]]: ...
     @overload
-    def get_territories(self, property_name: str | None = None, property_value: str | None = None, /, *, match_pattern: bool = False, ignore_case: bool = False, ignore_accent: bool = False, filter_ids: Iterable[int] | Select[tuple[int]] | None = None, return_type: Literal['queryid', 'qid'], cache_properties: list[str] = [], verbose: bool = False,) -> Select[tuple[int]]: ...
+    def get_territories(self, property_name: str | None = None, property_value: str | None = None, /, *, property_date_point: str | date | None = None, match_pattern: bool = False, ignore_case: bool = False, ignore_accent: bool = False, filter_ids: Iterable[int] | Select[tuple[int]] | None = None, return_type: Literal['queryid', 'qid'], cache_properties: list[str] = [], verbose: bool = False,) -> Select[tuple[int]]: ...
 
     def get_territories(
             self,
             property_name: str | None = None,
             property_value: str | None = None,
             /, *,
+            property_date_point: str | date | None = None,
             match_pattern: bool = False,
             ignore_case: bool = False,
             ignore_accent: bool = False,
@@ -599,6 +600,7 @@ class Sidb:
 
         Args:
             *args: Duo d'arguments "NomDeProprieté", "Valeur"
+            property_date_point: Recherche les propriétés recouvrant la date indiquée
             match_pattern: Si True, la valeur est recherchée par motif plutôt que par valeur exacte, via
                 l'[instruction LIKE de SQL](https://www.postgresql.org/docs/current/functions-matching.html#FUNCTIONS-LIKE)
                 Se référer à la documentation de postgresql pour plus de détails.
@@ -629,6 +631,7 @@ class Sidb:
 
         return self.get_mtobjects_tap(Territory,
                                       property_name, property_value,
+                                      property_date_point=property_date_point,
                                       match_pattern=match_pattern,
                                       ignore_case=ignore_case,
                                       ignore_accent=ignore_accent,
@@ -1033,21 +1036,22 @@ class Sidb:
                                      **kwargs)
 
     @overload
-    def get_actors(self, property_name: str | None = None, property_value: str | None = None, /, *, match_pattern: bool = False, ignore_case: bool = False, ignore_accent: bool = False, filter_ids: Iterable[int] | Select[tuple[int]] | None = None, return_type: Literal['list', 'object'] = 'list', cache_properties: list[str] = [], verbose: bool = False,) -> Sequence[Actor]: ...
+    def get_actors(self, property_name: str | None = None, property_value: str | None = None, /, *, property_date_point: str | date | None = None, match_pattern: bool = False, ignore_case: bool = False, ignore_accent: bool = False, filter_ids: Iterable[int] | Select[tuple[int]] | None = None, return_type: Literal['list', 'object'] = 'list', cache_properties: list[str] = [], verbose: bool = False,) -> Sequence[Actor]: ...
     @overload
-    def get_actors(self, property_name: str | None = None, property_value: str | None = None, /, *, match_pattern: bool = False, ignore_case: bool = False, ignore_accent: bool = False, filter_ids: Iterable[int] | Select[tuple[int]] | None = None, return_type: Literal['id'], cache_properties: list[str] = [], verbose: bool = False,) -> Sequence[int]: ...
+    def get_actors(self, property_name: str | None = None, property_value: str | None = None, /, *, property_date_point: str | date | None = None, match_pattern: bool = False, ignore_case: bool = False, ignore_accent: bool = False, filter_ids: Iterable[int] | Select[tuple[int]] | None = None, return_type: Literal['id'], cache_properties: list[str] = [], verbose: bool = False,) -> Sequence[int]: ...
     @overload
-    def get_actors(self, property_name: str | None = None, property_value: str | None = None, /, *, match_pattern: bool = False, ignore_case: bool = False, ignore_accent: bool = False, filter_ids: Iterable[int] | Select[tuple[int]] | None = None, return_type: Literal['count'], cache_properties: list[str] = [], verbose: bool = False,) -> int: ...
+    def get_actors(self, property_name: str | None = None, property_value: str | None = None, /, *, property_date_point: str | date | None = None, match_pattern: bool = False, ignore_case: bool = False, ignore_accent: bool = False, filter_ids: Iterable[int] | Select[tuple[int]] | None = None, return_type: Literal['count'], cache_properties: list[str] = [], verbose: bool = False,) -> int: ...
     @overload
-    def get_actors(self, property_name: str | None = None, property_value: str | None = None, /, *, match_pattern: bool = False, ignore_case: bool = False, ignore_accent: bool = False, filter_ids: Iterable[int] | Select[tuple[int]] | None = None, return_type: Literal['query'], cache_properties: list[str] = [], verbose: bool = False,) -> Select[tuple[Actor]]: ...
+    def get_actors(self, property_name: str | None = None, property_value: str | None = None, /, *, property_date_point: str | date | None = None, match_pattern: bool = False, ignore_case: bool = False, ignore_accent: bool = False, filter_ids: Iterable[int] | Select[tuple[int]] | None = None, return_type: Literal['query'], cache_properties: list[str] = [], verbose: bool = False,) -> Select[tuple[Actor]]: ...
     @overload
-    def get_actors(self, property_name: str | None = None, property_value: str | None = None, /, *, match_pattern: bool = False, ignore_case: bool = False, ignore_accent: bool = False, filter_ids: Iterable[int] | Select[tuple[int]] | None = None, return_type: Literal['queryid', 'qid'], cache_properties: list[str] = [], verbose: bool = False,) -> Select[tuple[int]]: ...
+    def get_actors(self, property_name: str | None = None, property_value: str | None = None, /, *, property_date_point: str | date | None = None, match_pattern: bool = False, ignore_case: bool = False, ignore_accent: bool = False, filter_ids: Iterable[int] | Select[tuple[int]] | None = None, return_type: Literal['queryid', 'qid'], cache_properties: list[str] = [], verbose: bool = False,) -> Select[tuple[int]]: ...
 
     def get_actors(
             self,
             property_name: str | None = None,
             property_value: str | None = None,
             /, *,
+            property_date_point: str | date | None = None,
             match_pattern: bool = False,
             ignore_case: bool = False,
             ignore_accent: bool = False,
@@ -1072,6 +1076,7 @@ class Sidb:
 
         Args:
             *args: Duo d'arguments "NomDeProprieté", "Valeur"
+            property_date_point: Recherche les propriétés recouvrant la date indiquée
             match_pattern: Si True, la valeur est recherchée par motif plutôt que par valeur exacte, via
                 l'[instruction LIKE de SQL](https://www.postgresql.org/docs/current/functions-matching.html#FUNCTIONS-LIKE)
                 Se référer à la documentation de postgresql pour plus de détails.
@@ -1100,6 +1105,7 @@ class Sidb:
         """
         return self.get_mtobjects_tap(Actor,
                                       property_name, property_value,
+                                      property_date_point=property_date_point,
                                       match_pattern=match_pattern,
                                       ignore_case=ignore_case,
                                       ignore_accent=ignore_accent,
@@ -2960,6 +2966,7 @@ class Sidb:
             property_name: str | None = None,
             property_value: str | None = None,
             /, *,
+            property_date_point: str | date | None = None,
             match_pattern: bool = False,
             ignore_case: bool = False,
             ignore_accent: bool = False,
@@ -3012,6 +3019,20 @@ class Sidb:
             q[nq] = q[nq].where(Property.name_a == propname_a)
             if propname_b:
                 q[nq] = q[nq].where(Property.name_b == propname_b[0])
+            if property_date_point:
+                q[nq] = q[nq].where(
+                    or_(
+                        Property.date_point == property_date_point,
+                        and_(
+                            Property.date_start <= property_date_point,
+                            Property.date_end >= property_date_point),
+                        and_(
+                            Property.date_point.is_(None),
+                            Property.date_start.is_(None),
+                            Property.date_end.is_(None),
+                        )
+                    )
+                )
 
         result = self.compute_query_return_type(q, return_type)
         self.compute_query_cache_properties(cache_properties, return_type, q['id'])
