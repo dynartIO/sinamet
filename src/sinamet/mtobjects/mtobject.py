@@ -537,6 +537,9 @@ class MTObject(DBObjectClassBase):
             prop_name: Nom de la propriété.
             prop_types: Si précisé recherche les propriétés avec les précision données.
                 Sinon, recherche toutes les propriétés.
+            date_point: Propriétés valables à une date spécifique (propriété ayant même date, ou une période couvrant la date, ou pas de date)
+            date_start: Propriétés valables pour une période - date de début
+            date_end: Propriétés valables pour une période - date de fin
             return_type (str): Type de retour de la fonction. Valeurs possibles:
 
                 * `value`: Les valeurs uniquement (ex. ["FR", "FRA"]).
@@ -605,8 +608,10 @@ class MTObject(DBObjectClassBase):
                 for p in self.cached_properties.get(key, []):
                     properties.append((p, key_b[0] if key_b else '_'))
         if properties and (date_point or date_start or date_end):
+            if verbose: print("Before date filtering =", len(properties), "items")
             properties = [p for p in properties
-                          if _check_property_date(p[0], date_point, date_start, date_end)]
+                          if _check_property_date(p[0], date_point, date_start, date_end, verbose=verbose)]
+            if verbose: print("After date filtering =", len(properties), "items")
 
         if verbose:
             print(f"{properties=}")
@@ -1490,7 +1495,8 @@ def _check_property_date(
         p: Property,
         date_point: str | date | None,
         date_start: str | date | None,
-        date_end: str | date | None
+        date_end: str | date | None,
+        verbose: bool = False
         ) -> bool:
     """Vérifie si la propriété `p` correspond aux critères de date.
 
@@ -1499,6 +1505,7 @@ def _check_property_date(
         date_point: La date ponctuelle.
         date_start: La date de début.
         date_end: La date de fin.
+        verbose: Si verbeux
 
     Returns:
         `True` si la propriété correspond aux critères de date, `False` sinon.
@@ -1510,6 +1517,10 @@ def _check_property_date(
     date_point = to_date(date_point)
     date_start = to_date(date_start)
     date_end = to_date(date_end)
+
+    if verbose:
+        print("Property date (start, end, point) =", p.date_start, p.date_end, p.date_point)
+        print("Looking for date (start, end, point) =", date_start, date_end, date_point)
 
     if date_start and date_end:
         return bool(
@@ -1527,12 +1538,15 @@ def _check_property_date(
         return bool(
             (p.date_end and not p.date_start) or
             (p.date_start and p.date_start <= date_end) or
-            (p.date_point and p.date_point <= date_end))
+            (p.date_point and p.date_point <= date_end)
+        )
     elif date_point:
         return bool(
-            p.date_point == date_point or
+            (p.date_point == date_point) or
             (p.date_start and p.date_end
              and p.date_start <= date_point <= p.date_end) or
             (p.date_start and not p.date_end and p.date_start <= date_point) or
-            (p.date_end and not p.date_start and date_point <= p.date_end))
+            (p.date_end and not p.date_start and date_point <= p.date_end) or
+            (not p.date_end and not p.date_start and not p.date_point)
+        )
     return True
