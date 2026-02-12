@@ -503,8 +503,10 @@ class MTObject(DBObjectClassBase):
             return existing_value
         myproj = pyproj.Transformer.from_proj(
             pyproj.Proj(f'epsg:{existing_epsg}'),
-            pyproj.Proj(f'epsg:{epsg}'))
+            pyproj.Proj(f'epsg:{epsg}'),
+            always_xy=True)
         myprop = transform(myproj.transform, existing_value)
+        if verbose: print(f"Got following point = ", myprop)
         return myprop
 
     def get_properties_gen(
