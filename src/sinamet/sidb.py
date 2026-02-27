@@ -2401,19 +2401,19 @@ class Sidb:
 
     # Pathflow
     @overload
-    def get_pathflows[T: (Territory, Actor)](self, target: T | None = None, direction: Literal['import', 'export', 'internal', 'all', None] = None, *, related_target: T | None = None, exclude_related_target: T | None = None, product: (Product | Sequence[Product] | int | Sequence[int] | Select[tuple[int]] | Sequence[Select[tuple[int]]] | None) = None, include_parent_products: bool = False, include_children_products: bool = True, date_point: date | str | None = None, date_start: date | str | None = None, date_end: date | str | None = None, year: str | int | None = None, month: str | int | None = None, source_ref: str | None = None, filter_by: list[tuple[str, str]] = [], filter_ids: Iterable[int] | Select[tuple[int]] | None = None, return_type: Literal['list', 'object'] = 'list', cache_properties: list[str] = [],) -> Sequence[Pathflow]: ...
+    def get_pathflows[T: (Territory, Actor)](self, target: Iterable[T] | T | None = None, direction: Literal['import', 'export', 'internal', 'all', None] = None, *, related_target: T | None = None, exclude_related_target: T | None = None, product: (Product | Sequence[Product] | int | Sequence[int] | Select[tuple[int]] | Sequence[Select[tuple[int]]] | None) = None, include_parent_products: bool = False, include_children_products: bool = True, date_point: date | str | None = None, date_start: date | str | None = None, date_end: date | str | None = None, year: str | int | None = None, month: str | int | None = None, source_ref: str | None = None, filter_by: list[tuple[str, str]] = [], filter_ids: Iterable[int] | Select[tuple[int]] | None = None, return_type: Literal['list', 'object'] = 'list', cache_properties: list[str] = [],) -> Sequence[Pathflow]: ...
     @overload
-    def get_pathflows[T: (Territory, Actor)](self, target: T | None = None, direction: Literal['import', 'export', 'internal', 'all', None] = None, *, related_target: T | None = None, exclude_related_target: T | None = None, product: (Product | Sequence[Product] | int | Sequence[int] | Select[tuple[int]] | Sequence[Select[tuple[int]]] | None) = None, include_parent_products: bool = False, include_children_products: bool = True, date_point: date | str | None = None, date_start: date | str | None = None, date_end: date | str | None = None, year: str | int | None = None, month: str | int | None = None, source_ref: str | None = None, filter_by: list[tuple[str, str]] = [], filter_ids: Iterable[int] | Select[tuple[int]] | None = None, return_type: Literal['id'], cache_properties: list[str] = [],) -> Sequence[int]: ...
+    def get_pathflows[T: (Territory, Actor)](self, target: Iterable[T] | T | None = None, direction: Literal['import', 'export', 'internal', 'all', None] = None, *, related_target: T | None = None, exclude_related_target: T | None = None, product: (Product | Sequence[Product] | int | Sequence[int] | Select[tuple[int]] | Sequence[Select[tuple[int]]] | None) = None, include_parent_products: bool = False, include_children_products: bool = True, date_point: date | str | None = None, date_start: date | str | None = None, date_end: date | str | None = None, year: str | int | None = None, month: str | int | None = None, source_ref: str | None = None, filter_by: list[tuple[str, str]] = [], filter_ids: Iterable[int] | Select[tuple[int]] | None = None, return_type: Literal['id'], cache_properties: list[str] = [],) -> Sequence[int]: ...
     @overload
-    def get_pathflows[T: (Territory, Actor)](self, target: T | None = None, direction: Literal['import', 'export', 'internal', 'all', None] = None, *, related_target: T | None = None, exclude_related_target: T | None = None, product: (Product | Sequence[Product] | int | Sequence[int] | Select[tuple[int]] | Sequence[Select[tuple[int]]] | None) = None, include_parent_products: bool = False, include_children_products: bool = True, date_point: date | str | None = None, date_start: date | str | None = None, date_end: date | str | None = None, year: str | int | None = None, month: str | int | None = None, source_ref: str | None = None, filter_by: list[tuple[str, str]] = [], filter_ids: Iterable[int] | Select[tuple[int]] | None = None, return_type: Literal['count'], cache_properties: list[str] = [],) -> int: ...
+    def get_pathflows[T: (Territory, Actor)](self, target: Iterable[T] | T | None = None, direction: Literal['import', 'export', 'internal', 'all', None] = None, *, related_target: T | None = None, exclude_related_target: T | None = None, product: (Product | Sequence[Product] | int | Sequence[int] | Select[tuple[int]] | Sequence[Select[tuple[int]]] | None) = None, include_parent_products: bool = False, include_children_products: bool = True, date_point: date | str | None = None, date_start: date | str | None = None, date_end: date | str | None = None, year: str | int | None = None, month: str | int | None = None, source_ref: str | None = None, filter_by: list[tuple[str, str]] = [], filter_ids: Iterable[int] | Select[tuple[int]] | None = None, return_type: Literal['count'], cache_properties: list[str] = [],) -> int: ...
     @overload
-    def get_pathflows[T: (Territory, Actor)](self, target: T | None = None, direction: Literal['import', 'export', 'internal', 'all', None] = None, *, related_target: T | None = None, exclude_related_target: T | None = None, product: (Product | Sequence[Product] | int | Sequence[int] | Select[tuple[int]] | Sequence[Select[tuple[int]]] | None) = None, include_parent_products: bool = False, include_children_products: bool = True, date_point: date | str | None = None, date_start: date | str | None = None, date_end: date | str | None = None, year: str | int | None = None, month: str | int | None = None, source_ref: str | None = None, filter_by: list[tuple[str, str]] = [], filter_ids: Iterable[int] | Select[tuple[int]] | None = None, return_type: Literal['query'], cache_properties: list[str] = [],) -> Select[tuple[Pathflow]]: ...
+    def get_pathflows[T: (Territory, Actor)](self, target: Iterable[T] | T | None = None, direction: Literal['import', 'export', 'internal', 'all', None] = None, *, related_target: T | None = None, exclude_related_target: T | None = None, product: (Product | Sequence[Product] | int | Sequence[int] | Select[tuple[int]] | Sequence[Select[tuple[int]]] | None) = None, include_parent_products: bool = False, include_children_products: bool = True, date_point: date | str | None = None, date_start: date | str | None = None, date_end: date | str | None = None, year: str | int | None = None, month: str | int | None = None, source_ref: str | None = None, filter_by: list[tuple[str, str]] = [], filter_ids: Iterable[int] | Select[tuple[int]] | None = None, return_type: Literal['query'], cache_properties: list[str] = [],) -> Select[tuple[Pathflow]]: ...
     @overload
-    def get_pathflows[T: (Territory, Actor)](self, target: T | None = None, direction: Literal['import', 'export', 'internal', 'all', None] = None, *, related_target: T | None = None, exclude_related_target: T | None = None, product: (Product | Sequence[Product] | int | Sequence[int] | Select[tuple[int]] | Sequence[Select[tuple[int]]] | None) = None, include_parent_products: bool = False, include_children_products: bool = True, date_point: date | str | None = None, date_start: date | str | None = None, date_end: date | str | None = None, year: str | int | None = None, month: str | int | None = None, source_ref: str | None = None, filter_by: list[tuple[str, str]] = [], filter_ids: Iterable[int] | Select[tuple[int]] | None = None, return_type: Literal['queryid', 'qid'], cache_properties: list[str] = [],) -> Select[tuple[int]]: ...
+    def get_pathflows[T: (Territory, Actor)](self, target: Iterable[T] | T | None = None, direction: Literal['import', 'export', 'internal', 'all', None] = None, *, related_target: T | None = None, exclude_related_target: T | None = None, product: (Product | Sequence[Product] | int | Sequence[int] | Select[tuple[int]] | Sequence[Select[tuple[int]]] | None) = None, include_parent_products: bool = False, include_children_products: bool = True, date_point: date | str | None = None, date_start: date | str | None = None, date_end: date | str | None = None, year: str | int | None = None, month: str | int | None = None, source_ref: str | None = None, filter_by: list[tuple[str, str]] = [], filter_ids: Iterable[int] | Select[tuple[int]] | None = None, return_type: Literal['queryid', 'qid'], cache_properties: list[str] = [],) -> Select[tuple[int]]: ...
 
     def get_pathflows[T: (Territory, Actor)](
             self,
-            target: T | None = None,
+            target: Iterable[T] | T | None = None,
             direction: Literal['import', 'export',
                                'internal', 'all',
                                None] = None,
@@ -2483,8 +2483,11 @@ class Sidb:
         # FutureDev Implementer target_(asc/desc).
         if direction not in ("import", "export", "internal", "all", None):
             raise ValueError(f"Unknown direction = '{direction}'")
-        if type(target) is list:
-            raise ValueError("Target list is not configured yet")
+
+        target_type = target[0] if isinstance(target, list) else target
+        if isinstance(target, list):
+            if len(mytypes := set([type(t) for t in target])) != 1:
+                raise AttributeError("Non-homogeneous object types = " + str(mytypes))
         if (exclude_related_target is not None) or (related_target is not None):
             if (direction == "internal") or (direction == "all"):
                 raise ValueError(f"exclude_related_target or related_target should be None for '{direction}' direction flow")
@@ -2536,7 +2539,7 @@ class Sidb:
                     products_search.append(Pathflow.product_id.in_(ids))
                 q[nq] = q[nq].where(or_(*products_search))
 
-            if isinstance(target, Territory):
+            if isinstance(target_type, Territory):
                 # ToDo : Implement Actors continuation
                 # Vérify exclude_related_target type
                 if exclude_related_target is not None and type(exclude_related_target) is not Territory:
@@ -2641,8 +2644,9 @@ class Sidb:
                 elif direction == "all":
                     q[nq] = q[nq].where(or_(Pathflow.emitter_territory_id.in_(self.get_territories_in(target, return_type="qid")),
                                             Pathflow.receiver_territory_id.in_(self.get_territories_in(target, return_type="qid"))))
+
                 # x- and b-target
-            elif isinstance(target, Actor):
+            elif isinstance(target_type, Actor):
                 # ToDo : Implement Actors continuation
                 # Vérify exclude_related_target type
                 if exclude_related_target is not None and type(exclude_related_target) is not Actor:
@@ -2671,7 +2675,7 @@ class Sidb:
                                             Pathflow.receiver_actor_id.in_(self.get_actors_in(target, return_type="qid"))))
                 # x- and b-target
             elif target is not None:
-                raise AttributeError("Unknwon target type = %s (%s)" % (type(target), target))
+                raise AttributeError("Unknwon target type = %s (%s)" % (type(target_type), target_type))
 
             for name, value in filter_by:
                 p = aliased(Property)
