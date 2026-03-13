@@ -28,6 +28,7 @@ plugins:
             docstring_section_style: list
             separate_signature: true
             show_source: false
+            show_overloads: false
 
 theme:
   name: material
