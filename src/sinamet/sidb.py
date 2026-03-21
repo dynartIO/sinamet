@@ -593,6 +593,7 @@ class Sidb:
                                  'count',
                                  ] = 'list',
             cache_properties: list[str] = [],
+            source_ref: str | None = None,
             verbose: bool = False,
             ) -> (Sequence[Territory] | Sequence[int] | int |
                   Select[tuple[Territory]] | Select[tuple[int]]):
@@ -616,6 +617,7 @@ class Sidb:
                 * `queryid` ou `qid`: La requète des identifiants des objects.
                 * `count`: Nombre d'éléments correspondants.
             cache_properties: Liste de propriétés à mettre en cache.
+            source_ref: Source de données
             verbose: Si True, est bavard.
 
         Returns:
@@ -638,6 +640,7 @@ class Sidb:
                                       filter_ids=filter_ids,
                                       return_type=return_type,
                                       cache_properties=cache_properties,
+                                      source_ref=source_ref,
                                       verbose=verbose)
 
     @overload
@@ -1065,6 +1068,7 @@ class Sidb:
                                  'count',
                                  ] = 'list',
             cache_properties: list[str] = [],
+            source_ref: str | None = None,
             verbose: bool = False,
             ) -> (Sequence[Actor] | Sequence[int] | int |
                   Select[tuple[Actor]] | Select[tuple[int]]):
@@ -1092,6 +1096,7 @@ class Sidb:
                 * `queryid` ou `qid`: La requète des identifiants des objects.
                 * `count`: Nombre d'éléments correspondants.
             cache_properties: Liste de propriétés à mettre en cache.
+            source_ref: Source de données
             verbose: Si True, est bavard.
 
         Returns:
@@ -1112,6 +1117,7 @@ class Sidb:
                                       filter_ids=filter_ids,
                                       return_type=return_type,
                                       cache_properties=cache_properties,
+                                      source_ref=source_ref,
                                       verbose=verbose)
 
     @overload
@@ -1538,6 +1544,7 @@ class Sidb:
                                  'count',
                                  ] = 'list',
             cache_properties: list[str] = [],
+            source_ref: str | None = None,
             verbose: bool = False,
             ) -> (Sequence[Product] | Sequence[int] | int |
                   Select[tuple[Product]] | Select[tuple[int]]):
@@ -1562,6 +1569,7 @@ class Sidb:
             cache_properties: Liste des propriétés à mettre en cache,
                 en plus des noms et des codes.
             nomenclature: Nom de la nomenclature des produits recherchés.
+            source_ref: Source de données
             verbose: Si True, est bavard.
 
         Returns:
@@ -1582,6 +1590,7 @@ class Sidb:
                                       return_type=return_type,
                                       cache_properties=cache_properties,
                                       nomenclature=nomenclature,
+                                      source_ref=source_ref,
                                       verbose=verbose)
 
     def get_products_by_ids(self,
@@ -2980,6 +2989,7 @@ class Sidb:
                                  'query', 'count'] = 'list',
             cache_properties: list[str] = [],
             nomenclature: str | None = None,
+            source_ref: str | None = None,
             verbose: bool = False,
             ) -> (Sequence[T] | Sequence[int] | int |
                   Select[tuple[T]] | Select[tuple[int]]):
@@ -3004,7 +3014,7 @@ class Sidb:
                                     & (prop_nomenclature.value_literal == nomenclature))
 
             # If no property name was given, no need to filter properties.
-            if not property_name:
+            if not property_name and not source_ref:
                 continue
             q[nq] = q[nq].join(mtobject_class.properties)
 
@@ -3019,10 +3029,16 @@ class Sidb:
                 else:
                     q[nq] = q[nq].where(prop == value)
 
-            propname_a, *propname_b = property_name.split('@', 1)
-            q[nq] = q[nq].where(Property.name_a == propname_a)
-            if propname_b:
-                q[nq] = q[nq].where(Property.name_b == propname_b[0])
+            if property_name:
+                propname_a, *propname_b = property_name.split('@', 1)
+                q[nq] = q[nq].where(Property.name_a == propname_a)
+                if propname_b:
+                    q[nq] = q[nq].where(Property.name_b == propname_b[0])
+
+            if source_ref:
+                q[nq] = q[nq].where(Property.source_ref == source_ref)
+
+            # Date filter
             if property_date_point:
                 q[nq] = q[nq].where(
                     or_(
