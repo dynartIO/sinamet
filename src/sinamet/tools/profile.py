@@ -1,7 +1,7 @@
 from datetime import timedelta
 import datetime
 import pandas as pd
-from sinamet.tools.timext import to_date
+from sinamet.tools.xtime import to_date
 from sinamet.tools.listmtq import (list_flows_to_dataframe,
                                    dataframe_flows_to_timeval,
                                    dataframe_flows_to_timeval_freq,

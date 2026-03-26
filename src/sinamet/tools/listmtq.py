@@ -2,7 +2,7 @@ import pandas
 
 from datetime import timedelta, date, datetime
 import numpy as np
-from .timext import full_date_range, common_nb_days, get_start_end_dates
+from .xtime import full_date_range, common_nb_days, get_start_end_dates
 
 #import swifter
 
