@@ -460,7 +460,7 @@ class MTObject(DBObjectClassBase):
             force_cache: bool = False,
             if_many: Literal['raise', 'warn_first', 'warn_list',
                              'first', 'list'] = 'warn_first',
-            epsg='4326',
+            epsg: str | int='4326',
             verbose: bool = False
             ) -> Geometry | list[Geometry] | None:
         """Renvoie la propriété géographique recherchée dans le référentiel indiqué (retourne la valeur uniquement).
@@ -469,6 +469,8 @@ class MTObject(DBObjectClassBase):
         """
         if if_none:
             warnings.warn(f"if_none attribute not configured for '{if_none}'")
+        if type(epsg) is int:
+            epsg = str(epsg)
 
         name_a, *name_b = full_name.split('@')
         if name_b:

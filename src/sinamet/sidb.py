@@ -15,6 +15,7 @@ from sqlalchemy.orm import aliased
 from sqlalchemy.orm.exc import UnmappedInstanceError
 from sqlalchemy.orm.session import Session, object_session, sessionmaker
 from sqlalchemy.sql import Select, and_, delete, func, or_, select, union
+from geoalchemy2.functions import ST_Within, ST_GeomFromText, ST_Transform, ST_AsGeoJSON, ST_SetSRID
 
 from sinamet.config import config
 from sinamet.mapper import Mapper, MapperError
@@ -28,7 +29,8 @@ from sinamet.mtobjects.product import Product
 from sinamet.mtobjects.property import Property
 from sinamet.mtobjects.stock import Stock
 from sinamet.mtobjects.territory import Territory
-from sinamet.tools.timext import get_start_end_dates, to_date
+from sinamet.tools.xtime import get_start_end_dates, to_date
+from sinamet.tools.xshape import reproject
 
 
 class Sidb:
@@ -677,7 +679,7 @@ class Sidb:
 
         Args:
             territory: L'object `Territory` contenant les territoires voulus.
-            scale: Échelle de recherche.
+            scale: Échelle des territoires recherchés.
             include_self: Inclure ou non l'élément passé en paramètre.
             cache_properties: Liste des propriétés à mettre en cache.
             return_type: Type de retour de la fonction. Valeurs possibles:
@@ -1241,6 +1243,124 @@ class Sidb:
                                          include_self=include_self,
                                          cache_properties=cache_properties,
                                          return_type=return_type)
+
+    def get_actors_in_geometry(
+            self,
+            mask: MTObject | Polygon | MultiPolygon,
+            radius: float = 0,
+            feature_scale: str | None = None,
+            metric_epsg: str | int = 3857,
+            mask_epsg: str | int = 0,
+            seek_epsg: list[int | str] = [],
+            if_many_geometries: Literal['raise', 'first', 'warn_first'] = 'warn_first',
+            mask_geoproperty='Geopolygon',
+            feature_geoproperty='Geopoint',
+            cache_properties: list[str] = [],
+            return_type: Literal['list',
+                                'object',
+                                'query',
+                                'queryid',
+                                'qid',
+                                'count',
+                                ] = 'list',
+            verbose=False) -> (Sequence[Actor] | Sequence[int] | int |
+                               Select[tuple[Actor]] | Select[tuple[int]]):
+        """Trouve des acteurs contenus dans une forme géométrique (polygone).
+
+        Args:
+            mask: Masque (ou couche de superpositon) délimitant l'aire de recherche. Cela peut être un MTObject, un Polygon ou un Multipolygon
+            radius: Rayon de recherche (tampon) en mètre, au-delà de l'aire de recheche.
+            scale: Échelle des éléments recherchés (hors 4326 par défaut).
+            metric_epsg: Code EPSG d'un Système de Coordonnées métrique (pour calcul du rayon).
+            seek_epsg : Liste des EPSG considérés pour la recherche.
+            mask_epsg: Liste des propriétés à mettre en cache.
+            if_many_geometries: Action à prendre quand plusieurs éléments géométries sont disponibles pour l'objet mask
+                            (uniquement si `mask` est un MTObject)
+                            Les valeurs possibles sont:
+
+                             * `warn_first`: Affiche un avertissement et renvoie le premier élément.
+                             * `raise`: Lève une AssertionError.
+                             * `first`: Renvoie le premier élément correspondant.
+            mask_geoproperty: Nom de la propriété qui contient le polygone de forme (uniquement si `mask` est un MTObject)
+            feature_geoproperty: Nom de la propriété de l'acteur qui doit être inclus dans le masque
+            cache_properties: Liste des propriétés à mettre en cache.
+            return_type: Type de retour de la fonction. Valeurs possibles:
+
+                * `list` ou `object`: La liste des objets correspondants.
+                * `id`: La liste des identifiants des objets.
+                * `query`: La requète des objets.
+                * `queryid` ou `qid`: La requète des identifiants des objects.
+                * `count`: Nombre d'éléments correspondants.
+            verbose: Si True, est bavard.
+
+        Returns:
+            (list[Actor]): Liste des acteurs localisés dans le masque.
+            (list[int]): Liste des identifiants des acteurs localisés dans le masque.
+            (int): Nombre d'acteurs localisés dans le masque.
+            (Select): Requète sur les acteurs (Select Actor) ou leurs identifiants (Select Actor.id).
+
+        Raises:
+            AttributeError: Si la géométrie du masque n'a pas pu être trouvée.
+        """
+        if isinstance(mask, MTObject):
+            mask = mask.get_geoproperty(mask_geoproperty, epsg=metric_epsg, if_many=if_many_geometries)
+            if not mask:
+                raise AttributeError(f"MTObject mask does not contains geoproperty '{mask_geoproperty}'")
+            mask_epsg = metric_epsg
+        else:
+            if not mask_epsg:
+                raise AttributeError(f"CRS of polygon is unknown. Set mask_epsg attribute.")
+
+        if radius > 0:
+            if mask_epsg != metric_epsg:
+                mask = reproject(mask, mask_epsg, metric_epsg)
+            mask = mask.buffer(radius)
+            search_4326 = reproject(mask, metric_epsg, 4326)
+        else:
+            search_4326 = reproject(mask, mask_epsg, 4326)
+        geom_4326 = ST_GeomFromText(search_4326.wkt, 4326)
+
+        mtobject_to_return = Actor
+
+        q = {}
+        property1_alias = aliased(Property, name='property1_alias')  # Geometry
+        property2_alias = aliased(Property, name='property2_alias')  # Scale
+        for nq, targetq in zip(["id", "object"], [mtobject_to_return.id, mtobject_to_return]):
+            q[nq] = select(targetq)
+            q[nq] = q[nq].join(property1_alias, mtobject_to_return.properties)
+            q[nq] = q[nq].where(property1_alias.name_a == feature_geoproperty)
+
+            or_collector = [
+                and_(
+                    or_(property1_alias.name_b == "epsg4326", property1_alias.value_literal == "epsg4326"),
+                    ST_Within(ST_SetSRID(property1_alias.value_geo, 4326), geom_4326)
+                )
+            ]
+            for se in seek_epsg:
+                if int(se) != 4326:
+                    or_collector.append(
+                        and_(
+                            or_(property1_alias.name_b == f"epsg{se}",
+                                property1_alias.value_literal == f"epsg{se}"),
+                            ST_Within(ST_Transform(ST_SetSRID(property1_alias.value_geo, int(se)), 4326), geom_4326)
+                        )
+                    )
+            q[nq] = q[nq].where(or_(*or_collector))
+
+            if feature_scale is not None:
+                # Working but very slow, need for improvement
+                qb = select(Actor.id).join(property2_alias, mtobject_to_return.properties)
+                qb = qb.where(property2_alias.name_a == "Scale")
+                qb = qb.where(property2_alias.value_literal == feature_scale)
+                q[nq] = q[nq].where(Actor.id.in_(qb))
+                """q[nq] = q[nq].join(property2_alias, mtobject_to_return.properties)
+                q[nq] = q[nq].where(property2_alias.name_a == "Scale")
+                q[nq] = q[nq].where(property2_alias.value_literal == feature_scale)"""
+
+        # self instead of sidb
+        returnval = self.compute_query_return_type(q, return_type)
+        self.compute_query_cache_properties(cache_properties, return_type, q['id'])
+        return returnval
 
     def get_actors_by_ids(
             self,
