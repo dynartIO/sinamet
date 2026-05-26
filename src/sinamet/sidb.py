@@ -14,8 +14,8 @@ from sqlalchemy import ColumnElement, Engine, create_engine, intersect
 from sqlalchemy.orm import aliased
 from sqlalchemy.orm.exc import UnmappedInstanceError
 from sqlalchemy.orm.session import Session, object_session, sessionmaker
-from sqlalchemy.sql import Select, and_, delete, func, or_, select, union
-from geoalchemy2.functions import ST_Within, ST_GeomFromText, ST_Transform, ST_AsGeoJSON, ST_SetSRID
+from sqlalchemy.sql import Select, and_, delete, func, or_, select, union, intersect
+from geoalchemy2.functions import ST_Within, ST_GeomFromText, ST_Transform, ST_AsGeoJSON, ST_SetSRID, ST_Intersects
 
 from sinamet.config import config
 from sinamet.mapper import Mapper, MapperError
@@ -31,6 +31,8 @@ from sinamet.mtobjects.stock import Stock
 from sinamet.mtobjects.territory import Territory
 from sinamet.tools.xtime import get_start_end_dates, to_date
 from sinamet.tools.xshape import reproject
+
+from shapely.geometry import Polygon, MultiPolygon
 
 
 class Sidb:
@@ -1248,7 +1250,7 @@ class Sidb:
             self,
             mask: MTObject | Polygon | MultiPolygon,
             radius: float = 0,
-            feature_scale: str | None = None,
+            scale: str | None = None,
             metric_epsg: str | int = 3857,
             mask_epsg: str | int = 0,
             seek_epsg: list[int | str] = [],
@@ -1270,9 +1272,9 @@ class Sidb:
         Args:
             mask: Masque (ou couche de superpositon) délimitant l'aire de recherche. Cela peut être un MTObject, un Polygon ou un Multipolygon
             radius: Rayon de recherche (tampon) en mètre, au-delà de l'aire de recheche.
-            scale: Échelle des éléments recherchés (hors 4326 par défaut).
+            scale: Échelle des éléments recherchés.
             metric_epsg: Code EPSG d'un Système de Coordonnées métrique (pour calcul du rayon).
-            seek_epsg : Liste des EPSG considérés pour la recherche.
+            seek_epsg : Liste des EPSG considérés pour la recherche (hors 4326 par défaut). Attention, consomme du temps ...
             mask_epsg: Liste des propriétés à mettre en cache.
             if_many_geometries: Action à prendre quand plusieurs éléments géométries sont disponibles pour l'objet mask
                             (uniquement si `mask` est un MTObject)
@@ -1318,22 +1320,23 @@ class Sidb:
             search_4326 = reproject(mask, metric_epsg, 4326)
         else:
             search_4326 = reproject(mask, mask_epsg, 4326)
-        geom_4326 = ST_GeomFromText(search_4326.wkt, 4326)
+
+        geom = {4326:ST_GeomFromText(search_4326.wkt, 4326)}
+        for se in seek_epsg:
+            t = reproject(mask, mask_epsg, int(se))
+            geom[se] = ST_GeomFromText(t.wkt, int(se))
 
         mtobject_to_return = Actor
 
         q = {}
         property1_alias = aliased(Property, name='property1_alias')  # Geometry
-        property2_alias = aliased(Property, name='property2_alias')  # Scale
+        #property2_alias = aliased(Property, name='property2_alias')  # Scale not used
         for nq, targetq in zip(["id", "object"], [mtobject_to_return.id, mtobject_to_return]):
-            q[nq] = select(targetq)
-            q[nq] = q[nq].join(property1_alias, mtobject_to_return.properties)
-            q[nq] = q[nq].where(property1_alias.name_a == feature_geoproperty)
-
+            # Construction du système de recherche géographique
             or_collector = [
                 and_(
                     or_(property1_alias.name_b == "epsg4326", property1_alias.value_literal == "epsg4326"),
-                    ST_Within(ST_SetSRID(property1_alias.value_geo, 4326), geom_4326)
+                    ST_Within(ST_SetSRID(property1_alias.value_geo, 4326), geom[4326])
                 )
             ]
             for se in seek_epsg:
@@ -1342,22 +1345,30 @@ class Sidb:
                         and_(
                             or_(property1_alias.name_b == f"epsg{se}",
                                 property1_alias.value_literal == f"epsg{se}"),
-                            ST_Within(ST_Transform(ST_SetSRID(property1_alias.value_geo, int(se)), 4326), geom_4326)
+                            ST_Within(ST_SetSRID(property1_alias.value_geo, int(se)), geom[int(se)])
                         )
                     )
-            q[nq] = q[nq].where(or_(*or_collector))
 
-            if feature_scale is not None:
-                # Working but very slow, need for improvement
-                qb = select(Actor.id).join(property2_alias, mtobject_to_return.properties)
-                qb = qb.where(property2_alias.name_a == "Scale")
-                qb = qb.where(property2_alias.value_literal == feature_scale)
-                q[nq] = q[nq].where(Actor.id.in_(qb))
+            if scale is None:
+                q[nq] = select(targetq).join(property1_alias, mtobject_to_return.properties)\
+                .where(property1_alias.name_a == feature_geoproperty).where(or_(*or_collector))
+                #q[nq] = q[nq].where(mtobject_to_return.id.in_(intersect(geoq, geoq)))
+            else:
+                lsid = self.get_actors("Scale", scale, return_type="qid")
+                geoq = select(mtobject_to_return.id).join(property1_alias, mtobject_to_return.properties) \
+                    .where(property1_alias.name_a == feature_geoproperty).where(or_(*or_collector))
+                q[nq] = select(targetq).where(mtobject_to_return.id.in_(intersect(lsid, geoq)))
+                # Following strategies work but take 4x more time
+                #q[nq] = q[nq].where(mtobject_to_return.id.in_(lsid))
                 """q[nq] = q[nq].join(property2_alias, mtobject_to_return.properties)
                 q[nq] = q[nq].where(property2_alias.name_a == "Scale")
                 q[nq] = q[nq].where(property2_alias.value_literal == feature_scale)"""
+                """mtobject_scaled_cte = (select(Actor.id).join(Property)
+                                       .where(Property.name_a == "Scale")
+                                       .where(Property.value_literal == feature_scale).cte())
+                q[nq] = q[nq].where(Actor.id == mtobject_scaled_cte.c.id)"""
 
-        # self instead of sidb
+
         returnval = self.compute_query_return_type(q, return_type)
         self.compute_query_cache_properties(cache_properties, return_type, q['id'])
         return returnval

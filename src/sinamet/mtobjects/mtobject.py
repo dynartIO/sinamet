@@ -21,7 +21,8 @@ from sqlalchemy.orm import reconstructor
 
 from sinamet.mtobjects.property import Property
 from sinamet.mtobjects.dbobject import DBObjectClassBase
-from sinamet.tools.timext import get_start_end_dates, to_date
+from sinamet.tools.xtime import get_start_end_dates, to_date
+from sinamet.tools.xshape import reproject
 from sinamet.tools.profile import Profile
 from sinamet.errors import SidbMultiFoundError, SidbNotFoundError
 
@@ -463,16 +464,53 @@ class MTObject(DBObjectClassBase):
             epsg: str | int='4326',
             verbose: bool = False
             ) -> Geometry | list[Geometry] | None:
-        """Renvoie la propriété géographique recherchée dans le référentiel indiqué (retourne la valeur uniquement).
+        """Renvoie la propriété géographique recherchée dans le référentiel EPSG indiqué (retourne la valeur uniquement).
         Attention : les propriétés géographique doivent porter un nom du type "xxx@epsg4326" ou
         "xxx" (par défault epsg 4326), par exemple "Geoshape@epsg4326"
+        La fonction prend en charge de manière autonome les projections entre différents Système de Coordonnées de Référence (SCR).
+
+        Args:
+            full_name: Nom complet de la propriété
+            date_point: Propriétés valables à une date spécifique (propriété ayant même date, ou une période couvrant la date, ou pas de date)
+            if_none: Comportement en cas de propriété non trouvée: lève un erreur
+                (`raise`), affiche un avertissement (`warn`) ou renvoie None.
+            force_cache: Ne refait pas d'appel à la base de donnée et utilise les
+                propriétés déjà mise en cache.
+            if_many: Action à prendre quand plusieurs géométries sont disponibles
+            epsg: SCR pour la géométrie retournée.
+            verbose: Si True, est bavard.
+
+        Returns:
+            Geometry: Valeur de la géométrie
+            list[Geometry]: Liste de géométries si valeurs multiples et si if_many = list ou warn_list.
         """
         if if_none:
-            warnings.warn(f"if_none attribute not configured for '{if_none}'")
+            warnings.warn(f"if_none attribute not yet configured for '{if_none}'")
         if type(epsg) is int:
             epsg = str(epsg)
 
         name_a, *name_b = full_name.split('@')
+
+        # Section 1 : Recherche des propriétés geo où l'EPSG est indiqué après #
+        if name_b and not name_b[0].startswith("epsg"):
+            prop_list = self.get_properties_gen(name_a, name_b[0], return_type="property",
+                                         force_cache=force_cache, date_point=date_point, verbose=verbose)
+        else:
+            prop_list = self.get_properties_gen(name_a, return_type="property",
+                                                force_cache=force_cache, date_point=date_point, verbose=verbose)
+
+        existing_value, existing_epsg = None, None
+        for p in prop_list:
+            if p.value_literal:
+                if bool(re.search(r'epsg\d+$', p.value_literal, re.IGNORECASE)):
+                    existing_epsg = p.value_literal.lower().split("epsg")[1]
+                    existing_value = p.value_geo
+                    if existing_epsg == epsg:
+                        return p[0]
+        if existing_value:
+            return reproject(existing_value, existing_epsg, epsg)
+
+
         if name_b:
             epsg = name_b[0].replace("epsg", "") if name_b else "4326"
         myprop = self.get_property_gen(name_a, f"epsg{epsg}", return_type="value",
@@ -502,12 +540,8 @@ class MTObject(DBObjectClassBase):
         if not existing_epsg:
             return None
         if existing_epsg == epsg:
-            return existing_value
-        myproj = pyproj.Transformer.from_proj(
-            pyproj.Proj(f'epsg:{existing_epsg}'),
-            pyproj.Proj(f'epsg:{epsg}'),
-            always_xy=True)
-        myprop = transform(myproj.transform, existing_value)
+            return myprop
+        myprop = reproject(existing_value, existing_epsg, epsg)
         if verbose: print(f"Got following point = ", myprop)
         return myprop
 
@@ -552,7 +586,7 @@ class MTObject(DBObjectClassBase):
                     une précision comporte plusieurs propriétés.
                 * `profile`: L'object `Profile` contenant les propriétés recherchées.
             if_none: Comportement en cas de propriété non trouvée: lève un erreur
-                (`raise`), affiche un avertissement (`warn`) ou renvoie une liste vide (défaut).
+                (`raise`), affiche un avertissement (`warn`) ou renvoie None.
             use_default: Renvoie toutes les propriétés en commençant par celles indiquées dans `prop_type`.
             force_cache: Ne refait pas d'appel à la base de donnée et utilise les
                 propriétés déjà mise en cache.

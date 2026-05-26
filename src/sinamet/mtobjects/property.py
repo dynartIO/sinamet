@@ -108,6 +108,16 @@ class Property(DBObjectClassBase):
             if math.isnan(value):
                 raise ValueError(f'Cannot set a property with a NaN value ({name}={value}).')
 
+        # Catch EPSG if geometry
+        has_epsg = None
+        if "#epsg" in name.lower():
+            mysplit = name.lower().split("#epsg")
+            if mysplit[1].startswith(":"):
+                mysplit[1] = mysplit[1][1:]
+            has_epsg = "epsg:" + mysplit[1]
+            name = mysplit[0]
+
+        # Process Fullname in two part
         name_a, *name_b = name.split('@', 1)
         self.name_a = name_a
         if name_b:
@@ -129,6 +139,8 @@ class Property(DBObjectClassBase):
             case shapely.Geometry():
                 self.value_geo = from_shape(value)
                 self.type = self.ValueType.GEOMETRY
+                if has_epsg:
+                    self.value_literal = has_epsg
             case _:
                 raise TypeError(f'Invalid Property type ({type(value)})')
 
