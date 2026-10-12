@@ -42,10 +42,8 @@ par exemple 'R44' ou 'RX42'.
 En plus du code, les territoire ont un voire plusieurs noms (différentes langues, abbréviation, ...). À noter que 
 l’usage d’un nom pour identifier un territoire est moins robuste que l’usage du code, en raison des homonymes.
 
-Les territoires ont enfin une longue liste d’attributs possibles, par exemple : coordonnées géographiques 
-(latitude maximale, latitude minimale, longitude maximale, longitude minimale), données statistiques de base
-(superficie du pays, superficie des terres, terrains agricoles, population et PIB), 
-informations sur les noms et codes de leurs devises et les adjectifs de la nationalité, limites géographiques.
+Les territoires ont enfin une longue liste d’attributs possibles, par exemple les countours géographiques ou des données
+statistiques (superficie, population, PIB ...).
 
 Les territoires peuvent aussi être liés entre eux par des relations de type frontières communes, 
 relation d’inclusion ou succession historique. Dans l’ontologie Sinamet, il n’y a pas de distinction 

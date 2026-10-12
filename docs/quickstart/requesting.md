@@ -164,13 +164,13 @@ par exemple tous les flux de céréales en provenance de Charente et à distinat
     print(f"{len(flux_export)} flux en provenance de {charente.get_name()} et à destination de {bretagne.get_name()} ont été requêtés")
 ```
 
-De la même manière, il est possible d'exclure les flux en provenance ou destination d'un territoire spécifique,
-à l'aide du paramètre `exclude_related_target`.
-
 Résultat:
 ``` { .text .no-copy }
 23 flux en provenance de Charente et à destination de Bretagne ont été requêtés.
 ```
+
+De la même manière, il est possible d'exclure les flux en provenance ou destination d'un territoire spécifique,
+à l'aide du paramètre `exclude_related_target`.
 
 ## Requete sur des flux de type Gateflow
 

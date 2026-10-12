@@ -48,7 +48,7 @@ Ensuite, pour charger les données, il suffit d'exécuter les scripts suivants d
     demo_immatriculation_vehicules/cmd_imp_voitures.py
 
 
-\* *Ce fichier peut être particulièrement long à exécuter selon performances de l'ordinateur : ~ 10 min*
+\* *Ce script peut être particulièrement long à exécuter selon performances de l'ordinateur : ~ 10 min*
 
 L'objectif de Sinamet est de permettre la mise en cohérence de différents jeux de données de provenances multiples.
 Certains jeux de données peuvent être dépendants d'autres, par exemple les départements nécessitent 

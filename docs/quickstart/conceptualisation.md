@@ -13,7 +13,11 @@ et la base de données en lien avec un ORM.
 La librairie Sinamet s’utilise en 2 temps :
 
 * D'abord l’importation de données externes dans la base de données centralisée gérée par Sinamet. 
+Cela s'opère à travers des scripts dont la fonction est celle d'un extracto-chargeur (ETL).
 * Ensuite le requêtage et la manipulation des données pour produire les analyses et visualisations.
+Cela s'opère également à travers des scripts dédiés.
+
+<img src="../assets/images/siname_sequentiel.png" width="60%" />
 
 
 ## Types d'objets et propriétés
@@ -28,8 +32,10 @@ quantité (en kg, en euros, en unité, ...) d'un produit associé à un territoi
 
 ***Précision importante*** : il existe 2 types de flux : ceux dont on connaît l'origine et la destination 
 (appelés `Pathflow`) et ceux dont on ne connaît que l'endroit où il se manifeste (appelés `Gateflow`). *
-Par exemple la donnée de consommation éléctrique d'un territoire est un Gateflow car on ne connaît pas l'origine 
-de la production. Mais le déplacement d'un individu d'un endroit A vers un endroit B est un Pathflow.
+Par exemple la donnée de consommation électrique d'un territoire est un Gateflow car on ne connaît pas l'origine 
+de la production. Mais le déplacement d'un individu d'un endroit A vers un endroit B est un Pathflow. 
+Voir [Gateflow et Pathflow](../documentation/mtobjecttypes.md#gateflow-et-pathflow) 
+pour plus de détails.
 
 En résumé, Sinamet offre la possibilité de manipuler 6 classes d'objets : 
 `Territoiry`, `Actor`, `Product`, `Gateflow`, `Pathflow`, `Stock`. 
