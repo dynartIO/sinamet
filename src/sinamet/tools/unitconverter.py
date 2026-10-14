@@ -205,7 +205,7 @@ def convert(quantity, from_unit, to_unit, coeffdic=None):
     Converti une valeur d'une unité vers une autre. Gère également la conversion des préfixes des unités SI
     (k, M, G, m, µ...)
 
-    Parameters
+    Parameters:
         quantity: Quantité initiale
         from_unit: Unité initiale
         to_unit: Unité finale
