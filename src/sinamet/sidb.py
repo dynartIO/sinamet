@@ -28,7 +28,7 @@ from sinamet.mtobjects.product import Product
 from sinamet.mtobjects.property import Property
 from sinamet.mtobjects.stock import Stock
 from sinamet.mtobjects.territory import Territory
-from sinamet.tools.timext import get_start_end_dates, to_date
+from sinamet.tools.xtime import get_start_end_dates, to_date
 
 
 class Sidb:

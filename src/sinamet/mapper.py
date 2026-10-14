@@ -5,7 +5,7 @@ from typing import Any
 
 import warnings
 
-from sinamet.tools.timext import get_start_end_dates, to_date
+from sinamet.tools.xtime import get_start_end_dates, to_date
 
 if typing.TYPE_CHECKING:
     from datetime import date, datetime

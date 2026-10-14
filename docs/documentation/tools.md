@@ -59,16 +59,31 @@ graphiques (g, 'graphicsinfo') dans un dictionnaire (généralement appelé data
     from sinamet.tools.dictsyntax import r, s, g    
     data = {s: [], r:[], g:[]}
 
+## Xstring
+
+Permet de réaliser des opérations autour des chaînes de caractère (simplification, hachage).
+
+::: tools.xstring.hexhash
+    options:
+        show_root_heading: true
+        show_root_full_path: false
+        heading_level: 3
+
+::: tools.xstring.alphanumhash
+    options:
+        show_root_heading: true
+        show_root_full_path: false
+        heading_level: 3
+
+::: tools.xstring.minimize
+    options:
+        show_root_heading: true
+        show_root_full_path: false
+        heading_level: 3
+
 *[A détailler]*
 
-## Opestring
-
-Permet de réaliser des opérations autour des chaînes de caractère. Dispose en particulier d'une fonction
-de hachage.
-
-*[A détailler]*
-
-## timext
+## Xtime
 
 Permet de réaliser des opérations autour des dates.
 

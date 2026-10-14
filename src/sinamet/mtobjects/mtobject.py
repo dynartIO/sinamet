@@ -21,7 +21,7 @@ from sqlalchemy.orm import reconstructor
 
 from sinamet.mtobjects.property import Property
 from sinamet.mtobjects.dbobject import DBObjectClassBase
-from sinamet.tools.timext import get_start_end_dates, to_date
+from sinamet.tools.xtime import get_start_end_dates, to_date
 from sinamet.tools.profile import Profile
 from sinamet.errors import SidbMultiFoundError, SidbNotFoundError
 

@@ -5,7 +5,10 @@ import pandas
 
 
 def full_date_range(start, end, freq):
-    """Return TimeSeries, with frequency"""
+    """Return une série temporelle (Pandas.DatetimeIndex), selon une fréquence indiquée.
+    Par exemple : MS = mois ; AS = an ; W = semaine ; D = jour.
+    Les dates `start` et `end` sont incluses dans la série temporelle."""
+
     _start_date = start
     _end_date = end  # END DATE INCLUDE IN TIME STEP !
 
@@ -58,6 +61,10 @@ def to_date(d: str | datetime | date) -> date: ...
 
 
 def to_date(d: str | datetime | date | None) -> date | None:
+    """Convertit un élément en date. Les éléments peuvent être :
+     une chaîne de caractère au format %d/%m/%Y ou %Y-%m-%d, un datetime ou une date.
+     Si `d` est None, alors renvoie None.
+    """
     if d is None:
         return None
 
@@ -143,3 +150,15 @@ def to_jstimestamp(mydatetime: str | datetime | date | None) -> float | None:
     return int(timestamp_start) * 1e3  # Multiply by 1e3 as JS timestamp is in milliseconds
 
 # MS = mois ; AS = an ; W = semaine ; D = jour
+
+
+####### TESTS ##################"
+if __name__ == "__main__":
+    print("STARTING TEST XTIME")
+
+    d1 = to_date("08/01/2026")
+    d2 = to_date("01/03/2027")
+    myrange = full_date_range(d1, d2, freq="MS")
+    print(myrange)
+
+    print("ALL TESTS PASSED")

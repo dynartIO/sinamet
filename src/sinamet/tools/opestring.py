@@ -1,1 +1,0 @@
-from sinamet.tools.xstring import hexhash, alphanumhash, minimize

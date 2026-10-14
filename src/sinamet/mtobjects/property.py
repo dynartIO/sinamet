@@ -15,7 +15,7 @@ from sqlalchemy.orm import mapped_column
 from sqlalchemy.orm import relationship
 from sqlalchemy.orm import reconstructor
 
-from sinamet.tools.timext import to_date
+from sinamet.tools.xtime import to_date
 
 from .dbobject import DBObjectClassBase
 
