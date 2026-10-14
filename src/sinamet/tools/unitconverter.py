@@ -202,20 +202,20 @@ def get_unit_coeff(unit_name):
 
 def convert(quantity, from_unit, to_unit, coeffdic=None):
     """
-    Converti une valeur d'une unité vers une autre.
+    Converti une valeur d'une unité vers une autre. Gère également la conversion des préfixes des unités SI
+    (k, M, G, m, µ...)
 
     Parameters
         quantity: Quantité initiale
         from_unit: Unité initiale
         to_unit: Unité finale
-        coeffdic: Dictionnaire complémentaire (Optionnel)
+        coeffdic: Dictionnaire de conversion complémentaire (Optionnel) - Sous la forme {"g/cm3":7.874}
 
     Examples:
         >>> from sinamet.tools.unitconverter import convert
         >>> convert(12, 't', 'kg') # Converti des tonnes en kilo.
-        >>> convert(12000, 'L', 'm3') # Converti des tonnes en kilo.
-        >>> convert(12, 't', 'kg') # Converti des tonnes en kilo.
-        >>> convert(1378, 'kg', 'm3', coeffdic={"g/cm3":7.874}) # Utilise un coefficient de densité massique complémentaire
+        >>> convert(12000, 'L', 'm3') # Converti des litres en m3.
+        >>> convert(1378, 'kg', 'm3', coeffdic={"g/cm3":7.874}) # Utilise un coefficient complémentaire
     """
     if coeffdic is None:
         coeffdic = std_cst_coeff_dic
