@@ -58,10 +58,27 @@ class ConversionError(Exception):
 
 class UnitConverter():
 
-    def __init__(self, dico):
+    cache_list_converter = {} # Cache des UnitConverter pour accélérer les conversions avec même coefficient
+
+    def __new__(cls, dico:dict):
+        temp_dico_key = frozenset(dico.items())
+
+        if temp_dico_key in UnitConverter.cache_list_converter:
+            return UnitConverter.cache_list_converter[temp_dico_key]
+
+        instance = super().__new__(cls)
+        return instance
+
+    def __init__(self, dico:dict):
+        self.dico_key = frozenset(dico.items())
+        if self.dico_key in UnitConverter.cache_list_converter:
+            return
+
         self.unitset = set()
         self.unitdict = {}
+        self.has_max_extend = False
 
+        UnitConverter.cache_list_converter[self.dico_key] = self
         for key, val in dico.items():
             self.add_conversion(key, val)
 
@@ -74,10 +91,12 @@ class UnitConverter():
             self.unitdict[c1u] = {}
         if c2u not in self.unitdict[c1u]:
             self.unitdict[c1u][c2u] = value*c1c/c2c
+            self.unitset.add(c1u + "/" + c2u)
 
         if c2u not in self.unitdict:
             self.unitdict[c2u] = {}
         if c1u not in self.unitdict[c2u]:
+            self.unitset.add(c2u + "/" + c1u)
             if value != 0:
                 self.unitdict[c2u][c1u] = c2c/(c1c*value)
             else:
@@ -90,24 +109,27 @@ class UnitConverter():
         if fu == tu:
             return quantity * float(fc) / float(tc)
 
+        temp_len_unitset = len(self.unitset)
         while extendlimit > 0:
             coeff = self.get_fromto_coeff(fu, tu)
-            if coeff is not None:
+            if coeff is not None: # La conversion est disponible dans la liste
                 if coeff == 0:
                     return sys.float_info.max
                 else:
                     return quantity * float(fc) / (float(tc) * coeff)
+            if self.has_max_extend: # Convertisseur d'unité étendu au maximum, inutile d'insister !
+                break
             self.extend_converter()
-            #print(self)
-            #print("(E) --------")
+            # L'extension du convertisseur n'apporte pas de nouvelles configurations de conversion => On quitte
+            if len(self.unitset) == temp_len_unitset:
+                self.has_max_extend = True # On indique que le convertisseur est étendu au max
+                break
+            # De nouvelle configurations de configuration émergent : on réitère
+            temp_len_unitset = len(self.unitset)
             extendlimit -= 1
-
         error_message = "Undefined conversion %s %s --> %s\nCoeff dict = %s" % \
                         (quantity, from_unit, to_unit, "")
 
-        """print("################## ERROR INFO #################################################################")
-        print(error_message)
-        print(self.unitdict)"""
         raise ConversionError(error_message)
 
 
@@ -200,8 +222,8 @@ def convert(quantity, from_unit, to_unit, coeffdic=None):
     else:
         coeffdic = {**std_cst_coeff_dic, **coeffdic}
     uc = UnitConverter(coeffdic)
-    #print(uc)
-    return uc.do(from_unit, to_unit, quantity)
+    return_value = uc.do(from_unit, to_unit, quantity)
+    return return_value
 
 
 ####### TESTS ##################"
