@@ -71,11 +71,10 @@ class Property(DBObjectClassBase):
     context: Mapped[dict[str, Any] | None] = mapped_column(JSON)
     timestamp: Mapped[datetime]
 
-    # datalinker_id = Column(Integer, ForeignKey('datalinker.id'))
-    # datalinker = relationship("DataLinker", back_populates="attributes")
-    # overwrite_id = Column(Integer, ForeignKey('property.id'))
-    # overwrite = relationship("Property", remote_side=[id])
-    # overwrittenby = relationship("Property", back_populates="overwrite")
+    historical_properties: Mapped[list[HistoricalProperty]] = relationship(
+        back_populates="replaced_property",
+    )
+
 
     def __init__(self,
                  name: str,

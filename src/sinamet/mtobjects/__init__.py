@@ -8,3 +8,4 @@ from .pathflow import Pathflow
 from .gateflow import Gateflow
 from .stock import Stock
 from .property import Property
+from .historicalproperty import HistoricalProperty

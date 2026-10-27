@@ -20,6 +20,7 @@ from sqlalchemy.orm import relationship
 from sqlalchemy.orm import reconstructor
 
 from sinamet.mtobjects.property import Property
+from sinamet.mtobjects.historicalproperty import HistoricalProperty
 from sinamet.mtobjects.dbobject import DBObjectClassBase
 from sinamet.tools.xtime import get_start_end_dates, to_date
 from sinamet.tools.profile import Profile
@@ -52,6 +53,15 @@ class MTObject(DBObjectClassBase):
     property_values: Mapped[list[Property]] = relationship(
             back_populates="value_mtobject",
             primaryjoin=Property.value_mtobject_id == id,
+            cascade="all, delete-orphan")
+
+    historical_properties: Mapped[list[HistoricalProperty]] = relationship(
+            back_populates="item",
+            primaryjoin=HistoricalProperty.item_id == id,
+            cascade="all, delete-orphan")
+    historical_property_values: Mapped[list[HistoricalProperty]] = relationship(
+            back_populates="value_mtobject",
+            primaryjoin=HistoricalProperty.value_mtobject_id == id,
             cascade="all, delete-orphan")
 
     date_start: Mapped[date | None]
