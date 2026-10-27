@@ -81,8 +81,6 @@ Permet de réaliser des opérations autour des chaînes de caractère (simplific
         show_root_full_path: false
         heading_level: 3
 
-*[A détailler]*
-
 ## Xtime
 
 Permet de réaliser des opérations autour des dates.
